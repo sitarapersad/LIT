@@ -1,0 +1,51 @@
+body{
+	width: 100%;
+}
+
+#text-logo{
+	font-size: 30px;
+/*Make this text vertically centered and somewhat attractive*/
+}
+
+#leftColumn{
+	height: 100%;
+}
+
+.search {
+    outline: none;
+    border: none;
+    height: 50px;
+    background: #efefef left center no-repeat;
+}
+
+
+#searchColumn{
+	height: 100%;
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+	padding: 0px;
+}
+
+#headerContainer{
+	height: 112px; 
+	padding-top: 10px;
+	border-bottom: medium solid #efefef;
+	/*outline: green dotted;*/
+}
+
+.navbar{
+	background-color: white;
+	border: none;
+	position: relative;
+
+}
+
+.navbar{
+	margin-bottom: 0px;
+}
+.nav>li:hover{
+	background-color: #efefef;
+}
+#mainContainer{
+	/*outline: black dotted;*/
+}
