@@ -1,5 +1,7 @@
 body{
 	width: 100%;
+	font-family: 'PT Sans', sans-serif;
+	background-color: #f3f3f3;
 }
 
 #headerContainer{
@@ -7,8 +9,9 @@ body{
 	padding-top: 10px;
 	margin: 0px;
 	width: 100%;
-	border-bottom: medium solid #efefef;
+	border-bottom: thin solid #dddddd;
 	box-shadow: 0px 2px 2px #efefef;
+	background-color: white;
 }
 
 
@@ -55,7 +58,6 @@ body{
 	margin: 0px;
 	width: 100%;
 	padding: 0px;
-	background-color: #f3f3f3;
 }
 
 #sideNaviation{
@@ -66,7 +68,8 @@ body{
 .nav-option{
 	height: 50px;
 	line-height: 50px;
-	text-align: center;
+	padding-left: 15%;
+	font-weight: bold;
 }
 
 .nav-option:hover{
