@@ -1,0 +1,30 @@
+#toolbar {
+	text-align: center;
+	font-size: 20px;
+	padding: 4px;
+}
+
+.toolbarGroup {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.toolbarButton {
+	margin: 0;
+	background: linear-gradient(to top, #CCC, #DDD);
+	border: solid 1px #888;
+	border-right: none;
+}
+
+.toolbarButton:last-child {
+	border-right: solid 1px #888;
+}
+
+.toolbarButton:active {
+	background: #AAA;
+}
+
+.toolbarButton.effective {
+	background: rgb(52, 148, 251);
+}

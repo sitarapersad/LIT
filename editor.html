@@ -1,0 +1,87 @@
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesheets/editor.css">
+  <link rel="stylesheet" href="stylesheets/editorToolbar.css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+  <!-- From Font Awesome: http://fontawesome.io -->
+  <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+	<div class="container" id="headerContainer">
+		<div class="col-md-2 text-center" id="leftColumn">
+			<img src="images/LIT-logo.png" alt="LIT" style="width:100px;height:100px;">
+		</div>
+		<div class="col-md-8" id="searchColumn">
+			<div class="row" style="padding-right: 20px;">
+			  <input class="form-control input-md search" placeholder= "Search experiments ..." type="text">
+			</div>
+			<div class="row">
+				<nav class="navbar navbar-default">
+				  <div class="container-fluid">
+					<ul class="nav navbar-nav">
+					  <li class="active" onclick="changeURL('home.html')"><a href="#">My Notebook</a></li>
+					  <li onclick="changeURL('shared.html')"><a href="#">Shared With Me</a></li>
+					  <li onclick="changeURL('calendar.html')"><span class="glyphicons glyphicons-family"></span> <a href="#">Calendar</a></li>
+					</ul>
+				  </div>
+				</nav>
+			</div>
+		</div>
+		<div class="col-md-2" style="text-align: right;">
+		ACCOUNT
+		</div>
+	</div>
+
+	<div id="toolbar">
+		<div class="toolbarGroup">
+			<button class="toolbarButton" data-command="undo"><i class="fa fa-undo"></i></button><!--
+			--><button class="toolbarButton" data-command="redo"><i class="fa fa-repeat"></i></button>
+		</div>
+		<div class="toolbarGroup">
+			<button class="toolbarButton" data-command="justifyLeft"><i class="fa fa-align-left"></i></button><!--
+			--><button class="toolbarButton" data-command="justifyCenter"><i class="fa fa-align-center"></i></button><!--
+			--><button class="toolbarButton" data-command="justifyRight"><i class="fa fa-align-right"></i></button>
+		</div>
+		<div class="toolbarGroup">
+			<button class="toolbarButton" data-command="bold"><i class="fa fa-bold"></i></button><!--
+			--><button class="toolbarButton" data-command="italic"><i class="fa fa-italic"></i></button><!--
+			--><button class="toolbarButton" data-command="underline"><i class="fa fa-underline"></i></button>
+		</div>
+		<input type="file" id="imageFileInput" style="display: none;">
+	</div>
+
+	<div class="container" id="mainContainer" contenteditable="true">
+		<div class="step">1) Pour <textarea class="var" id="display-sodium-1" rows="1" cols="1"> 2 </textarea> mL of sodium into beaker.</div>
+		<div class="step">2) Obtain <textarea class="var" id="display-sodium-2" rows="1" cols="1"> 4 </textarea> mL of magnesium.</div>
+
+		<!-- The Modal -->
+		<div id="myModal" class="modal">
+
+		  <!-- Modal content -->
+		  <div class="modal-content">
+			<span class="close">&times;</span>
+			<h1> Variable List </h1>
+			<p> Variable 1: Amount of Sodium </p>
+			<p> Step 1: </p> <textarea class="edit-var" id="sodium-var-1" rows="1" cols="1"> </textarea>
+			<p> Step 2: </p> <textarea class="edit-var" id="sodium-var-2" rows="1" cols="1"> </textarea>
+			<br>
+			<br>
+			<button id="submit-vars">Done</button>
+		  </div>
+
+		</div>
+
+	</div>
+
+	<footer class="text-center">
+		<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+	</footer>
+
+	<!-- Scripts for This Page -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="scripts/editor.js"></script>
+	<script src="scripts/editor-variables.js"></script>
+</body>
