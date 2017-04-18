@@ -1,0 +1,129 @@
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="editorStyle.css">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+  <script src=
+  "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+
+<!-- Scripts for This Page -->
+
+<script>
+	var sodium_amount = 2;
+
+	$(document).ready(function() {
+		var span = document.getElementsByClassName("close");
+		var modal = document.getElementById("myModal");
+		var submit = document.getElementById("submit-vars");
+	    $(".var").focus(varClicked);
+	    $(".edit-var").focus(editVarClicked);
+
+	    span.onclick = function() {
+	    	modal.style.display = "none";
+		}
+
+		window.onclick = function(event) {
+		    if (event.target == modal) {
+		        modal.style.display = "none";
+		    }
+		}
+
+		submit.onclick = function() {
+			modal.style.display = "none";
+
+			var sodiumDisplay = document.getElementById("display-sodium-1");
+			sodiumDisplay.innerHTML = sodium_amount;
+			var magDisplay = document.getElementById("display-sodium-2");
+			magDisplay.innerHTML = 2*sodium_amount;
+		}
+
+		function varClicked() {
+			modal.style.display = "block";
+			var sodiumDisplay = document.getElementById("sodium-var-1");
+			sodiumDisplay.innerHTML = sodium_amount;
+			var magDisplay = document.getElementById("sodium-var-2");
+			magDisplay.innerHTML = 2*sodium_amount;
+		}
+
+		function editVarClicked() {
+			var editableText = $(this);
+			editableText.blur(editableTextBlurred);
+		}
+
+		function editableTextBlurred() {
+			if(this.id == "sodium-var-1") {
+				sodium_amount = parseFloat(document.getElementById("sodium-var-1").value);
+				var sodiumDisplay = document.getElementById("sodium-var-1");
+				sodiumDisplay.innerHTML = sodium_amount;
+				var magDisplay = document.getElementById("sodium-var-2");
+				magDisplay.innerHTML = (2*sodium_amount).toString();
+			}
+			else {
+				sodium_amount = parseFloat(document.getElementById("sodium-var-2").value)/2.0;
+				var sodiumDisplay = document.getElementById("sodium-var-1");
+				sodiumDisplay.innerHTML = sodium_amount;
+				var magDisplay = document.getElementById("sodium-var-2");
+				magDisplay.innerHTML = 2*sodium_amount;
+			}
+		}
+
+	});
+</script>
+
+<body>
+<div class="container" id="headerContainer">
+	<div class="col-md-2 text-center" id="leftColumn">
+		<img src="images/LIT-logo.png" alt="LIT" style="width:100px;height:100px;">
+	</div>
+
+	<div class="col-md-8" id="searchColumn">
+		<div class="row" style="padding-right: 20px;">
+		  <input class="form-control input-md search" placeholder= "Search experiments ..." type="text">
+		</div>
+		<div class="row">
+			<nav class="navbar navbar-default">
+			  <div class="container-fluid">
+			    <ul class="nav navbar-nav">
+			      <li class="active" onclick="changeURL('home.html')"><a href="#">My Notebook</a></li>
+			      <li onclick="changeURL('shared.html')"><a href="#">Shared With Me</a></li>
+			      <li onclick="changeURL('calendar.html')"><span class="glyphicons glyphicons-family"></span> <a href="#">Calendar</a></li>
+			    </ul>
+			  </div>
+			</nav>
+		</div>
+	</div>
+
+	<div class="col-md-2" style="text-align: right;">
+	ACCOUNT
+	</div>
+</div>
+<div class="container" id="mainContainer">
+	<div class="step">1) Pour <textarea class="var" id="display-sodium-1" rows="1" cols="1"> 2 </textarea> mL of sodium into beaker.</div>
+	<div class="step">2) Obtain <textarea class="var" id="display-sodium-2" rows="1" cols="1"> 4 </textarea> mL of magnesium.</div>
+
+	<!-- The Modal -->
+	<div id="myModal" class="modal">
+
+	  <!-- Modal content -->
+	  <div class="modal-content">
+	    <span class="close">&times;</span>
+	    <h1> Variable List </h1>
+	    <p> Variable 1: Amount of Sodium </p>
+	    <p> Step 1: </p> <textarea class="edit-var" id="sodium-var-1" rows="1" cols="1"> </textarea>
+	    <p> Step 2: </p> <textarea class="edit-var" id="sodium-var-2" rows="1" cols="1"> </textarea>
+	    <br>
+	    <br>
+	    <button id="submit-vars">Done</button>
+	  </div>
+
+	</div>
+
+</div>
+</body>
+
+<footer class="text-center">
+	<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+</footer>
