@@ -5,7 +5,7 @@ body{
 }
 
 #headerContainer{
-	height: 120px; 
+	height: 120px;
 	padding-top: 10px;
 	margin: 0px;
 	width: 100%;
@@ -65,8 +65,10 @@ body{
 #mainContainer{
 	margin: 0px;
 	width: 100%;
+	height: calc(100% - 176px);
 	padding: 0px;
 	padding-top: 10px;
+	outline: none;
 }
 
 #sideNaviation{
@@ -100,7 +102,7 @@ body{
     margin: 20px 20px;
 }
 
-.var{ 
+.var{
 	display:inline-block;
  }
 
