@@ -8,10 +8,10 @@
  * 
  */
 
-var Note = function(name, owner)
+var Note = function(name, owner, ID)
 {
   // Randomly generate an identifier (ID)
-  this.ID = Math.floor(Math.random() * 1000000);
+  this.ID = owner+ID;
 
   // Owner (an instance of the User class) of the document
   this.owner = owner;
@@ -21,7 +21,7 @@ var Note = function(name, owner)
   // Other details to be filled out at a more relaxed time
   this.createDate = 0;
   this.modifiedDate = 0;
-  }
+
 
   /* 
    * Renames the file given a new name
@@ -38,4 +38,4 @@ var Note = function(name, owner)
     this.sharedUsers.push(user);
   }
 
-  
+} 

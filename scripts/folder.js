@@ -8,21 +8,21 @@
  * 
  */
 
-var Folder = function(name, owner)
+var Folder = function(name, owner, ID)
 {
-  // Randomly generate an identifier (ID)
-  this.ID = Math.floor(Math.random() * 1000000);
+  this.ID = owner+ID;
 
-  // Owner (an instance of the User class) of the document
+  // Owner (should be an instance of the User class. Right now, it's a string) of the document
   this.owner = owner;
   this.name = name;
   this.sharedUsers = [] ;
-  this.files = [] ;
+  this.files = {} ;
+  this.folders = {} ;
 
   // Other details to be filled out at a more relaxed time
   this.createDate = 0;
   this.modifiedDate = 0;
-  }
+
 
   /* 
    * Renames the folder given a new name
@@ -35,7 +35,19 @@ var Folder = function(name, owner)
    * Add a note to the folder.
    */
   this.addFile = function(addNote)  {
-    this.files.push(addNote); 
+    var key = addNote.ID
+    this.files.key = addNote; 
+    $(this).triggerHandler("addFile", addNote);
+  }
+
+  /* 
+   * Add another folder to the folder.
+   */
+  this.addFolder = function(addFolder)  {
+    var key = addFolder.ID;
+    this.folders[key] = addFolder;
+    console.log('Trigger handler into '+ this.ID);
+    $(this).triggerHandler("addFolder", addFolder);
   }
 
   /* 
@@ -46,4 +58,18 @@ var Folder = function(name, owner)
     this.sharedUsers.push(user);
   }
 
+
+  /* 
+   * Given an ID, return the Folder object corresponding to the ID if it exists
+   */
+  this.getFolder = function(ID){
+    if (ID in this.folders){
+      return this.folders[ID];
+    }
+    else{
+      console.log(ID+" folder not found");
+      return false;
+    }
+  }
+}
   

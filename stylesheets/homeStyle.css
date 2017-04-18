@@ -58,6 +58,17 @@ body{
 .navbar{
 	margin-bottom: 0px;
 }
+
+.nav{
+	display: table;
+	width: 100%;
+}
+
+.nav>li{
+	display: table-cell;
+	width: auto;
+}
+
 .nav>li:hover{
 	background-color: #efefef;
 }
@@ -89,4 +100,33 @@ body{
 .heading{
 	padding-top: 20px;
 	font-size: 24px;
+}
+
+#fileDirectory{
+	font-size: 30px;
+	background-color: white;
+	color : #d34313;
+}
+
+.filename{
+	padding : 0px;
+	margin: 0 px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	width: 125px;
+	height: 25px;
+	border: none;
+	background-color: #cfcfcf;
+}
+
+.options{
+	position: absolute;
+	padding: 0px;
+	margin: 0px;
+	margin-right: -10px;
+	width: 25px;
+	height: 25px;
+	top: 0;
+	right: 0;
 }

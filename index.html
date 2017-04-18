@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -6,6 +9,139 @@
 </head>
 
 <body>
+<!-- Scripts for This Page -->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>
+	<script src="scripts/note.js"></script>
+	<script src="scripts/folder.js"></script>
+	<script type="text/javascript">
+
+	var appendToPath = "file:///C:/Users/Sitara/LIT/";
+	var folderCount = 0;
+	var fileCount = 0;
+
+	var currentFolder = new Folder('home', 'Owner', folderCount); // CHANGE THIS TO A PRE-POPULATED DIRECTORY FOR USER TESTING
+	var folderChain = [currentFolder];
+	folderCount += 1;
+
+	function changeURL(newUrl){
+		console.log(appendToPath +newUrl);
+		document.location.href = appendToPath +newUrl;
+	}
+
+	// Allow files and folders to be dropped into other folders
+	function allowDrop(e){
+		e.preventDefault();
+	}
+
+	function drag(e){
+		e.preventDefault();
+		console.log($(e.target).parent());
+	}
+
+	function drop(e){
+		console.log(e);
+		alert('Added to ' + e.target.id+ ' !');
+	}
+
+	function openFolder(newFolderID){
+		// Clear the current folders from the page 
+		$('#folderContainer').empty();
+		$('#fileContainer').empty();
+		$('#templateContainer').empty();
+		// change currentFolder to the new folder
+		subFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
+		folderChain.push(subFolder);
+		// Load the subfolders and subfiles
+		console.log('Opening '+folderChain[folderChain.length-1].ID);
+	}
+
+	function openFile(newFileID){	
+		// Open the URL for the file editor, need to find a way to pass data about the ID
+		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
+		changeURL('editor.html');
+	}
+
+	function createFolder(){
+		newFolder = new Folder('Untitled', 'Owner', folderCount);
+		console.log(folderChain[folderChain.length-1]);
+		console.log('Adding folder '+newFolder.ID +' to '+folderChain[folderChain.length-1].ID);
+		folderChain[folderChain.length-1].addFolder(newFolder);
+		folderCount += 1;
+		drawFolder(newFolder);
+	}
+
+	function createFile(){
+		newFile = new Note('Untitled', 'Owner', fileCount);
+		console.log('Creating file in '+folderChain[folderChain.length-1].ID);
+		folderChain[folderChain.length-1].addFile(newFile);
+		fileCount += 1;
+		drawFile(newFile);
+	}
+
+	function modifyFileOptions(){
+
+	}
+	// <!-- Event Handlers -->
+	function drawFolder(folderToAdd){
+		console.log('Adding folder to view');
+		$('#emptyFolder').remove();
+		var div = document.createElement("div");
+		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
+		div.setAttribute("draggable", "true");
+		div.setAttribute("ondrop","drop(event)");
+		div.setAttribute("ondragover", "allowDrop(event)");
+		div.id = "folder_"+folderToAdd.ID;
+
+		div.style.width = "150px";
+		div.style.height = "150px";
+		div.style.background = "white";
+		div.style.margin = "25px";
+		div.style.padding = "0px";
+
+		div.innerHTML = "<table><tr><td style='height:125px; width:150px; background-color:#c4c4d6; padding:0px;'> <img src='images/folder.png' style='width:100px; height:100px; cursor:move;'> </td></tr> <tr><td style='background-color:red;'><input type='text' name='name' class='text-center' placeholder='Untitled' value='Untitled'></td> </tr></table>"
+
+		var options = document.createElement("div");
+		options.setAttribute('onclick', "modifyFileOptions('"+folderToAdd+"')");
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical' style='right:0; padding-top:5px;'></span>";
+		options.setAttribute("class", "options");
+
+		div.appendChild(options);
+			// "<div class='container filename text-center'> <div class='row'><div class='col-lg-8'><input type='text' name='name' placeholder='Untitled' value='Untitled'></div> <div class='col-lg-1'>A</div> <div class='col-lg-1'> B </div> </div> </div>";
+
+		document.getElementById("folderContainer").appendChild(div);
+	};
+
+	function drawFile(fileToAdd){
+		$('#emptyFile').remove();
+		var div = document.createElement("div");
+		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
+		div.setAttribute("draggable","true");
+		div.id = "file_"+fileToAdd.ID;
+		div.setAttribute("ondblclick", "openFile('"+fileToAdd.ID+"')");
+		div.style.width = "150px";
+		div.style.height = "175px";
+		div.style.background = "white";
+		div.style.margin = "25px";
+		div.style.padding = "0px";
+
+		div.innerHTML = "<table><tr><td style='height:150px; width:150px; background-color:#c4c4d6; padding:0px;'> <img src='images/file.png' style='width:125px; height:125px; cursor:move;'> </td></tr> <tr><td style='background-color:red;'><input type='text' name='name' class='text-center' placeholder='Untitled' value='Untitled'></td> </tr></table>"
+
+		var options = document.createElement("div");
+		options.setAttribute('onclick', "modifyFileOptions('"+fileToAdd+"')");
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical' style='right:0; padding-top:5px;'></span>";
+		options.setAttribute("class", "options");
+
+		div.appendChild(options);
+			// "<div class='container filename text-center'> <div class='row'><div class='col-lg-8'><input type='text' name='name' placeholder='Untitled' value='Untitled'></div> <div class='col-lg-1'>A</div> <div class='col-lg-1'> B </div> </div> </div>";
+
+		document.getElementById("fileContainer").appendChild(div);
+	};
+		
+	</script>
+
 	<div class="container" id="headerContainer">
 		<div class="col-md-2 text-center" id="leftColumn">
 			<img src="images/LIT-logo.png" alt="LIT" style="width:100px;height:100px;">
@@ -17,11 +153,11 @@
 			</div>
 			<div class="row">
 				<nav class="navbar navbar-default">
-				  <div class="container-fluid">
-					<ul class="nav navbar-nav">
-					  <li class="active" onclick="changeURL('home.html')"><a href="#">My Notebook</a></li>
-					  <li onclick="changeURL('shared.html')"><a href="#">Shared With Me</a></li>
-					  <li onclick="changeURL('calendar.html')"><span class="glyphicons glyphicons-family"></span> <a href="#">Calendar</a></li>
+				  <div class="container-fluid text-center" style="width: 100%; padding-left: 0px; padding-right: 20px;">
+					<ul class="nav navbar-nav" style="width: 100%;" >
+					  <li style='width:33.3%' class="active" onclick="changeURL('index.html')"><a href="#">My Notebook</a></li>
+					  <li style='width:33.3% 'onclick="changeURL('shared.html')"><a href="#">Shared With Me</a></li>
+					  <li style='width:33.3%' onclick="changeURL('calendar.html')"><span class="glyphicons glyphicon-family"></span> <a href="#">Calendar</a></li>
 					</ul>
 				  </div>
 				</nav>
@@ -51,13 +187,13 @@
 		<div class="col-md-10" id="mainBody">
 			<div class="container">
 				<div class="row">
-					<span class="heading">My Folders</span>
+					<span class="heading"> Folders</span>
 				</div>
 				<div class="row" id="folderContainer" style="min-height: 100px;">
 					<div class="col-md-12" style="line-height: 100px;" id="emptyFolder"> You haven't added any folders yet! :( </div>
 				</div>
 				<div class="row">
-					<span class="heading">My Files</span>
+					<span class="heading">Files</span>
 				</div>
 				<div class="row" id="fileContainer" style="min-height: 100px;">
 					<div class="col-md-12" style="line-height: 100px;" id="emptyFile"> You haven't added any files yet! :(
@@ -65,11 +201,11 @@
 				</div>
 
 				<div class="row">
-					<span class="heading">My Templates</span>
+					<span class="heading">Templates</span>
 
 				</div>
 				<div class="row" id="templateContainer" style="min-height: 100px;">
-					<div id="emptyTemplate" class="col-md-12" style="line-height: 100px;" > <span class="glyphicon glyphicon-adjust"></span>
+					<div id="emptyTemplate" class="col-md-12" style="line-height: 100px;" >
 					You haven't created any templates yet! :( </div>
 				</div>
 			</div>
@@ -80,123 +216,5 @@
 		<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 	</footer>
 
-	<!-- Scripts for This Page -->
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>
-	<script type="text/javascript">
-	var appendToPath = "file:///C:/Users/Sitara/LIT/";
-
-	function changeURL(newUrl){
-		console.log(appendToPath +newUrl);
-		document.location.href = appendToPath +newUrl;
-	}
-
-	function createFolder(){
-		$('#emptyFolder').remove();
-
-		var div = document.createElement("div");
-		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
-
-		div.style.width = "150px";
-		div.style.height = "175px";
-		div.style.background = "white";
-		div.style.margin = "25px";
-
-		var img_row = document.createElement("div");
-		img_row.setAttribute("class", "row center-block");
-		var img = document.createElement('img');
-		img.src = "images/folder.png";
-		img.style = "display: block; overflow:visible; position: absolute;";
-		img.style.height = "100px";
-		img.style.width = "100px";
-		img.setAttribute("class", "center-block");
-		img.style.margin = "10px";
-		img_row.appendChild(img);
-
-		div.appendChild(img_row);
-
-		var details_row = document.createElement("div");
-		details_row.setAttribute("class", "row");
-		details_row.style.position = "absolute";
-		details_row.style.bottom = "0";
-		details_row.style.maxHeight = "15px;"
-
-		var title_col = document.createElement("div");
-		title_col.setAttribute("class", "col-md-8 text-center");
-		title_col.style.background = "red";
-		title_col.style.overflow = "hidden";
-		// title_col.style.width = "150px";
-
-		title_col.innerHTML = "Untitled Folder with an unreasonably long title";
-
-		var share_col = document.createElement("div");
-		share_col.setAttribute("class", "col-md-4");
-		share_col.style.background = "blue";
-		share_col.style.maxHeight = "10px;"
-
-		details_row.appendChild(title_col);
-		details_row.appendChild(share_col);
-
-		div.appendChild(details_row);
-
-		// Add image to folder section
-		// Allow drag drop to allowed
-
-		document.getElementById("folderContainer").appendChild(div);
-	}
-
-	function createFile(){
-		$('#emptyFile').remove();
-		var div = document.createElement("div");
-		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
-
-		div.style.width = "150px";
-		div.style.height = "175px";
-		div.style.background = "white";
-		div.style.margin = "25px";
-
-		var img_row = document.createElement("div");
-		img_row.setAttribute("class", "row center-block");
-		var img = document.createElement('img');
-		img.src = "images/file.png";
-		img.style = "display: block; overflow:visible; position: absolute;";
-		img.style.height = "100px";
-		img.style.width = "100px";
-		img.setAttribute("class", "center-block");
-		img.style.margin = "10px";
-		img_row.appendChild(img);
-
-		div.appendChild(img_row);
-
-		var details_row = document.createElement("div");
-		details_row.setAttribute("class", "row");
-		details_row.style.position = "absolute";
-		details_row.style.bottom = "0";
-		details_row.style.maxHeight = "15px;"
-
-		var title_col = document.createElement("div");
-		title_col.setAttribute("class", "col-md-8 text-center");
-		title_col.style.background = "red";
-		title_col.style.overflow = "hidden";
-		// title_col.style.width = "150px";
-		title_col.innerHTML = "Untitled";
-
-		var share_col = document.createElement("div");
-		share_col.setAttribute("class", "col-md-4");
-		share_col.style.background = "blue";
-		share_col.style.maxHeight = "10px;"
-
-		details_row.appendChild(title_col);
-		details_row.appendChild(share_col);
-
-		div.appendChild(details_row);
-
-		// Add image to folder section
-		// Allow drag drop to allowed
-
-		document.getElementById("fileContainer").appendChild(div);
-	}
-	</script>
 </body>
+</html>
