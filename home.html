@@ -1,8 +1,47 @@
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="homeStyle.css">
   <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 </head>
+
+<!-- Scripts for This Page -->
+<script type="text/javascript">
+var appendToPath = "file:///C:/Users/Sitara/LIT/";
+
+function changeURL(newUrl){
+	console.log(appendToPath +newUrl);
+	document.location.href = appendToPath +newUrl;
+}	
+
+function createFolder(){
+	var div = document.createElement("div");
+	div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label");
+	
+	div.style.width = "150px";
+	div.style.height = "175px";
+	div.style.background = "white";
+	div.style.margin = "25px";
+
+	var img = document.createElement('img');
+	img.src = "images/folder.png";
+	img.style = "display: block; overflow:visible; position: absolute;"; 
+	img.style.height = "100px";
+	img.style.width = "100px";
+	img.style.margin = "10px";
+
+
+	div.appendChild(img);
+	// Add image to folder section
+	// Allow drag drop to allowed 
+
+	document.getElementById("folderContainer").appendChild(div);
+}
+
+
+</script>
 
 <body>
 <div class="container" id="headerContainer">
@@ -18,9 +57,9 @@
 			<nav class="navbar navbar-default">
 			  <div class="container-fluid">
 			    <ul class="nav navbar-nav">
-			      <li><a href="#">My Notebook</a></li>
-			      <li><a href="#">Shared With Me</a></li>
-			      <li><span class="glyphicons glyphicons-family"></span> <a href="#">Calendar</a></li>
+			      <li class="active" onclick="changeURL('home.html')"><a href="#">My Notebook</a></li>
+			      <li onclick="changeURL('shared.html')"><a href="#">Shared With Me</a></li>
+			      <li onclick="changeURL('calendar.html')"><span class="glyphicons glyphicons-family"></span> <a href="#">Calendar</a></li>
 			    </ul>
 			  </div>
 			</nav>
@@ -33,7 +72,7 @@
 </div>
 <div class="container" id="mainContainer">
 	<div class="col-md-2" id="sideNavigation">
-		<div class="row nav-option">
+		<div class="row nav-option" onclick="createFolder()">
 		<p>New Folder</p>
 		</div>
 		<div class="row nav-option">
@@ -46,5 +85,27 @@
 		Share
 		</div>
 	</div>
+
+	<div class="col-md-10" id="mainBody"> 
+		<div class="container">
+			<div class="row">
+				<span class="heading">My Folders</span>
+			</div>
+			<div class="row" id="folderContainer" style="min-height: 100px;">
+
+			</div>
+			<div class="row">
+				<span class="heading">My Files</span>
+			</div>
+			<div class="row" id="filesContainer" style="min-height: 100px;">
+
+			</div>
+
+		</div>
+	</div>
 </div>
 </body>
+
+<footer class="text-center">
+	<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+</footer>

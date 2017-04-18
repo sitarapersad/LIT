@@ -5,7 +5,7 @@ body{
 }
 
 #headerContainer{
-	height: 112px; 
+	height: 120px; 
 	padding-top: 10px;
 	margin: 0px;
 	width: 100%;
@@ -14,6 +14,13 @@ body{
 	background-color: white;
 }
 
+.active{
+	font-weight: bold;
+}
+
+.navbar-nav>li:active{
+	font-weight: bold;
+}
 
 #text-logo{
 	font-size: 30px;
@@ -39,12 +46,13 @@ body{
 	padding: 0px;
 }
 
-
-
 .navbar{
 	background-color: white;
 	border: none;
 	position: relative;
+	padding: 0px;
+	padding-top: 5px;
+	padding-bottom: 3px;
 
 }
 .navbar{
@@ -58,6 +66,7 @@ body{
 	margin: 0px;
 	width: 100%;
 	padding: 0px;
+	padding-top: 10px;
 }
 
 #sideNaviation{
@@ -74,4 +83,10 @@ body{
 
 .nav-option:hover{
 	background-color: #e1e1e1;
+	cursor: pointer;
+}
+
+.heading{
+	padding-top: 20px;
+	font-size: 24px;
 }
