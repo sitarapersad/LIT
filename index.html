@@ -232,9 +232,9 @@
 		$('#emptyFolder').remove();
 		var div = document.createElement("div");
 		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
-		div.setAttribute("draggable", "true");
-		div.setAttribute("ondrop","drop(event)");
-		div.setAttribute("ondragover", "allowDrop(event)");
+		// div.setAttribute("draggable", "true");
+		// div.setAttribute("ondrop","drop(event)");
+		// div.setAttribute("ondragover", "allowDrop(event)");
 		div.id = "folder_"+folderToAdd.ID;
 		div.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
 		
@@ -312,7 +312,7 @@
 		$('#emptyFile').remove();
 		var div = document.createElement("div");
 		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
-		div.setAttribute("draggable","true");
+		// div.setAttribute("draggable","true");
 		div.id = "file_"+fileToAdd.ID;
 		div.setAttribute("ondblclick", "openFile('"+fileToAdd.ID+"')");
 		div.style.width = "150px";
