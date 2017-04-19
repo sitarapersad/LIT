@@ -36,8 +36,8 @@ var Folder = function(name, owner, ID)
    */
   this.addFile = function(addNote)  {
     var key = addNote.ID
-    this.files.key = addNote; 
-    $(this).triggerHandler("addFile", addNote);
+    this.files[key] = addNote; 
+    console.log('Add file' +addNote.ID+ ' into '+ this.ID);
   }
 
   /* 
@@ -46,8 +46,7 @@ var Folder = function(name, owner, ID)
   this.addFolder = function(addFolder)  {
     var key = addFolder.ID;
     this.folders[key] = addFolder;
-    console.log('Trigger handler into '+ this.ID);
-    $(this).triggerHandler("addFolder", addFolder);
+    console.log('Add folder' +addFolder.ID+ ' into '+ this.ID);
   }
 
   /* 
@@ -56,6 +55,14 @@ var Folder = function(name, owner, ID)
    */
   this.shareFile = function(user){
     this.sharedUsers.push(user);
+  }
+
+  /* 
+   * Change the name of the note to newName
+   */
+  this.updateName = function(newName){
+    console.log('Renaming '+this.name+' to '+newName);
+    this.name = newName;
   }
 
 
@@ -71,5 +78,19 @@ var Folder = function(name, owner, ID)
       return false;
     }
   }
+
+  /* 
+   * Given an ID, return the Folder object corresponding to the ID if it exists
+   */
+  this.getFile = function(ID){
+    if (ID in this.files){
+      return this.files[ID];
+    }
+    else{
+      console.log(ID+" file not found");
+      return false;
+    }
+  }
+
 }
   

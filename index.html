@@ -22,7 +22,7 @@
 	var folderCount = 0;
 	var fileCount = 0;
 
-	var currentFolder = new Folder('home', 'Owner', folderCount); // CHANGE THIS TO A PRE-POPULATED DIRECTORY FOR USER TESTING
+	var currentFolder = new Folder('home', 'Owner', folderCount); // TODO: CHANGE THIS TO A PRE-POPULATED DIRECTORY FOR USER TESTING
 	var folderChain = [currentFolder];
 	folderCount += 1;
 
@@ -42,8 +42,22 @@
 	}
 
 	function drop(e){
-		console.log(e);
+		console.log(e.dataTransfer);
+		console.log(e.dataTransfer.getData("Text"));
 		alert('Added to ' + e.target.id+ ' !');
+	}
+
+	function saveFolderName(folderID){
+		var changeFolder = folderChain[folderChain.length-1].getFolder(folderID);
+		var newName = document.getElementById("folderName_"+folderID).value;
+		changeFolder.updateName(newName);
+	}
+
+	function saveFileName(fileID){
+		var changeFile = folderChain[folderChain.length-1].getFile(fileID);
+		console.log(changeFile);
+		var newName = document.getElementById("fileName_"+fileID).value;
+		changeFile.updateName(newName);
 	}
 
 	function openFolder(newFolderID){
@@ -93,6 +107,7 @@
 		div.setAttribute("draggable", "true");
 		div.setAttribute("ondrop","drop(event)");
 		div.setAttribute("ondragover", "allowDrop(event)");
+		div.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
 		div.id = "folder_"+folderToAdd.ID;
 
 		div.style.width = "150px";
@@ -101,7 +116,29 @@
 		div.style.margin = "25px";
 		div.style.padding = "0px";
 
-		div.innerHTML = "<table><tr><td style='height:125px; width:150px; background-color:#c4c4d6; padding:0px;'> <img src='images/folder.png' style='width:100px; height:100px; cursor:move;'> </td></tr> <tr><td style='background-color:red;'><input type='text' name='name' class='text-center' placeholder='Untitled' value='Untitled'></td> </tr></table>"
+
+		var table = document.createElement("table");
+		var img_row = table.insertRow(0);
+		var img_cell = img_row.insertCell(0);
+		img_cell.style.height = "125px";
+		img_cell.style.width = "150px";
+		img_cell.style.backgroundColor = "#c4c4d6";
+		img_cell.style.padding = "0px";
+		img_cell.innerHTML = "<img src='images/folder.png' style='width:100px; height:100px; cursor:move;'>";
+
+
+		var details_row = table.insertRow(1);
+		var input_cell = details_row.insertCell(0);
+
+		var input_name = document.createElement("input");
+		input_name.setAttribute('class', 'text-center');
+		input_name.setAttribute('type', 'text');
+		input_name.setAttribute('placeholder', 'Untitled');
+		input_name.setAttribute('onKeyUp', "saveFolderName('"+folderToAdd.ID+"')");
+		input_name.id = "folderName_"+folderToAdd.ID;
+		input_cell.appendChild(input_name);
+
+		div.appendChild(table);
 
 		var options = document.createElement("div");
 		options.setAttribute('onclick', "modifyFileOptions('"+folderToAdd+"')");
@@ -127,7 +164,32 @@
 		div.style.margin = "25px";
 		div.style.padding = "0px";
 
-		div.innerHTML = "<table><tr><td style='height:150px; width:150px; background-color:#c4c4d6; padding:0px;'> <img src='images/file.png' style='width:125px; height:125px; cursor:move;'> </td></tr> <tr><td style='background-color:red;'><input type='text' name='name' class='text-center' placeholder='Untitled' value='Untitled'></td> </tr></table>"
+
+		var table = document.createElement("table");
+		var img_row = table.insertRow(0);
+		var img_cell = img_row.insertCell(0);
+		img_cell.style.height = "150px";
+		img_cell.style.width = "150px";
+		img_cell.style.backgroundColor = "#c4c4d6";
+		img_cell.style.padding = "0px";
+		img_cell.innerHTML = "<img src='images/file.png' style='width:120px; height:120px; cursor:move;'>";
+
+
+		var details_row = table.insertRow(1);
+		var input_cell = details_row.insertCell(0);
+
+		var input_name = document.createElement("input");
+		input_name.setAttribute('class', 'text-center');
+		input_name.setAttribute('type', 'text');
+		input_name.setAttribute('placeholder', 'Untitled');
+		input_name.setAttribute('onKeyUp', "saveFileName('"+fileToAdd.ID+"')");
+		input_name.id = "fileName_"+fileToAdd.ID;
+		input_cell.appendChild(input_name);
+
+		div.appendChild(table);
+
+
+		// div.innerHTML = "<table><tr><td style='height:150px; width:150px; background-color:#c4c4d6; padding:0px;'> <img src='images/file.png' style='width:125px; height:125px; cursor:move;'> </td></tr> <tr><td style='background-color:red;'><input type='text' name='name' class='text-center' placeholder='Untitled' value='Untitled'></td> </tr></table>"
 
 		var options = document.createElement("div");
 		options.setAttribute('onclick', "modifyFileOptions('"+fileToAdd+"')");
