@@ -63,12 +63,14 @@ body{
 }
 
 #mainContainer{
-	margin: 0px;
-	width: 100%;
+	width: 95%;
 	height: calc(100% - 176px);
 	padding: 0px;
 	padding-top: 10px;
 	outline: none;
+	background-image: url(paper.png);
+	background-size: 400px 400px;
+
 }
 
 #sideNaviation{
@@ -94,7 +96,8 @@ body{
 }
 
 .step {
-    margin: 20px 20px;
+    margin: 30px 30px;
+    width: 90%;
 }
 
 .edit-step {

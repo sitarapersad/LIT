@@ -13,7 +13,8 @@
 
  	this.display = function() {
  		var div = document.createElement("div");
- 		var html_string = "Step "+ num.toString() + " : ";
+ 		div.setAttribute("class", "step");
+ 		var html_string = "<b> Step "+ num.toString() + " : </b>";
  		for (i = 0; i < text.length-1; i++) {
  			html_string = html_string + text[i] + " <textarea class='var' rows='1' cols='3'>" + (vars[i].getValue()*factors[i]).toString() + "</textarea> ";
  		}

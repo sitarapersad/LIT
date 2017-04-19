@@ -115,7 +115,6 @@ $(document).ready(function() {
 	}
 
 	function displaySteps() {
-
 		for (var n = 0 ; n<stepsList.length; n++) {
 			var divNew = stepsList[n].display();
 			document.getElementById("mainContainer").appendChild(divNew);
