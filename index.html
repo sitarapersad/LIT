@@ -26,6 +26,24 @@
 	var folderChain = [currentFolder];
 	folderCount += 1;
 
+	$("body").click
+	(
+	  function(e)
+	  {
+	  	console.log(e.target.className);
+	    if(e.target.className.includes("options")){
+	    	console.log("DISPLAY OPTIONS");
+	    }
+	    else{
+	    	console.log('REMOVE');
+	    	console.log($('#sharing-options'));
+	    	$("#sharing-options").remove()
+	    }
+	  }
+	);
+
+
+
 	function changeURL(newUrl){
 		console.log(appendToPath +newUrl);
 		document.location.href = appendToPath +newUrl;
@@ -142,8 +160,27 @@
 
 		var options = document.createElement("div");
 		options.setAttribute('onclick', "modifyFileOptions('"+folderToAdd+"')");
-		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical' style='right:0; padding-top:5px;'></span>";
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
+		options.style.marginRight = "-10px";
 		options.setAttribute("class", "options");
+		options.id = "options_"+folderToAdd.ID;
+
+		$(options).on('click', '*', function(e){
+		    var x =e.pageX -$(document).scrollLeft();
+		    var y =e.pageY -$(document).scrollTop();
+
+		    var div = document.createElement("div");
+		    div.id = "sharing-options";
+		    div.style.width = "350px";
+		    div.style.height = "200px";
+		    div.style.backgroundColor = "blue";
+		    div.style.top = y;
+		    div.style.left = x;
+
+		    div.innerHTML = '			<div class="row nav-option" onclick="createFolder()">			<span class="glyphicon glyphicon-folder-open" style="padding-right: 15px;"></span> New Folder			</div>			<div class="row nav-option" onclick="createFile()">			<span class="glyphicon glyphicon-file " style="padding-right: 15px;"></span> New Experiment			</div>			<div class="row nav-option">			<span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span> New Template			</div>			<div class="row nav-option">			<span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span> Share			</div>'
+		    this.appendChild(div);
+		});
+
 
 		div.appendChild(options);
 			// "<div class='container filename text-center'> <div class='row'><div class='col-lg-8'><input type='text' name='name' placeholder='Untitled' value='Untitled'></div> <div class='col-lg-1'>A</div> <div class='col-lg-1'> B </div> </div> </div>";
@@ -193,7 +230,8 @@
 
 		var options = document.createElement("div");
 		options.setAttribute('onclick', "modifyFileOptions('"+fileToAdd+"')");
-		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical' style='right:0; padding-top:5px;'></span>";
+		options.style.marginRight = "-10px";
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
 		options.setAttribute("class", "options");
 
 		div.appendChild(options);
