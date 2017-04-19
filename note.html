@@ -1,7 +1,7 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="stylesheets/editor.css">
+  <link rel="stylesheet" href="stylesheets/note.css">
   <link rel="stylesheet" href="stylesheets/editorToolbar.css">
   <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
   <!-- From Font Awesome: http://fontawesome.io -->
@@ -54,28 +54,29 @@
 	</div>
 
 	<div class="container" id="mainContainer" contenteditable="true">
-
-		<!-- The Modal -->
 		<div id="myModal" class="modal">
 
 		  <!-- Modal content -->
 		  <div class="modal-content" id="modal-content">
-
+		  	<span class="close">&times;</span>
+		 	 <h2> Choose templates to import into note: </h2>
+		 	 <form method="get">
+	 		 	<input type="checkbox" class="check"> PCR <br>
+	  			<input type="checkbox" class="check"> Titration <br>
+	  			<input type="checkbox" class="check"> Distillation <br>
+	  			<input type="checkbox" class="check"> Crystalline Chromatography <br>
+	  			<input type="checkbox" class="check"> Gel Electrophoresis <br>
+			</form>
+			<button id="submit-import"> Done </button>
 		  </div>
 
 		</div>
 
 	</div>
 
-	<footer class="text-center">
-		<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
-	</footer>
 
 	<!-- Scripts for This Page -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="scripts/editor.js"></script>
-	<script src="scripts/editor-variables.js"></script>
-	<script src="scripts/step.js"></script>
-	<script src="scripts/variable.js"></script>
+	<script src="scripts/import.js"></script>
 </body>

@@ -3,13 +3,19 @@ $(document).ready(function() {
 
 	var stepsList = [];
 	var variablesList = [];
-	var sodiumAmount = new Variable(2.0, "Amount of sodium");
-	var bariumAmount = new Variable(5.0, "Amount of barium");
-	var stepOne = new Step(["Pour", "mL of sodium. Mix in", "mg of barium."], [sodiumAmount, bariumAmount], [1.0, 3.0], 1);
-	var stepTwo = new Step(["Obtain", "mg of magnesium. Mix in another", "mg of barium."], [sodiumAmount, bariumAmount], [2.0, 1.0], 2);
+	var agAmount = new Variable(1.0, "Grams of agarose");
+	var bariumAmount = new Variable(15.0, "Milligrams of barium");
+	var stepOne = new Step(["Measure", "g of agarose. Mix in", "mg of barium."], [agAmount, bariumAmount], [1.0, 3.0], 1);
+	var stepTwo = new Step(["Mix agarose power with", "mL 1xTAE in a microwaveable flask. Mix in another", "mg of barium."], [agAmount, bariumAmount], [100.0, 1.0], 2);
+	var stepThree = new Step(["Microwave for 1-3 minutes."], [], [], 3);
+	var stepFour = new Step(["Let solution cool down."], [], [], 4);
+	var stepFive = new Step(["Add EtBr at", "microL of stock solution."], [agAmount], [2.0], 5);
 	stepsList.push(stepOne);
 	stepsList.push(stepTwo);
-	variablesList.push(sodiumAmount);
+	stepsList.push(stepThree);
+	stepsList.push(stepFour);
+	stepsList.push(stepFive);
+	variablesList.push(agAmount);
 	variablesList.push(bariumAmount);
 
 	displayModal();
@@ -32,7 +38,6 @@ $(document).ready(function() {
 	});
 
 	$(document).on("click", ".var", function() {
-		console.log("here");
 		document.getElementById("myModal").style.display = "block";
 	});
 
@@ -92,15 +97,17 @@ $(document).ready(function() {
 			var html_string = "<h2> Variable " + (i+1).toString() + ": " + variablesList[i].getName() + "</h2>";
 			html_string = html_string + "<br>";
 			for (var j = 0; j<stepsList.length; j++) {
-					html_string = html_string + "Step " + (j+1).toString() + ": ";
-					var indexOfValue;
+					var indexOfValue = null;
 					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
 						if (stepsList[j].getVars()[k].getName() == variablesList[i].getName()) {
 							indexOfValue = k;
 							}
 					}
-					html_string = html_string + "<textarea class='edit-var' rows='1' id='var_"+i.toString() + "_" + j.toString() + "'>" + (stepsList[j].getVarValue(indexOfValue)).toString() + "</textarea>";
-					html_string = html_string + "<br>";
+					if (indexOfValue != null){
+						html_string = html_string + "<b> Step " + (j+1).toString() + ": </b>";
+						html_string = html_string + "<textarea class='edit-var' rows='1' id='var_"+i.toString() + "_" + j.toString() + "'>" + (stepsList[j].getVarValue(indexOfValue)).toString() + "</textarea>";
+						html_string = html_string + "<br>";
+					}
 			}
 			html_string += "<br>";
 			html_string += "<br>";
