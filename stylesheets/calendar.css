@@ -13,62 +13,6 @@ ul {
     background-color: white;
 }
 
-body{
-    width: 100%;
-    font-family: 'PT Sans', sans-serif;
-    background-color: #f3f3f3;
-}
-
-
-.active{
-    font-weight: bold;
-}
-
-.navbar-nav>li:active{
-    font-weight: bold;
-}
-
-#text-logo{
-    font-size: 30px;
-/*Make this text vertically centered and somewhat attractive*/
-}
-
-#leftColumn{
-    height: 100%;
-}
-
-.search {
-    outline: none;
-    border: none;
-    height: 50px;
-    background: #efefef left center no-repeat;
-}
-
-
-#searchColumn{
-    height: 100%;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-    padding: 0px;
-}
-
-.navbar{
-    background-color: white;
-    border: none;
-    position: relative;
-    padding: 0px;
-    padding-top: 5px;
-    padding-bottom: 3px;
-
-}
-.navbar{
-    margin-bottom: 0px;
-}
-.nav>li:hover{
-    background-color: #efefef;
-}
-
-
 #sideNaviation{
     padding-left: 0px;
     margin: 0px;
@@ -239,4 +183,3 @@ input[type="checkbox"]{
   width: 16px; /*Desired width*/
   height: 16px; /*Desired height*/
 }
-

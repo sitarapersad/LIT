@@ -2,10 +2,9 @@
 <html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="import" href="globalHead.html">
+
     <link rel="stylesheet" href="stylesheets/homeStyle.css">
-    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 </head>
 
 <body>
@@ -30,28 +29,28 @@
 		folderCount += 1;
 
 		var cancerFolder = new Folder('Cancer', 'Owner', folderCount);
-		folderCount += 1; 
+		folderCount += 1;
 
 		var cancerFolder1 = new Folder('Breast Cancer', 'Owner', folderCount);
-		folderCount += 1; 
+		folderCount += 1;
 
 		var cancerFolder2 = new Folder('Lung Cancer', 'Owner', folderCount);
-		folderCount += 1; 
+		folderCount += 1;
 
 		cancerFolder.addFolder(cancerFolder1);
 		cancerFolder.addFolder(cancerFolder2);
 
 		var HIVFolder = new Folder('HIV', 'Owner', folderCount);
-		folderCount += 1 
+		folderCount += 1
 
 		var thyroidFolder = new Folder('Thyroid', 'Owner', folderCount);
-		folderCount += 1 
+		folderCount += 1
 
 		var titrationFile = new Note('Titration', 'Owner', fileCount);
-		fileCount += 1 
+		fileCount += 1
 
 		var PCRFile = new Note('PCR ', 'Owner', fileCount);
-		fileCount += 1 
+		fileCount += 1
 
 		currentFolder.addFolder(cancerFolder);
 		currentFolder.addFolder(HIVFolder);
@@ -59,7 +58,7 @@
 
 		currentFolder.addFile(titrationFile);
 		currentFolder.addFile(PCRFile);
-		
+
 		folderChain.push(currentFolder);
 
 		for (var key in currentFolder.folders) {
@@ -77,8 +76,8 @@
 		var PCRTemplate = new Note('PCR', 'Owner', fileCount);
 		drawTemplate(PCRTemplate);
 	});
-	
-	 
+
+
 
 	$("body").click	( function(e)
 	  {
@@ -138,7 +137,7 @@
 
 
 	function openFolder(newFolderID){
-		// Clear the current folders from the page 
+		// Clear the current folders from the page
 		$('#folderContainer').empty();
 		$('#fileContainer').empty();
 		$('#templateContainer').empty();
@@ -168,13 +167,13 @@
 		document.getElementById("folderChain").innerHTML = activeFolders;
 	};
 
-	function openFile(newFileID){	
+	function openFile(newFileID){
 		// Open the URL for the file editor, need to find a way to pass data about the ID
 		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
 		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/note.html";
 	};
 
-	function openTemplate(newTemplateID){	
+	function openTemplate(newTemplateID){
 		// Open the URL for the file editor, need to find a way to pass data about the ID
 		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
 		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/editor.html";
@@ -218,7 +217,7 @@
 			$('#fileContainer').empty();
 			$('#templateContainer').empty();
 
-		
+
 			folderChain.pop();
 			subFolder = folderChain[folderChain.length-1];
 			console.log('Moving up into '+ subFolder.ID);
@@ -255,8 +254,8 @@
 		// div.setAttribute("ondrop","drop(event)");
 		// div.setAttribute("ondragover", "allowDrop(event)");
 		div.id = "folder_"+folderToAdd.ID;
-		
-		
+
+
 
 		div.style.width = "150px";
 		div.style.height = "150px";
@@ -493,12 +492,12 @@
 		var div = document.createElement("div");
 		div.innerHTML = "Success!";
 		document.getElementById("shareDialogContent").appendChild(div);
-		setTimeout(function(){ 
-			document.getElementById("shareDialogContent").removeChild(div);		
+		setTimeout(function(){
+			document.getElementById("shareDialogContent").removeChild(div);
 			closeShareDialog();
 		}, 1000);
 		**/
-		
+
 	};
 
 

@@ -15,7 +15,7 @@ $(document).ready(function() {
 	});
 
 	$(document).on("click", "#submit-import", function() {
-		var checkedValue = null; 
+		var checkedValue = null;
 		var inputElements = document.getElementsByClassName('check');
 		for(var i=0; inputElements[i]; ++i){
       		if(inputElements[i].checked){
@@ -25,11 +25,10 @@ $(document).ready(function() {
 		}
 
 		if (checkedValue != null) {
-			document.location.href = "http://web.mit.edu/anitaliu/www/LIT/editor.html";
+			window.location = "/editor.html#show"
 		}
 		else {
 			alert("You need to select at least one protocol!");
 		}
 	});
 });
-
