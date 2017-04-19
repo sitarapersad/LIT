@@ -15,8 +15,8 @@
  		var div = document.createElement("div");
  		div.setAttribute("class", "step");
  		var html_string = "<b> Step "+ num.toString() + " : </b>";
- 		for (i = 0; i < text.length-1; i++) {
- 			html_string = html_string + text[i] + " <textarea class='var' rows='1' cols='3'>" + (vars[i].getValue()*factors[i]).toString() + "</textarea> ";
+ 		for (var i = 0; i < text.length-1; i++) {
+ 			html_string = html_string + text[i] + " <textarea class='var' id='area_"+(this.number-1).toString() + "_" + vars[i].getName().toString() +"' rows='1' cols='3'>" + (vars[i].getValue()*factors[i]).toString() + "</textarea> ";
  		}
  		html_string = html_string + text[text.length-1];
  		div.innerHTML = html_string;
