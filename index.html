@@ -155,7 +155,7 @@
 	function openFile(newFileID){	
 		// Open the URL for the file editor, need to find a way to pass data about the ID
 		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
-		changeURL('editor.html');
+		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/note.html";
 	};
 
 	function createFolder(){
