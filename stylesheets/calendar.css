@@ -2,9 +2,6 @@ ul {
     list-style-type: none;
 }
 
-body {
-    font-family: 'PT Sans', sans-serif;
-}
 
 #headerContainer {
     height: 120px;
@@ -14,6 +11,84 @@ body {
     border-bottom: thin solid #dddddd;
     box-shadow: 0px 2px 2px #efefef;
     background-color: white;
+}
+
+body{
+    width: 100%;
+    font-family: 'PT Sans', sans-serif;
+    background-color: #f3f3f3;
+}
+
+
+.active{
+    font-weight: bold;
+}
+
+.navbar-nav>li:active{
+    font-weight: bold;
+}
+
+#text-logo{
+    font-size: 30px;
+/*Make this text vertically centered and somewhat attractive*/
+}
+
+#leftColumn{
+    height: 100%;
+}
+
+.search {
+    outline: none;
+    border: none;
+    height: 50px;
+    background: #efefef left center no-repeat;
+}
+
+
+#searchColumn{
+    height: 100%;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+.navbar{
+    background-color: white;
+    border: none;
+    position: relative;
+    padding: 0px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+
+}
+.navbar{
+    margin-bottom: 0px;
+}
+.nav>li:hover{
+    background-color: #efefef;
+}
+
+
+#sideNaviation{
+    padding-left: 0px;
+    margin: 0px;
+
+}
+.nav-option{
+    height: 50px;
+    line-height: 50px;
+    padding-left: 15%;
+    font-weight: bold;
+}
+
+.nav-option:hover{
+    background-color: #e1e1e1;
+    cursor: pointer;
+}
+
+.heading{
+    padding-top: 20px;
+    font-size: 24px;
 }
 
 div {
@@ -53,6 +128,15 @@ div {
     margin: 5px;
 }
 
+
+#mainContainer{
+    width: 95%;
+    height: calc(100% - 176px);
+    padding: 0px;
+    padding-top: 10px;
+    outline: none;
+
+}
 
 /* Month header */
 
@@ -108,6 +192,7 @@ div {
     width: 13.5%;
     color: black;
     text-align: center;
+    font-size: 18px;
 }
 
 
@@ -124,7 +209,7 @@ div {
     width: 13.5%;
     text-align: center;
     margin-bottom: 5px;
-    font-size: 12px;
+    font-size: 22px;
     color: #666;
 }
 
@@ -137,7 +222,9 @@ div {
     color: black !important
 }
 
+
 .task-li {
+    list-style-type: square;
     font-size: 16px;
-    margin: 2px;
+    margin: 10px;
 }

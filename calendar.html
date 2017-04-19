@@ -22,13 +22,13 @@
             </div>
             <div class="row">
                 <nav class="navbar navbar-default">
-                    <div class="container-fluid text-center" style="width: 100%; padding-left: 0px; padding-right: 20px;">
-                        <ul class="nav navbar-nav" style="width: 100%;">
-                            <li style='width:33.3%' class="active" onclick="changeURL('index.html')"><a href="#">My Notebook</a></li>
-                            <li style='width:33.3% ' onclick="changeURL('shared.html')"><a href="#">Shared With Me</a></li>
-                            <li style='width:33.3%' onclick="changeURL('calendar.html')"><span class="glyphicons glyphicon-family"></span> <a href="#">Calendar</a></li>
-                        </ul>
-                    </div>
+                    <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                      <li onclick="changeURL('home.html')"><a href="#">My Notebook</a></li>
+                      <li onclick="changeURL('shared.html')"><a href="#">Shared With Me</a></li>
+                      <li class="active" onclick="changeURL('calendar.html')"><span class="glyphicons glyphicons-family"></span> <a href="#">Calendar</a></li>
+                    </ul>
+                  </div>
                 </nav>
             </div>
         </div>
@@ -37,6 +37,8 @@
             ACCOUNT
         </div>
     </div>
+
+    <div class="container" id="mainContainer" contenteditable="true">
     <div class="row" id="giant-row">
         <div class="col-md-1" id="spcae-taker">
         </div>
@@ -106,13 +108,14 @@
         </div>
         <div class="col-md-5" id="tasks">
             <div class="row" id="tasks-header">
-                <h2> Tasks for Today </h2>
+                <h1> Tasks for Today </h1>
             </div>
             <div id="task-list">
-                <ol class="task-text">
-                    <li class="task-li"> Make sure to write out the protocol for tomorrow's experiment. </li>
-
-                </ol>
+                <ul class="task-text">
+                    <li class="task-li"> Make sure to write out the protocol for tomorrow's PCR experiment. </li>
+                    <li class="task-li"> Re-run the gel electrophoresis experiment with 2 grams of agarose. </li>
+                    <li class="task-li"> Ask Rob to share the collagen distillation lab folder with you. </li>
+                </ul>
             </div>
         </div>
     </div>
