@@ -92,9 +92,8 @@
     cursor: pointer;
 }
 
-
 input[type="checkbox"]{
-  width: 20px; /*Desired width*/
-  height: 20px; /*Desired height*/
-  font-size: 20px;
+   width: 20px; /*Desired width*/
+   height: 20px; /*Desired height*/
+   font-size: 20px;
 }
