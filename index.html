@@ -287,7 +287,7 @@
 			    div.style.border = "thin solid #bababa";
 			    div.style.backgroundColor = "white";
 			    div.style.top = e.clientY+"px";
-			    div.style.left = e.clientX+"px";
+			    div.style.left = e.clientX+10+"px";
 			    div.style.position = "fixed";
 			    div.style.zIndex = 5;
 			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div><div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user style="padding-right: px;"></span>   Share With ... </div> </div>';
@@ -314,7 +314,6 @@
 		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
 		// div.setAttribute("draggable","true");
 		div.id = "file_"+fileToAdd.ID;
-		div.setAttribute("ondblclick", "openFile('"+fileToAdd.ID+"')");
 		div.style.width = "150px";
 		div.style.height = "175px";
 		div.style.background = "white";
@@ -329,6 +328,8 @@
 		img_cell.style.width = "150px";
 		img_cell.style.backgroundColor = "#c4c4d6";
 		img_cell.style.padding = "0px";
+
+		img_cell.setAttribute("ondblclick", "openFile('"+fileToAdd.ID+"')");
 		img_cell.innerHTML = "<img src='images/file.png' style='width:120px; height:120px; cursor:move;'>";
 
 
