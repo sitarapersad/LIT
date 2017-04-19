@@ -178,12 +178,31 @@
 	/*
 	 * Move up one layer in the directory
 	 */
+/*
+	 * Move up one layer in the directory
+	 */
 	function moveUp(){
 		if (folderChain.length > 1){
+			$('#folderContainer').empty();
+			$('#fileContainer').empty();
+			$('#templateContainer').empty();
+
+		
 			folderChain.pop();
-			newFolder = folderChain[folderChain.length-1];
-			console.log('Moving up into '+ newFolder.ID);
-			openFolder(newFolder.ID);
+			subFolder = folderChain[folderChain.length-1];
+			console.log('Moving up into '+ subFolder.ID);
+
+			for (var key in subFolder.folders) {
+				newFolder = subFolder.folders[key];
+				console.log(subFolder.folders[key]);
+				drawFolder(newFolder);
+			};
+
+			for (var key in subFolder.files) {
+				newFile = subFolder.files[key];
+				console.log(subFolder.files[key]);
+				drawFolder(newFile);
+			}
 		};
 	};
 	// function modifyFileOptions(){
