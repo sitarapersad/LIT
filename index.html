@@ -50,7 +50,7 @@
 		var titrationFile = new Note('Titration', 'Owner', fileCount);
 		fileCount += 1 
 
-		var PCRFile = new Note('PCR', 'Owner', fileCount);
+		var PCRFile = new Note('PCR ', 'Owner', fileCount);
 		fileCount += 1 
 
 		currentFolder.addFolder(cancerFolder);
@@ -73,6 +73,9 @@
 			console.log(currentFolder.files[key]);
 			drawFile(newFile);
 		}
+
+		var PCRTemplate = new Note('PCR', 'Owner', fileCount);
+		drawTemplate(PCRTemplate);
 	});
 	
 	 
@@ -133,6 +136,7 @@
 		changeFile.updateName(newName);
 	}
 
+
 	function openFolder(newFolderID){
 		// Clear the current folders from the page 
 		$('#folderContainer').empty();
@@ -170,6 +174,13 @@
 		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/note.html";
 	};
 
+	function openFile(newTemplateID){	
+		// Open the URL for the file editor, need to find a way to pass data about the ID
+		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
+		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/editor.html";
+	};
+
+
 	function createFolder(){
 		newFolder = new Folder('Untitled', 'Owner', folderCount);
 		console.log(folderChain[folderChain.length-1]);
@@ -185,6 +196,14 @@
 		folderChain[folderChain.length-1].addFile(newFile);
 		fileCount += 1;
 		drawFile(newFile);
+	};
+
+	function createTemplate(){
+		newFile = new Note('Untitled', 'Owner', fileCount);
+		console.log('Creating file in '+folderChain[folderChain.length-1].ID);
+		// folderChain[folderChain.length-1].addFile(newFile);
+		// fileCount += 1;
+		drawTemplate(newFile);
 	};
 
 	/*
@@ -381,6 +400,81 @@
 		document.getElementById("fileContainer").appendChild(div);
 	};
 
+
+	function drawTemplate(templateToAdd){
+		$('#emptyTemplate').remove();
+		var div = document.createElement("div");
+		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
+		// div.setAttribute("draggable","true");
+		div.id = "file_"+templateToAdd.ID;
+		div.style.width = "150px";
+		div.style.height = "175px";
+		div.style.background = "white";
+		div.style.margin = "25px";
+		div.style.padding = "0px";
+
+
+		var table = document.createElement("table");
+		var img_row = table.insertRow(0);
+		var img_cell = img_row.insertCell(0);
+		img_cell.style.height = "150px";
+		img_cell.style.width = "150px";
+		img_cell.style.backgroundColor = "#c4c4d6";
+		img_cell.style.padding = "0px";
+
+		img_cell.setAttribute("ondblclick", "openFile('"+templateToAdd.ID+"')");
+		img_cell.innerHTML = "<img src='images/science.png' style='width:120px; height:120px; cursor:move;'>";
+
+
+		var details_row = table.insertRow(1);
+		var input_cell = details_row.insertCell(0);
+
+		var input_name = document.createElement("input");
+		input_name.setAttribute('class', 'text-center');
+		input_name.setAttribute('type', 'text');
+		input_name.setAttribute('value', templateToAdd.name);
+		input_name.setAttribute('onKeyUp', "saveTemplateName('"+templateToAdd.ID+"')");
+		input_name.id = "templateName_"+templateToAdd.ID;
+		input_cell.appendChild(input_name);
+
+		div.appendChild(table);
+
+		var options = document.createElement("div");
+		options.style.marginRight = "-10px";
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
+		options.setAttribute("class", "options");
+
+
+		$(options).on('click', '*', function(e){
+			if (!shareDialogOpen){
+			    var x =e.pageX -$(document).scrollLeft();
+			    var y =e.pageY -$(document).scrollTop();
+
+			    var div = document.createElement("div");
+			    div.id = "sharing-options";
+			    div.style.width = "300px";
+			    div.fontFamily = "PT Sans";
+			    div.style.border = "thin solid #bababa";
+			    div.style.backgroundColor = "white";
+			    div.style.top = y;
+			    div.style.left = x;
+
+			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div><div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user style="padding-right: px;"></span>   Share With ... </div> </div>'
+			    this.appendChild(div);
+			   shareDialogOpen = true;
+			}
+			else{
+				$("#sharing-options").remove()
+				shareDialogOpen = false;
+			}
+		});
+
+
+		div.appendChild(options);
+		document.getElementById("templateContainer").appendChild(div);
+	};
+
+
 	function openShareDialog(){
 		var modal = document.getElementById('shareDialog');
 		 modal.style.display = "block";
@@ -440,7 +534,7 @@
 			<div class="row nav-option" onclick="createFile()">
 			<span class="glyphicon glyphicon-file " style="padding-right: 15px;"></span> New Experiment
 			</div>
-			<div class="row nav-option">
+			<div class="row nav-option" onclick="createTemplate()">
 			<span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span> New Template
 			</div>
 			<div class="row nav-option">
