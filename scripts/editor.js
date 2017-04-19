@@ -82,3 +82,5 @@ function uploadImage ()
 	var imageSource = URL.createObjectURL(Elements.imageFileInput.files[0]);;
 	document.execCommand("insertImage", false, imageSource);
 }
+
+document.getElementById("mainContainer").focus();
