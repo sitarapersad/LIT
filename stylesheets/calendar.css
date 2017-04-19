@@ -3,7 +3,17 @@ ul {
 }
 
 body {
-    font-family: Verdana, sans-serif;
+    font-family: 'PT Sans', sans-serif;
+}
+
+#headerContainer {
+    height: 120px;
+    padding-top: 10px;
+    margin: 0px;
+    width: 100%;
+    border-bottom: thin solid #dddddd;
+    box-shadow: 0px 2px 2px #efefef;
+    background-color: white;
 }
 
 div {
@@ -111,7 +121,7 @@ div {
 .days li {
     list-style-type: none;
     display: inline-block;
-    width: 13%;
+    width: 13.5%;
     text-align: center;
     margin-bottom: 5px;
     font-size: 12px;
@@ -128,6 +138,6 @@ div {
 }
 
 .task-li {
-    font-size: 20px;
+    font-size: 16px;
     margin: 2px;
 }
