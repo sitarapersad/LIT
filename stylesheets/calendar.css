@@ -228,3 +228,15 @@ div {
     font-size: 16px;
     margin: 10px;
 }
+
+.task-text {
+    font-size: 16px;
+    margin: 10px 10px;
+    font-family: 'PT Sans', sans-serif;
+}
+
+input[type="checkbox"]{
+  width: 16px; /*Desired width*/
+  height: 16px; /*Desired height*/
+}
+
