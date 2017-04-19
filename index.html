@@ -21,6 +21,7 @@
 	var appendToPath = "file:///C:/Users/Sitara/LIT/";
 	var folderCount = 0;
 	var fileCount = 0;
+	var shareDialogOpen =  false;
 
 	var currentFolder = new Folder('home', 'Owner', folderCount); // TODO: CHANGE THIS TO A PRE-POPULATED DIRECTORY FOR USER TESTING
 	var folderChain = [currentFolder];
@@ -38,6 +39,7 @@
 	    	console.log('REMOVE');
 	    	console.log($('#sharing-options'));
 	    	$("#sharing-options").remove()
+	    	shareDialogOpen = false;
 	    }
 	  }
 	);
@@ -151,9 +153,9 @@
 		var input_name = document.createElement("input");
 		input_name.setAttribute('class', 'text-center');
 		input_name.setAttribute('type', 'text');
-		input_name.setAttribute('placeholder', 'Untitled');
+		input_name.setAttribute('value', folderToAdd.name);
 		input_name.setAttribute('onKeyUp', "saveFolderName('"+folderToAdd.ID+"')");
-		input_name.id = "folderName_"+folderToAdd.ID;
+		input_name.id = "folderName_"+folderToAdd.name;
 		input_cell.appendChild(input_name);
 
 		div.appendChild(table);
@@ -166,19 +168,29 @@
 		options.id = "options_"+folderToAdd.ID;
 
 		$(options).on('click', '*', function(e){
-		    var x =e.pageX -$(document).scrollLeft();
-		    var y =e.pageY -$(document).scrollTop();
+			if (!shareDialogOpen){
+			    var x =e.pageX -$(document).scrollLeft();
+			    var y =e.pageY -$(document).scrollTop();
 
-		    var div = document.createElement("div");
-		    div.id = "sharing-options";
-		    div.style.width = "350px";
-		    div.style.height = "200px";
-		    div.style.backgroundColor = "blue";
-		    div.style.top = y;
-		    div.style.left = x;
+			    var div = document.createElement("div");
+			    div.id = "sharing-options";
+			    div.style.position = "static";
+			    div.style.zIndex = 1000000000000;
+			    div.style.width = "300px";
+			    div.fontFamily = "PT Sans";
+			    div.style.border = "thin solid #bababa";
+			    div.style.backgroundColor = "white";
+			    div.style.top = y;
+			    div.style.left = x;
 
-		    div.innerHTML = '			<div class="row nav-option" onclick="createFolder()">			<span class="glyphicon glyphicon-folder-open" style="padding-right: 15px;"></span> New Folder			</div>			<div class="row nav-option" onclick="createFile()">			<span class="glyphicon glyphicon-file " style="padding-right: 15px;"></span> New Experiment			</div>			<div class="row nav-option">			<span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span> New Template			</div>			<div class="row nav-option">			<span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span> Share			</div>'
-		    this.appendChild(div);
+			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div><div class="row nav-option" onclick="shareFolder()"> <span class="glyphicon glyphicon-user style="padding-right: 50px;"></span>   Share With ... </div> </div>'
+			    this.appendChild(div);
+			   shareDialogOpen = true;
+			}
+			else{
+				$("#sharing-options").remove()
+				shareDialogOpen = false;
+			}
 		});
 
 
@@ -218,7 +230,7 @@
 		var input_name = document.createElement("input");
 		input_name.setAttribute('class', 'text-center');
 		input_name.setAttribute('type', 'text');
-		input_name.setAttribute('placeholder', 'Untitled');
+		input_name.setAttribute('value', fileToAdd.name);
 		input_name.setAttribute('onKeyUp', "saveFileName('"+fileToAdd.ID+"')");
 		input_name.id = "fileName_"+fileToAdd.ID;
 		input_cell.appendChild(input_name);
