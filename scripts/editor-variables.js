@@ -43,6 +43,13 @@ $(document).ready(function() {
 
 	$(document).on("click", ".edit-var", function() {
 		var editableText = $(this);
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		var stepNum = elementId[2];
+		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
+		document.getElementById(toHighlight).style.borderColor = '#457796';
+		document.getElementById(toHighlight).style.borderWidth = 'thick';
+
 		editableText.blur(editableTextBlurred);
 	});
 
@@ -58,6 +65,13 @@ $(document).ready(function() {
 
 	$(document).on("click", ".edit-factor", function() {
 		var editableTextFactor = $(this);
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		var stepNum = elementId[2];
+		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
+		document.getElementById(toHighlight).style.borderColor = '#457796';
+		document.getElementById(toHighlight).style.borderWidth = 'thick';
+
 		editableTextFactor.blur(editableTextFactorBlurred);
 	});
 
@@ -79,6 +93,10 @@ $(document).ready(function() {
 		var elementId = this.id.split("_");
 		var variableNum = elementId[1];
 		var stepNum = elementId[2];
+
+		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
+		document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
+		document.getElementById(toHighlight).style.borderWidth = 'thin';
 		for (var m = 0; m < stepsList[stepNum].getVars().length; m++) {
 			if (stepsList[stepNum].getVars()[m].getName() == variablesList[variableNum].getName()) {
 				variablesList[variableNum].setValue(parseFloat(this.value) / (stepsList[stepNum].getFactors()[m]));
@@ -92,6 +110,10 @@ $(document).ready(function() {
 		var elementId = this.id.split("_");
 		var variableNum = elementId[1];
 		var stepNum = elementId[2];
+
+		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
+		document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
+		document.getElementById(toHighlight).style.borderWidth = 'thin';
 		for (var q = 0; q < stepsList[stepNum].getVars().length; q++) {
 			if (stepsList[stepNum].getVars()[q].getName() == variablesList[variableNum].getName()) {
 				stepsList[stepNum].setFactor(q, parseFloat(this.value));
