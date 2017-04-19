@@ -22,20 +22,20 @@ var Note = function(name, owner, ID)
   this.createDate = 0;
   this.modifiedDate = 0;
 
-
-  /* 
-   * Renames the file given a new name
-   */
-  this.renameFile = function(newName)  {
-    this.name = newName; 
-  }
-
   /* 
    * Given a valid User object, user, adds this user to the set of
    * shared owners
    */
   this.shareFile = function(user){
     this.sharedUsers.push(user);
+  }
+
+  /* 
+   * Change the name of the note to newName
+   */
+  this.updateName = function(newName){
+    console.log('Renaming note: '+this.name+' to '+newName);
+    this.name = newName;
   }
 
 } 
