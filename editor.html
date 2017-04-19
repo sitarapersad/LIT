@@ -53,22 +53,13 @@
 	</div>
 
 	<div class="container" id="mainContainer" contenteditable="true">
-		<div class="step">1) Pour <textarea class="var" id="display-sodium-1" rows="1" cols="1"> 2 </textarea> mL of sodium into beaker.</div>
-		<div class="step">2) Obtain <textarea class="var" id="display-sodium-2" rows="1" cols="1"> 4 </textarea> mL of magnesium.</div>
 
 		<!-- The Modal -->
 		<div id="myModal" class="modal">
 
 		  <!-- Modal content -->
-		  <div class="modal-content">
-			<span class="close">&times;</span>
-			<h1> Variable List </h1>
-			<p> Variable 1: Amount of Sodium </p>
-			<p> Step 1: </p> <textarea class="edit-var" id="sodium-var-1" rows="1" cols="1"> </textarea>
-			<p> Step 2: </p> <textarea class="edit-var" id="sodium-var-2" rows="1" cols="1"> </textarea>
-			<br>
-			<br>
-			<button id="submit-vars">Done</button>
+		  <div class="modal-content" id="modal-content">
+
 		  </div>
 
 		</div>
@@ -84,4 +75,6 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="scripts/editor.js"></script>
 	<script src="scripts/editor-variables.js"></script>
+	<script src="scripts/step.js"></script>
+	<script src="scripts/variable.js"></script>
 </body>
