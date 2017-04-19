@@ -1,3 +1,7 @@
+body {
+	overflow: hidden;
+}
+
 #mainContainer{
 	width: 95%;
 	height: calc(100% - 176px);
@@ -6,7 +10,7 @@
 	outline: none;
 
 	background-size: 400px 400px;
-
+	overflow-y: scroll;
 }
 
 #sideNaviation{
