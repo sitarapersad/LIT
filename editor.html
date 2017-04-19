@@ -50,25 +50,36 @@
 			--><button class="toolbarButton" data-command="underline"><i class="fa fa-underline"></i></button>
 		</div>
 		<input type="file" id="imageFileInput" style="display: none;">
-		<button id="import">Import from Template</button>
+		<div class="toolbarGroup">
+			<button id="imageToolbarButton" class="toolbarButton"><i class="fa fa-picture-o"></i></button>
+		</div>
+		<div class="toolbarGroup">
+			<button id="import" class="toolbarButton">Import from Template</button>
+		</div>
 	</div>
 
 	<div class="container" id="mainContainer" contenteditable="true">
+	</div>
 
-		<!-- The Modal -->
-		<div id="myModal" class="modal">
-
-		  <!-- Modal content -->
-		  <div class="modal-content" id="modal-content">
-
-		  </div>
-
+	<!-- The Modal -->
+	<div id="myModal" class="modal">
+		<!-- Modal content -->
+		<div class="modal-content" id="modal-content">
+			<span class="close">&times;</span>
+			<h2> Choose templates to import into note: </h2>
+			<form method="get">
+				<input type="checkbox" class="check"> PCR <br>
+				<input type="checkbox" class="check"> Titration <br>
+				<input type="checkbox" class="check"> Distillation <br>
+				<input type="checkbox" class="check"> Crystalline Chromatography <br>
+				<input type="checkbox" class="check"> Gel Electrophoresis <br>
+			</form>
+			<button id="submit-import"> Done </button>
 		</div>
-
 	</div>
 
 	<footer class="text-center">
-		<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+		<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a> Toolbar icons are from Font Awesome.</div>
 	</footer>
 
 	<!-- Scripts for This Page -->
@@ -78,4 +89,5 @@
 	<script src="scripts/editor-variables.js"></script>
 	<script src="scripts/step.js"></script>
 	<script src="scripts/variable.js"></script>
+	<script src="scripts/editor-import.js"></script>
 </body>

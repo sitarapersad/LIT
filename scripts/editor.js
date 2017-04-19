@@ -10,6 +10,7 @@
 var Elements = {};
 
 Elements.mainContainer = document.getElementById("mainContainer");
+Elements.imageToolbarButton = document.getElementById("imageToolbarButton");
 Elements.imageFileInput = document.getElementById("imageFileInput");
 Elements.toolbarButtons = {};
 
@@ -49,9 +50,9 @@ for (command in Elements.toolbarButtons)
 	Elements.toolbarButtons[command].addEventListener("mouseup", toolbarButtonClicked);
 }
 
-// imageElement.addEventListener("click", function () {
-// 	Elements.imageFileInput.click();
-// });
+Elements.imageToolbarButton.addEventListener("click", function () {
+	Elements.imageFileInput.click();
+});
 
 // Main logic
 // ----------
@@ -78,6 +79,6 @@ function toolbarButtonClicked(e) {
 
 function uploadImage ()
 {
-
-	formData.append("image", imageFileInput.files[0]);
+	var imageSource = URL.createObjectURL(Elements.imageFileInput.files[0]);;
+	document.execCommand("insertImage", false, imageSource);
 }

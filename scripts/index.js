@@ -67,7 +67,7 @@ function openFolder(newFolderID){
 function openFile(newFileID){
 	// Open the URL for the file editor, need to find a way to pass data about the ID
 	localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
-	changeURL('editor.html');
+	window.location = "/editor.html#show";
 }
 
 function createFolder(){
