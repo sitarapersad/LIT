@@ -16,7 +16,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>
 	<script src="scripts/note.js"></script>
 	<script src="scripts/folder.js"></script>
-	<script type="text/javascript">
+		<script type="text/javascript">
 
 	var appendToPath = "file:///C:/Users/Sitara/LIT/";
 	var folderCount = 0;
@@ -26,52 +26,56 @@
 
 	$(document).ready( function() {
 
-	var currentFolder = new Folder('Home', 'Owner', folderCount);
-	folderCount += 1;
+		var currentFolder = new Folder('Home', 'Owner', folderCount);
+		folderCount += 1;
 
-	var cancerFolder = new Folder('Cancer', 'Owner', folderCount);
-	folderCount += 1; 
+		var cancerFolder = new Folder('Cancer', 'Owner', folderCount);
+		folderCount += 1; 
 
-	var cancerFolder1 = new Folder('Breast Cancer', 'Owner', folderCount);
-	folderCount += 1; 
+		var cancerFolder1 = new Folder('Breast Cancer', 'Owner', folderCount);
+		folderCount += 1; 
 
-	var cancerFolder2 = new Folder('Lung Cancer', 'Owner', folderCount);
-	folderCount += 1; 
+		var cancerFolder2 = new Folder('Lung Cancer', 'Owner', folderCount);
+		folderCount += 1; 
 
-	cancerFolder.addFolder(cancerFolder1);
-	cancerFolder.addFolder(cancerFolder2);
+		cancerFolder.addFolder(cancerFolder1);
+		cancerFolder.addFolder(cancerFolder2);
 
-	var HIVFolder = new Folder('HIV', 'Owner', folderCount);
-	folderCount += 1 
+		var HIVFolder = new Folder('HIV', 'Owner', folderCount);
+		folderCount += 1 
 
-	var thyroidFolder = new Folder('Thyroid', 'Owner', folderCount);
-	folderCount += 1 
+		var thyroidFolder = new Folder('Thyroid', 'Owner', folderCount);
+		folderCount += 1 
 
-	var blankFile = new Note('NUDES', 'Owner', fileCount);
-	fileCount += 1 
+		var titrationFile = new Note('Titration', 'Owner', fileCount);
+		fileCount += 1 
 
+		var PCRFile = new Note('PCR', 'Owner', fileCount);
+		fileCount += 1 
 
-	currentFolder.addFolder(cancerFolder);
-	currentFolder.addFolder(HIVFolder);
-	currentFolder.addFolder(thyroidFolder);
+		currentFolder.addFolder(cancerFolder);
+		currentFolder.addFolder(HIVFolder);
+		currentFolder.addFolder(thyroidFolder);
 
-	currentFolder.addFile(blankFile);
+		currentFolder.addFile(titrationFile);
+		currentFolder.addFile(PCRFile);
+		
+		folderChain.push(currentFolder);
 
-	for (var key in currentFolder.folders) {
-		newFolder = currentFolder.folders[key];
-		console.log(currentFolder.folders[key]);
-		drawFolder(newFolder);
-	}
+		for (var key in currentFolder.folders) {
+			newFolder = currentFolder.folders[key];
+			console.log(currentFolder.folders[key]);
+			drawFolder(newFolder);
+		}
 
-	for (var key in currentFolder.files) {
-		newFile = currentFolder.files[key];
-		console.log(currentFolder.files[key]);
-		drawFile(newFile);
-	}
-
+		for (var key in currentFolder.files) {
+			newFile = currentFolder.files[key];
+			console.log(currentFolder.files[key]);
+			drawFile(newFile);
+		}
 	});
 	
-	 folderChain.push(currentFolder);
+	 
 
 	$("body").click
 	(
@@ -140,9 +144,9 @@
 			drawFolder(newFolder);
 		};
 
-		for (var key in currentFolder.files) {
-			newFile = currentFolder.files[key];
-			console.log(currentFolder.files[key]);
+		for (var key in subFolder.files) {
+			newFile = subFolder.files[key];
+			console.log(subFolder.files[key]);
 			drawFolder(newFile);
 		}
 
@@ -151,7 +155,7 @@
 	function openFile(newFileID){	
 		// Open the URL for the file editor, need to find a way to pass data about the ID
 		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
-		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/note.html";
+		changeURL('editor.html');
 	};
 
 	function createFolder(){
@@ -171,6 +175,36 @@
 		drawFile(newFile);
 	};
 
+	/*
+	 * Move up one layer in the directory
+	 */
+/*
+	 * Move up one layer in the directory
+	 */
+	function moveUp(){
+		if (folderChain.length > 1){
+			$('#folderContainer').empty();
+			$('#fileContainer').empty();
+			$('#templateContainer').empty();
+
+		
+			folderChain.pop();
+			subFolder = folderChain[folderChain.length-1];
+			console.log('Moving up into '+ subFolder.ID);
+
+			for (var key in subFolder.folders) {
+				newFolder = subFolder.folders[key];
+				console.log(subFolder.folders[key]);
+				drawFolder(newFolder);
+			};
+
+			for (var key in subFolder.files) {
+				newFile = subFolder.files[key];
+				console.log(subFolder.files[key]);
+				drawFile(newFile);
+			}
+		};
+	};
 	// function modifyFileOptions(){
 
 	// }
@@ -333,7 +367,7 @@
 
 	<div class="container" id="headerContainer">
 		<div class="col-md-2 text-center" id="leftColumn">
-			<img src="images/LIT-logo.png" alt="LIT" style="width:100px;height:100px;">
+			<a href="index.html"><img src="images/LIT-logo.png" alt="LIT" style="width:100px;height:100px;"></a>
 		</div>
 
 		        <div class="col-md-8" id="searchColumn">
@@ -376,7 +410,7 @@
 		<div class="col-md-10" id="mainBody">
 			<div class="container">
 				<div class="row">
-					<span class="heading"> Folders</span>
+					<span class="heading"> <span class="glyphicon glyphicon-arrow-up" onclick="moveUp()"></span> Folders</span>
 				</div>
 				<div class="row" id="folderContainer" style="min-height: 100px;">
 					<div class="col-md-12" style="line-height: 100px;" id="emptyFolder"> You haven't added any folders yet! :( </div>
