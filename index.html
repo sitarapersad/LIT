@@ -286,12 +286,12 @@
 			    div.fontFamily = "PT Sans";
 			    div.style.border = "thin solid #bababa";
 			    div.style.backgroundColor = "white";
-			    div.style.top = y;
-			    div.style.left = x;
-			    div.style.position = "static";
-			    div.style.zIndex = 1000;
+			    div.style.top = e.clientY+"px";
+			    div.style.left = e.clientX+"px";
+			    div.style.position = "fixed";
+			    div.style.zIndex = 5;
 			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div><div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user style="padding-right: px;"></span>   Share With ... </div> </div>';
-			    this.appendChild(div);
+			    document.getElementById("folderContainer").appendChild(div);
 			   shareDialogOpen = true;
 			}
 			else{
