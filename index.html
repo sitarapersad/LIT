@@ -5,6 +5,7 @@
     <link rel="import" href="globalHead.html">
 
     <link rel="stylesheet" href="stylesheets/homeStyle.css">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 </head>
 
 <body>
@@ -29,6 +30,7 @@
 		folderCount += 1;
 
 		var cancerFolder = new Folder('Cancer', 'Owner', folderCount);
+
 		folderCount += 1;
 
 		var cancerFolder1 = new Folder('Breast Cancer', 'Owner', folderCount);
@@ -76,8 +78,6 @@
 		var PCRTemplate = new Note('PCR', 'Owner', fileCount);
 		drawTemplate(PCRTemplate);
 	});
-
-
 
 	$("body").click	( function(e)
 	  {
@@ -138,6 +138,7 @@
 
 	function openFolder(newFolderID){
 		// Clear the current folders from the page
+
 		$('#folderContainer').empty();
 		$('#fileContainer').empty();
 		$('#templateContainer').empty();
@@ -217,7 +218,6 @@
 			$('#fileContainer').empty();
 			$('#templateContainer').empty();
 
-
 			folderChain.pop();
 			subFolder = folderChain[folderChain.length-1];
 			console.log('Moving up into '+ subFolder.ID);
@@ -254,8 +254,6 @@
 		// div.setAttribute("ondrop","drop(event)");
 		// div.setAttribute("ondragover", "allowDrop(event)");
 		div.id = "folder_"+folderToAdd.ID;
-
-
 
 		div.style.width = "150px";
 		div.style.height = "150px";
@@ -308,7 +306,8 @@
 			    div.style.left = e.clientX+10+"px";
 			    div.style.position = "fixed";
 			    div.style.zIndex = 5;
-			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div><div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user style="padding-right: px;"></span>   Share With ... </div> </div>';
+
+			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
 			    document.getElementById("folderContainer").appendChild(div);
 			   shareDialogOpen = true;
 			}
@@ -381,11 +380,13 @@
 			    div.fontFamily = "PT Sans";
 			    div.style.border = "thin solid #bababa";
 			    div.style.backgroundColor = "white";
-			    div.style.top = y;
-			    div.style.left = x;
 
-			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div><div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user style="padding-right: px;"></span>   Share With ... </div> </div>'
-			    this.appendChild(div);
+			    div.style.top = e.clientY+"px";
+			    div.style.left = e.clientX+10+"px";
+			    div.style.position = "fixed";
+			    div.style.zIndex = 5;
+			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
+			    document.getElementById("folderContainer").appendChild(div);
 			   shareDialogOpen = true;
 			}
 			else{
@@ -455,11 +456,13 @@
 			    div.fontFamily = "PT Sans";
 			    div.style.border = "thin solid #bababa";
 			    div.style.backgroundColor = "white";
-			    div.style.top = y;
-			    div.style.left = x;
 
-			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div><div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user style="padding-right: px;"></span>   Share With ... </div> </div>'
-			    this.appendChild(div);
+			    div.style.top = e.clientY+"px";
+			    div.style.left = e.clientX+10+"px";
+			    div.style.position = "fixed";
+			    div.style.zIndex = 5;
+			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
+			    document.getElementById("folderContainer").appendChild(div);
 			   shareDialogOpen = true;
 			}
 			else{
@@ -485,10 +488,7 @@
 	}
 
 	function shareWith(){
-		document.getElementById("shareDialog").style.display = "none";
 
-
-		/**
 		var div = document.createElement("div");
 		div.innerHTML = "Success!";
 		document.getElementById("shareDialogContent").appendChild(div);
@@ -496,7 +496,6 @@
 			document.getElementById("shareDialogContent").removeChild(div);
 			closeShareDialog();
 		}, 1000);
-		**/
 
 	};
 
@@ -582,17 +581,10 @@
 	  <!-- Modal content -->
 	  <div class="modal-content" id="shareDialogContent">
 	    <span class="close" onclick="closeShareDialog()">&times;</span>
-	    <h2> Select which lab members you would like to share with. </h2>
-	    <form method="get">
-	 		 	<input type="checkbox" class="person"> David Bau <br>
-	  			<input type="checkbox" class="person"> Rob Miller <br>
-	  			<input type="checkbox" class="person"> Stefanie Mueller <br>
-	  			<input type="checkbox" class="person"> Derek Smith<br>
-	  			<input type="checkbox" class="person"> Tina Wang<br>
-	  			<input type="checkbox" class="person"> Other (please specify email address): <input type="text" name="sharedEmail"> <br>
 
-		</form>
-	    <button onclick="shareWith()"> Done </button>
+	    <p>Enter email addresses of people you wish to share with, separated by commas.</p>
+	    <input type="text" name="sharedEmail">
+	    <button onclick="shareWith()">Share!</button>
 	  </div>
 
 	</div>
