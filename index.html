@@ -174,7 +174,7 @@
 		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/note.html";
 	};
 
-	function openFile(newTemplateID){	
+	function openTemplate(newTemplateID){	
 		// Open the URL for the file editor, need to find a way to pass data about the ID
 		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
 		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/editor.html";
@@ -255,7 +255,7 @@
 		// div.setAttribute("ondrop","drop(event)");
 		// div.setAttribute("ondragover", "allowDrop(event)");
 		div.id = "folder_"+folderToAdd.ID;
-		div.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
+		
 		
 
 		div.style.width = "150px";
@@ -272,8 +272,8 @@
 		img_cell.style.width = "150px";
 		img_cell.style.backgroundColor = "#c4c4d6";
 		img_cell.style.padding = "0px";
-		img_cell.innerHTML = "<img src='images/folder.png' style='width:100px; height:100px; cursor:move;'>";
-
+		img_cell.innerHTML = "<img src='images/folder.png' style='width:100px; height:100px; cursor:pointer;'>";
+		img_cell.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
 
 		var details_row = table.insertRow(1);
 		var input_cell = details_row.insertCell(0);
@@ -349,7 +349,7 @@
 		img_cell.style.padding = "0px";
 
 		img_cell.setAttribute("ondblclick", "openFile('"+fileToAdd.ID+"')");
-		img_cell.innerHTML = "<img src='images/file.png' style='width:120px; height:120px; cursor:move;'>";
+		img_cell.innerHTML = "<img src='images/file.png' style='width:120px; height:120px; cursor:pointer;'>";
 
 
 		var details_row = table.insertRow(1);
@@ -422,8 +422,8 @@
 		img_cell.style.backgroundColor = "#c4c4d6";
 		img_cell.style.padding = "0px";
 
-		img_cell.setAttribute("ondblclick", "openFile('"+templateToAdd.ID+"')");
-		img_cell.innerHTML = "<img src='images/science.png' style='width:120px; height:120px; cursor:move;'>";
+		img_cell.setAttribute("ondblclick", "openTemplate('"+templateToAdd.ID+"')");
+		img_cell.innerHTML = "<img src='images/science.png' style='width:120px; height:120px; cursor:pointer;'>";
 
 
 		var details_row = table.insertRow(1);
@@ -545,7 +545,7 @@
 		<div class="col-md-10" id="mainBody">
 			<div class="container">
 				<div class="row">
-					<span class="heading"> <span class="glyphicon glyphicon-arrow-up" onclick="moveUp()"></span> Folders</span>
+					<span class="heading"> <span class="glyphicon glyphicon-arrow-up" style="cursor: pointer;" onclick="moveUp()"></span> Folders</span>
 				</div>
 				<div class="row" id="folderChain" style="height: 50px; padding-left: 30px;"> Home  </div>
 				<div class="row" id="folderContainer" style="min-height: 100px;">
