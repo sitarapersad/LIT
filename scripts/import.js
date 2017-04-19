@@ -1,12 +1,5 @@
 
 $(document).ready(function() {
-		var appendToPath = "file:///C:/Users/annsu/LIT/";
-
-	function changeURL(newUrl) {
-        console.log(appendToPath + newUrl);
-        document.location.href = appendToPath + newUrl;
-    }
-
 	$(document).on("click", "#import", function() {
 		document.getElementById("myModal").style.display = "block";
 	});
@@ -32,7 +25,7 @@ $(document).ready(function() {
 		}
 
 		if (checkedValue != null) {
-			changeURL('editor.html');
+			document.location.href = "http://web.mit.edu/anitaliu/www/LIT/editor.html";
 		}
 		else {
 			alert("You need to select at least one protocol!");
