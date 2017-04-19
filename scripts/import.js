@@ -1,5 +1,12 @@
 
 $(document).ready(function() {
+		var appendToPath = "file:///C:/Users/annsu/LIT/";
+
+	function changeURL(newUrl) {
+        console.log(appendToPath + newUrl);
+        document.location.href = appendToPath + newUrl;
+    }
+
 	$(document).on("click", "#import", function() {
 		document.getElementById("myModal").style.display = "block";
 	});
@@ -15,7 +22,7 @@ $(document).ready(function() {
 	});
 
 	$(document).on("click", "#submit-import", function() {
-		var checkedValue = null;
+		var checkedValue = null; 
 		var inputElements = document.getElementsByClassName('check');
 		for(var i=0; inputElements[i]; ++i){
       		if(inputElements[i].checked){
@@ -25,10 +32,11 @@ $(document).ready(function() {
 		}
 
 		if (checkedValue != null) {
-			window.location = "/editor.html#show"
+			changeURL('editor.html');
 		}
 		else {
 			alert("You need to select at least one protocol!");
 		}
 	});
 });
+

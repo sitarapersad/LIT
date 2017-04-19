@@ -19,7 +19,7 @@ $(document).ready(function() {
 	variablesList.push(bariumAmount);
 
 	displayModal();
-	if (window.location.hash == "show") displaySteps();
+	displaySteps();
 
 	$(document).on("click", "#submit-vars", function(){
 		document.getElementById("myModal").style.display = "none";
@@ -75,9 +75,9 @@ $(document).ready(function() {
 		if (node != null) {
 			while (node.hasChildNodes()) {
 			    node.removeChild(node.lastChild);
-			}
+			}	
 		}
-		else {
+		else {  
 			var modalDiv = document.createElement("div");
 			modalDiv.setAttribute("class", "modal-content");
 			modalDiv.id = "modal-content";
@@ -116,16 +116,16 @@ $(document).ready(function() {
 		}
 		var btn = document.createElement("BUTTON");        // Create a <button> element
 		var t = document.createTextNode("Done");       // Create a text node
-		btn.appendChild(t);
+		btn.appendChild(t); 
 		btn.id="submit-vars";                             // Append the text to <button>
-		document.getElementById("modal-content").appendChild(btn);
+		document.getElementById("modal-content").appendChild(btn);  
 	}
 
 	function displaySteps() {
-		document.getElementById("mainContainer").innerHTML = "";
 		for (var n = 0 ; n<stepsList.length; n++) {
 			var divNew = stepsList[n].display();
 			document.getElementById("mainContainer").appendChild(divNew);
 		}
 	}
 });
+
