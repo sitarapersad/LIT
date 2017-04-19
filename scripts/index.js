@@ -1,4 +1,3 @@
-var appendToPath = "file:///C:/Users/Sitara/LIT/";
 var folderCount = 0;
 var fileCount = 0;
 var shareDialogOpen =  false;
@@ -23,13 +22,6 @@ $("body").click
     }
   }
 );
-
-
-
-function changeURL(newUrl){
-	console.log(appendToPath +newUrl);
-	document.location.href = appendToPath +newUrl;
-}
 
 // Allow files and folders to be dropped into other folders
 function allowDrop(e){
