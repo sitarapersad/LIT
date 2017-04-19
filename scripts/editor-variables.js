@@ -50,11 +50,29 @@ $(document).ready(function() {
 		document.getElementById("myModal").style.display = "none";
 	});
 
+	$(document).on("click", ".edit-amount", function() {
+		var editableTextAmount = $(this);
+		editableTextAmount.blur(editableTextAmountBlurred);
+	});
+
+
+	$(document).on("click", ".edit-factor", function() {
+		var editableTextFactor = $(this);
+		editableTextFactor.blur(editableTextFactorBlurred);
+	});
 
 	window.onclick = function(event) {
 		if (event.target == document.getElementById("myModal")) {
 			document.getElementById("myModal").style.display = "none";
 		}
+	}
+
+	function editableTextAmountBlurred() {
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		variablesList[variableNum].setValue(parseFloat(this.value));
+
+		displayModal();
 	}
 
 	function editableTextBlurred() {
@@ -69,6 +87,20 @@ $(document).ready(function() {
 
 		displayModal();
 	}
+
+	function editableTextFactorBlurred() {
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		var stepNum = elementId[2];
+		for (var q = 0; q < stepsList[stepNum].getVars().length; q++) {
+			if (stepsList[stepNum].getVars()[q].getName() == variablesList[variableNum].getName()) {
+				stepsList[stepNum].setFactor(q, parseFloat(this.value));
+			}
+		}
+
+		displayModal();
+	}
+
 
 	function displayModal() {
 		var node = document.getElementById("modal-content");
@@ -96,6 +128,8 @@ $(document).ready(function() {
 			var divModal = document.createElement("div");
 			var html_string = "<h2> Variable " + (i+1).toString() + ": " + variablesList[i].getName() + "</h2>";
 			html_string = html_string + "<br>";
+			html_string = html_string + "<b>Amount: </b> " + "<textarea class='edit-amount' rows='1' id='var_"+i.toString() + "'>" + variablesList[i].getValue().toString() + "</textarea>";
+			html_string = html_string + "<br>";
 			for (var j = 0; j<stepsList.length; j++) {
 					var indexOfValue = null;
 					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
@@ -106,6 +140,9 @@ $(document).ready(function() {
 					if (indexOfValue != null){
 						html_string = html_string + "<b> Step " + (j+1).toString() + ": </b>";
 						html_string = html_string + "<textarea class='edit-var' rows='1' id='var_"+i.toString() + "_" + j.toString() + "'>" + (stepsList[j].getVarValue(indexOfValue)).toString() + "</textarea>";
+						html_string = html_string + " (with scaling factor: ";
+						html_string = html_string + "<textarea class='edit-factor' rows='1' cols='1' id='var_"+i.toString() + "_" + j.toString() + "'>" + (stepsList[j].getFactors()[indexOfValue]).toString() + "</textarea>";
+						html_string = html_string + ")";
 						html_string = html_string + "<br>";
 					}
 			}

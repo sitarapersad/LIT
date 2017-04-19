@@ -34,4 +34,9 @@
  	this.getFactors = function() {
  		return this.scales;
  	}
+
+ 	this.setFactor = function(index, newVal) {
+ 		this.scales.splice(index, 1, newVal);
+
+ 	}
  }
