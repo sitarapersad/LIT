@@ -25,7 +25,7 @@ $(document).ready(function() {
 		}
 
 		if (checkedValue != null) {
-			window.location = "/editor.html#show"
+			window.location = "editor.html#show"
 		}
 		else {
 			alert("You need to select at least one protocol!");
