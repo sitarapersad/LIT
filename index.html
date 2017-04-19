@@ -2,27 +2,523 @@
 <html>
 
 <head>
-    <link rel="import" href="/globalHead.html">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="stylesheets/homeStyle.css">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 </head>
 
 <body>
+<!-- Scripts for This Page -->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>
+	<script src="scripts/note.js"></script>
+	<script src="scripts/folder.js"></script>
+		<script type="text/javascript">
+
+	var appendToPath = "file:///C:/Users/Sitara/LIT/";
+	var folderCount = 0;
+	var fileCount = 0;
+	var shareDialogOpen =  false;
+	var folderChain = []
+
+	$(document).ready( function() {
+
+		var currentFolder = new Folder('Home', 'Owner', folderCount);
+		folderCount += 1;
+
+		var cancerFolder = new Folder('Cancer', 'Owner', folderCount);
+		folderCount += 1; 
+
+		var cancerFolder1 = new Folder('Breast Cancer', 'Owner', folderCount);
+		folderCount += 1; 
+
+		var cancerFolder2 = new Folder('Lung Cancer', 'Owner', folderCount);
+		folderCount += 1; 
+
+		cancerFolder.addFolder(cancerFolder1);
+		cancerFolder.addFolder(cancerFolder2);
+
+		var HIVFolder = new Folder('HIV', 'Owner', folderCount);
+		folderCount += 1 
+
+		var thyroidFolder = new Folder('Thyroid', 'Owner', folderCount);
+		folderCount += 1 
+
+		var titrationFile = new Note('Titration', 'Owner', fileCount);
+		fileCount += 1 
+
+		var PCRFile = new Note('PCR ', 'Owner', fileCount);
+		fileCount += 1 
+
+		currentFolder.addFolder(cancerFolder);
+		currentFolder.addFolder(HIVFolder);
+		currentFolder.addFolder(thyroidFolder);
+
+		currentFolder.addFile(titrationFile);
+		currentFolder.addFile(PCRFile);
+		
+		folderChain.push(currentFolder);
+
+		for (var key in currentFolder.folders) {
+			newFolder = currentFolder.folders[key];
+			console.log(currentFolder.folders[key]);
+			drawFolder(newFolder);
+		}
+
+		for (var key in currentFolder.files) {
+			newFile = currentFolder.files[key];
+			console.log(currentFolder.files[key]);
+			drawFile(newFile);
+		}
+
+		var PCRTemplate = new Note('PCR', 'Owner', fileCount);
+		drawTemplate(PCRTemplate);
+	});
+	
+	 
+
+	$("body").click	( function(e)
+	  {
+	  	console.log(e.target.className);
+	    if(e.target.className.includes("options")){
+	    	console.log("DISPLAY OPTIONS");
+	    }
+	    else{
+	    	console.log('REMOVE');
+	    	console.log($('#sharing-options'));
+	    	$("#sharing-options").remove()
+	    	shareDialogOpen = false;
+	    }
+	  }
+	);
+
+	window.onclick = function(event) {
+		var modal = document.getElementById("shareDialog");
+	    if (event.target == modal) {
+	        modal.style.display = "none";
+	    }
+	}
+
+	function changeURL(newUrl){
+		console.log(appendToPath +newUrl);
+		document.location.href = appendToPath +newUrl;
+	}
+
+	// Allow files and folders to be dropped into other folders
+	function allowDrop(e){
+		e.preventDefault();
+	}
+
+	function drag(e){
+		e.preventDefault();
+		console.log($(e.target).parent());
+	}
+
+	function drop(e){
+		console.log(e.dataTransfer);
+		console.log(e.dataTransfer.getData("Text"));
+		alert('Added to ' + e.target.id+ ' !');
+	}
+
+	function saveFolderName(folderID){
+		var changeFolder = folderChain[folderChain.length-1].getFolder(folderID);
+		var newName = document.getElementById("folderName_"+folderID).value;
+		changeFolder.updateName(newName);
+	}
+
+	function saveFileName(fileID){
+		var changeFile = folderChain[folderChain.length-1].getFile(fileID);
+		console.log(changeFile);
+		var newName = document.getElementById("fileName_"+fileID).value;
+		changeFile.updateName(newName);
+	}
+
+
+	function openFolder(newFolderID){
+		// Clear the current folders from the page 
+
+		$('#folderContainer').empty();
+		$('#fileContainer').empty();
+		$('#templateContainer').empty();
+		// change currentFolder to the new folder
+		subFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
+		folderChain.push(subFolder);
+		// Load the subfolders and subfiles
+		console.log('Opening '+folderChain[folderChain.length-1].ID);
+		for (var key in subFolder.folders) {
+			newFolder = subFolder.folders[key];
+			console.log(subFolder.folders[key]);
+			drawFolder(newFolder);
+		};
+
+		for (var key in subFolder.files) {
+			newFile = subFolder.files[key];
+			console.log(subFolder.files[key]);
+			drawFile(newFile);
+		}
+
+		var activeFolders = "Home ";
+		for (var i=1; i<folderChain.length; i++) {
+			folder = folderChain[i];
+			activeFolders += "> "+folder.name +" ";
+		}
+
+		document.getElementById("folderChain").innerHTML = activeFolders;
+	};
+
+	function openFile(newFileID){	
+		// Open the URL for the file editor, need to find a way to pass data about the ID
+		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
+		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/note.html";
+	};
+
+	function openTemplate(newTemplateID){	
+		// Open the URL for the file editor, need to find a way to pass data about the ID
+		localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
+		document.location.href = "http://web.mit.edu/anitaliu/www/LIT/editor.html";
+	};
+
+
+	function createFolder(){
+		newFolder = new Folder('Untitled', 'Owner', folderCount);
+		console.log(folderChain[folderChain.length-1]);
+		console.log('Adding folder '+newFolder.ID +' to '+folderChain[folderChain.length-1].ID);
+		folderChain[folderChain.length-1].addFolder(newFolder);
+		folderCount += 1;
+		drawFolder(newFolder);
+	};
+
+	function createFile(){
+		newFile = new Note('Untitled', 'Owner', fileCount);
+		console.log('Creating file in '+folderChain[folderChain.length-1].ID);
+		folderChain[folderChain.length-1].addFile(newFile);
+		fileCount += 1;
+		drawFile(newFile);
+	};
+
+	function createTemplate(){
+		newFile = new Note('Untitled', 'Owner', fileCount);
+		console.log('Creating file in '+folderChain[folderChain.length-1].ID);
+		// folderChain[folderChain.length-1].addFile(newFile);
+		// fileCount += 1;
+		drawTemplate(newFile);
+	};
+
+	/*
+	 * Move up one layer in the directory
+	 */
+/*
+	 * Move up one layer in the directory
+	 */
+	function moveUp(){
+		if (folderChain.length > 1){
+			$('#folderContainer').empty();
+			$('#fileContainer').empty();
+			$('#templateContainer').empty();
+
+		
+			folderChain.pop();
+			subFolder = folderChain[folderChain.length-1];
+			console.log('Moving up into '+ subFolder.ID);
+
+			for (var key in subFolder.folders) {
+				newFolder = subFolder.folders[key];
+				console.log(subFolder.folders[key]);
+				drawFolder(newFolder);
+			};
+
+			for (var key in subFolder.files) {
+				newFile = subFolder.files[key];
+				console.log(subFolder.files[key]);
+				drawFile(newFile);
+			}
+
+			var activeFolders = "Home ";
+			for (var i=1; i<folderChain.length; i++){
+				folder = folderChain[i];
+				activeFolders += "> "+folder.name+" ";
+			}
+
+			document.getElementById("folderChain").innerHTML = activeFolders;
+		};
+	};
+
+	// <!-- Event Handlers -->
+	function drawFolder(folderToAdd){
+		console.log('Adding folder to view');
+		$('#emptyFolder').remove();
+		var div = document.createElement("div");
+		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
+		// div.setAttribute("draggable", "true");
+		// div.setAttribute("ondrop","drop(event)");
+		// div.setAttribute("ondragover", "allowDrop(event)");
+		div.id = "folder_"+folderToAdd.ID;
+		
+		
+
+		div.style.width = "150px";
+		div.style.height = "150px";
+		div.style.background = "white";
+		div.style.margin = "25px";
+		div.style.padding = "0px";
+
+
+		var table = document.createElement("table");
+		var img_row = table.insertRow(0);
+		var img_cell = img_row.insertCell(0);
+		img_cell.style.height = "125px";
+		img_cell.style.width = "150px";
+		img_cell.style.backgroundColor = "#c4c4d6";
+		img_cell.style.padding = "0px";
+		img_cell.innerHTML = "<img src='images/folder.png' style='width:100px; height:100px; cursor:pointer;'>";
+		img_cell.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
+
+		var details_row = table.insertRow(1);
+		var input_cell = details_row.insertCell(0);
+
+		var input_name = document.createElement("input");
+		input_name.setAttribute('class', 'text-center');
+		input_name.setAttribute('type', 'text');
+		input_name.setAttribute('value', folderToAdd.name);
+		input_name.setAttribute('onKeyUp', "saveFolderName('"+folderToAdd.ID+"')");
+		input_name.id = "folderName_"+folderToAdd.ID;
+		input_cell.appendChild(input_name);
+
+		div.appendChild(table);
+
+		var options = document.createElement("div");
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
+		options.style.marginRight = "-10px";
+		options.setAttribute("class", "options");
+		options.id = "options_"+folderToAdd.ID;
+
+		$(options).on('click', '*', function(e){
+			if (!shareDialogOpen){
+			    var x =e.pageX -$(document).scrollLeft();
+			    var y =e.pageY -$(document).scrollTop();
+
+			    var div = document.createElement("div");
+			    div.id = "sharing-options";
+			    div.style.width = "300px";
+			    div.fontFamily = "PT Sans";
+			    div.style.border = "thin solid #bababa";
+			    div.style.backgroundColor = "white";
+			    div.style.top = e.clientY+"px";
+			    div.style.left = e.clientX+10+"px";
+			    div.style.position = "fixed";
+			    div.style.zIndex = 5;
+			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
+			    document.getElementById("folderContainer").appendChild(div);
+			   shareDialogOpen = true;
+			}
+			else{
+				$("#sharing-options").remove()
+				shareDialogOpen = false;
+			}
+		});
+
+
+		div.appendChild(options);
+			// "<div class='container filename text-center'> <div class='row'><div class='col-lg-8'><input type='text' name='name' placeholder='Untitled' value='Untitled'></div> <div class='col-lg-1'>A</div> <div class='col-lg-1'> B </div> </div> </div>";
+
+		console.log('GOT HERE');
+		document.getElementById("folderContainer").appendChild(div);
+	};
+
+	function drawFile(fileToAdd){
+		$('#emptyFile').remove();
+		var div = document.createElement("div");
+		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
+		// div.setAttribute("draggable","true");
+		div.id = "file_"+fileToAdd.ID;
+		div.style.width = "150px";
+		div.style.height = "175px";
+		div.style.background = "white";
+		div.style.margin = "25px";
+		div.style.padding = "0px";
+
+
+		var table = document.createElement("table");
+		var img_row = table.insertRow(0);
+		var img_cell = img_row.insertCell(0);
+		img_cell.style.height = "150px";
+		img_cell.style.width = "150px";
+		img_cell.style.backgroundColor = "#c4c4d6";
+		img_cell.style.padding = "0px";
+
+		img_cell.setAttribute("ondblclick", "openFile('"+fileToAdd.ID+"')");
+		img_cell.innerHTML = "<img src='images/file.png' style='width:120px; height:120px; cursor:pointer;'>";
+
+
+		var details_row = table.insertRow(1);
+		var input_cell = details_row.insertCell(0);
+
+		var input_name = document.createElement("input");
+		input_name.setAttribute('class', 'text-center');
+		input_name.setAttribute('type', 'text');
+		input_name.setAttribute('value', fileToAdd.name);
+		input_name.setAttribute('onKeyUp', "saveFileName('"+fileToAdd.ID+"')");
+		input_name.id = "fileName_"+fileToAdd.ID;
+		input_cell.appendChild(input_name);
+
+		div.appendChild(table);
+
+		var options = document.createElement("div");
+		options.style.marginRight = "-10px";
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
+		options.setAttribute("class", "options");
+
+
+		$(options).on('click', '*', function(e){
+			if (!shareDialogOpen){
+			    var x =e.pageX -$(document).scrollLeft();
+			    var y =e.pageY -$(document).scrollTop();
+
+			    var div = document.createElement("div");
+			    div.id = "sharing-options";
+			    div.style.width = "300px";
+			    div.fontFamily = "PT Sans";
+			    div.style.border = "thin solid #bababa";
+			    div.style.backgroundColor = "white";
+			    div.style.top = e.clientY+"px";
+			    div.style.left = e.clientX+10+"px";
+			    div.style.position = "fixed";
+			    div.style.zIndex = 5;
+			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
+			    document.getElementById("folderContainer").appendChild(div);
+			   shareDialogOpen = true;
+			}
+			else{
+				$("#sharing-options").remove()
+				shareDialogOpen = false;
+			}
+		});
+
+
+		div.appendChild(options);
+		document.getElementById("fileContainer").appendChild(div);
+	};
+
+
+	function drawTemplate(templateToAdd){
+		$('#emptyTemplate').remove();
+		var div = document.createElement("div");
+		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
+		// div.setAttribute("draggable","true");
+		div.id = "file_"+templateToAdd.ID;
+		div.style.width = "150px";
+		div.style.height = "175px";
+		div.style.background = "white";
+		div.style.margin = "25px";
+		div.style.padding = "0px";
+
+
+		var table = document.createElement("table");
+		var img_row = table.insertRow(0);
+		var img_cell = img_row.insertCell(0);
+		img_cell.style.height = "150px";
+		img_cell.style.width = "150px";
+		img_cell.style.backgroundColor = "#c4c4d6";
+		img_cell.style.padding = "0px";
+
+		img_cell.setAttribute("ondblclick", "openTemplate('"+templateToAdd.ID+"')");
+		img_cell.innerHTML = "<img src='images/science.png' style='width:120px; height:120px; cursor:pointer;'>";
+
+
+		var details_row = table.insertRow(1);
+		var input_cell = details_row.insertCell(0);
+
+		var input_name = document.createElement("input");
+		input_name.setAttribute('class', 'text-center');
+		input_name.setAttribute('type', 'text');
+		input_name.setAttribute('value', templateToAdd.name);
+		input_name.setAttribute('onKeyUp', "saveTemplateName('"+templateToAdd.ID+"')");
+		input_name.id = "templateName_"+templateToAdd.ID;
+		input_cell.appendChild(input_name);
+
+		div.appendChild(table);
+
+		var options = document.createElement("div");
+		options.style.marginRight = "-10px";
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
+		options.setAttribute("class", "options");
+
+
+		$(options).on('click', '*', function(e){
+			if (!shareDialogOpen){
+			    var x =e.pageX -$(document).scrollLeft();
+			    var y =e.pageY -$(document).scrollTop();
+
+			    var div = document.createElement("div");
+			    div.id = "sharing-options";
+			    div.style.width = "300px";
+			    div.fontFamily = "PT Sans";
+			    div.style.border = "thin solid #bababa";
+			    div.style.backgroundColor = "white";
+			    div.style.top = e.clientY+"px";
+			    div.style.left = e.clientX+10+"px";
+			    div.style.position = "fixed";
+			    div.style.zIndex = 5;
+			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
+			    document.getElementById("folderContainer").appendChild(div);
+			   shareDialogOpen = true;
+			}
+			else{
+				$("#sharing-options").remove()
+				shareDialogOpen = false;
+			}
+		});
+
+
+		div.appendChild(options);
+		document.getElementById("templateContainer").appendChild(div);
+	};
+
+
+	function openShareDialog(){
+		var modal = document.getElementById('shareDialog');
+		 modal.style.display = "block";
+	};
+
+	function closeShareDialog(){
+		var modal = document.getElementById('shareDialog');
+		modal.style.display = "none";
+	}
+
+	function shareWith(){
+		var div = document.createElement("div");
+		div.innerHTML = "Success!";
+		document.getElementById("shareDialogContent").appendChild(div);
+		setTimeout(function(){ 
+			document.getElementById("shareDialogContent").removeChild(div);		
+			closeShareDialog();
+		}, 1000);
+		
+	};
+
+
+
+	</script>
+
 	<div class="container" id="headerContainer">
 		<div class="col-md-2 text-center" id="leftColumn">
-			<img src="images/LIT-logo.png" alt="LIT" style="width:100px;height:100px;">
+			<a href="index.html"><img src="images/LIT-logo.png" alt="LIT" style="width:100px;height:100px;"></a>
 		</div>
 
-		<div class="col-md-8" id="searchColumn">
+		        <div class="col-md-8" id="searchColumn">
 			<div class="row" style="padding-right: 20px;">
 			  <input class="form-control input-md search" placeholder= "Search experiments ..." type="text">
 			</div>
 			<div class="row">
 				<nav class="navbar navbar-default">
 				  <div class="container-fluid text-center" style="width: 100%; padding-left: 0px; padding-right: 20px;">
-					<ul class="nav navbar-nav">
-					<li class="active"><a href="#">My Notebook</a></li>
-					  <li><a href="shared.html">Shared With Me</a></li>
-					  <li><a href="calendar.html"><span class="glyphicons glyphicon-family"></span>Calendar</a></li>
+					<ul class="nav navbar-nav" style="width: 100%;" >
+					  <li style='width:33.3%' class="active"><a href="index.html">My Notebook</a></li>
+					  <li style='width:33.3% '><a href="index.html">Shared With Me</a></li>
+					  <li style='width:33.3%' ><span class="glyphicons glyphicon-family"></span> <a href="calendar.html">Calendar</a></li>
 					</ul>
 				  </div>
 				</nav>
@@ -30,7 +526,7 @@
 		</div>
 
 		<div class="col-md-2" style="text-align: right;">
-            <img id="profileImage" src="resources/noProfileImage.png"></img>
+		ACCOUNT
 		</div>
 	</div>
 	<div class="container" id="mainContainer">
@@ -41,7 +537,7 @@
 			<div class="row nav-option" onclick="createFile()">
 			<span class="glyphicon glyphicon-file " style="padding-right: 15px;"></span> New Experiment
 			</div>
-			<div class="row nav-option">
+			<div class="row nav-option" onclick="createTemplate()">
 			<span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span> New Template
 			</div>
 			<div class="row nav-option">
@@ -52,8 +548,9 @@
 		<div class="col-md-10" id="mainBody">
 			<div class="container">
 				<div class="row">
-					<span class="heading"> Folders</span>
+					<span class="heading"> <span class="glyphicon glyphicon-arrow-up" style="cursor: pointer;" onclick="moveUp()"></span> Folders</span>
 				</div>
+				<div class="row" id="folderChain" style="height: 50px; padding-left: 30px;"> Home  </div>
 				<div class="row" id="folderContainer" style="min-height: 100px;">
 					<div class="col-md-12" style="line-height: 100px;" id="emptyFolder"> You haven't added any folders yet! :( </div>
 				</div>
@@ -77,18 +574,25 @@
 		</div>
 	</div>
 
+
+	<!-- The Share Dialog Modal -->
+	<div id="shareDialog" class="modal">
+
+	  <!-- Modal content -->
+	  <div class="modal-content" id="shareDialogContent">
+	    <span class="close" onclick="closeShareDialog()">&times;</span>
+	    <p>Enter email addresses of people you wish to share with, separated by commas.</p>
+	    <input type="text" name="sharedEmail">
+	    <button onclick="shareWith()">Share!</button>
+	  </div>
+
+	</div>
+
+
 	<footer class="text-center">
 		<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 	</footer>
 
-    <!-- Scripts for This Page -->
-
-    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>
-    	<script src="scripts/note.js"></script>
-    	<script src="scripts/folder.js"></script>
-    	<script src="scripts/index.js"></script>
 </body>
 
 </html>
