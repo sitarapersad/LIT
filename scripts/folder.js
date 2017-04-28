@@ -18,6 +18,7 @@ var Folder = function(name, owner, ID)
   this.sharedUsers = [] ;
   this.files = {} ;
   this.folders = {} ;
+  this.templates = {};
 
   // Other details to be filled out at a more relaxed time
   this.createDate = 0;
@@ -65,6 +66,29 @@ var Folder = function(name, owner, ID)
     this.name = newName;
   }
 
+  /*
+   * Returns true if there are subfolders within this folder. Otherwise, false.
+   */
+
+  this.hasFolders = function(){
+    return Object.keys(this.folders).length == 0;
+  }
+
+  /*
+   * Returns true if there are files within this folder. Otherwise, false.
+   */
+
+  this.hasFiles = function(){
+    return Object.keys(this.files).length == 0;
+  }
+
+  /*
+   * Returns true if there are templates within this folder. Otherwise, false.
+   */
+
+  this.hasTemplates = function(){
+    return Object.keys(this.templates).length == 0;
+  }
 
   /* 
    * Given an ID, return the Folder object corresponding to the ID if it exists

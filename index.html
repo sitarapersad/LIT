@@ -26,40 +26,47 @@
 
 	$(document).ready( function() {
 
-		var currentFolder = new Folder('Home', 'Owner', folderCount);
-		folderCount += 1;
+		if (localStorage.getItem('CURRENTFOLDER') == null){
+			console.log('No current folder set. Creating dummy files')
+			var currentFolder = new Folder('Home', 'Owner', folderCount);
+			folderCount += 1;
 
-		var cancerFolder = new Folder('Cancer', 'Owner', folderCount);
+			var cancerFolder = new Folder('Cancer', 'Owner', folderCount);
 
-		folderCount += 1;
+			folderCount += 1;
 
-		var cancerFolder1 = new Folder('Breast Cancer', 'Owner', folderCount);
-		folderCount += 1;
+			var cancerFolder1 = new Folder('Breast Cancer', 'Owner', folderCount);
+			folderCount += 1;
 
-		var cancerFolder2 = new Folder('Lung Cancer', 'Owner', folderCount);
-		folderCount += 1;
+			var cancerFolder2 = new Folder('Lung Cancer', 'Owner', folderCount);
+			folderCount += 1;
 
-		cancerFolder.addFolder(cancerFolder1);
-		cancerFolder.addFolder(cancerFolder2);
+			cancerFolder.addFolder(cancerFolder1);
+			cancerFolder.addFolder(cancerFolder2);
 
-		var HIVFolder = new Folder('HIV', 'Owner', folderCount);
-		folderCount += 1
+			var HIVFolder = new Folder('HIV', 'Owner', folderCount);
+			folderCount += 1
 
-		var thyroidFolder = new Folder('Thyroid', 'Owner', folderCount);
-		folderCount += 1
+			var thyroidFolder = new Folder('Thyroid', 'Owner', folderCount);
+			folderCount += 1
 
-		var titrationFile = new Note('Titration', 'Owner', fileCount);
-		fileCount += 1
+			var titrationFile = new Note('Titration', 'Owner', fileCount);
+			fileCount += 1
 
-		var PCRFile = new Note('PCR ', 'Owner', fileCount);
-		fileCount += 1
+			var PCRFile = new Note('PCR ', 'Owner', fileCount);
+			fileCount += 1
 
-		currentFolder.addFolder(cancerFolder);
-		currentFolder.addFolder(HIVFolder);
-		currentFolder.addFolder(thyroidFolder);
+			currentFolder.addFolder(cancerFolder);
+			currentFolder.addFolder(HIVFolder);
+			currentFolder.addFolder(thyroidFolder);
 
-		currentFolder.addFile(titrationFile);
-		currentFolder.addFile(PCRFile);
+			currentFolder.addFile(titrationFile);
+			currentFolder.addFile(PCRFile);
+		}
+		else{
+			currentFolder = localStorage.getItem('CURRENTFOLDER');
+		}
+		
 
 		folderChain.push(currentFolder);
 
@@ -125,6 +132,9 @@
 	function saveFolderName(folderID){
 		var changeFolder = folderChain[folderChain.length-1].getFolder(folderID);
 		var newName = document.getElementById("folderName_"+folderID).value;
+		if (newName.length==0){
+			newName = 'Untitled';
+		}
 		changeFolder.updateName(newName);
 	}
 
@@ -132,41 +142,11 @@
 		var changeFile = folderChain[folderChain.length-1].getFile(fileID);
 		console.log(changeFile);
 		var newName = document.getElementById("fileName_"+fileID).value;
+		if (newName.length==0){
+			newName = 'Untitled';
+		}
 		changeFile.updateName(newName);
 	}
-
-
-	function openFolder(newFolderID){
-		// Clear the current folders from the page
-
-		$('#folderContainer').empty();
-		$('#fileContainer').empty();
-		$('#templateContainer').empty();
-		// change currentFolder to the new folder
-		subFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
-		folderChain.push(subFolder);
-		// Load the subfolders and subfiles
-		console.log('Opening '+folderChain[folderChain.length-1].ID);
-		for (var key in subFolder.folders) {
-			newFolder = subFolder.folders[key];
-			console.log(subFolder.folders[key]);
-			drawFolder(newFolder);
-		};
-
-		for (var key in subFolder.files) {
-			newFile = subFolder.files[key];
-			console.log(subFolder.files[key]);
-			drawFile(newFile);
-		}
-
-		var activeFolders = "Home ";
-		for (var i=1; i<folderChain.length; i++) {
-			folder = folderChain[i];
-			activeFolders += "> "+folder.name +" ";
-		}
-
-		document.getElementById("folderChain").innerHTML = activeFolders;
-	};
 
 	function openFile(newFileID){
 		// Open the URL for the file editor, need to find a way to pass data about the ID
@@ -207,47 +187,72 @@
 	};
 
 	/*
-	 * Move up one layer in the directory
+	 * Move up n layers in the directory
 	 */
-/*
-	 * Move up one layer in the directory
-	 */
-	function moveUp(){
-		if (folderChain.length > 1){
-			$('#folderContainer').empty();
-			$('#fileContainer').empty();
-			$('#templateContainer').empty();
-
+	function moveUp(n){
+		for (i=0; i<folderChain.length-n; i++){
 			folderChain.pop();
-			subFolder = folderChain[folderChain.length-1];
-			console.log('Moving up into '+ subFolder.ID);
+			console.log('Popping');
+			console.log(folderChain[folderChain.length-1].ID);
+		}
+		openTopStackFolder();
+	};
 
+
+	function openFolder(newFolderID){
+		// change currentFolder to the new folder
+		subFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
+		folderChain.push(subFolder);
+		// Load the subfolders and subfiles
+		openTopStackFolder();
+	};
+
+	function openTopStackFolder(){
+		$('#folderContainer').empty();
+		$('#fileContainer').empty();
+		$('#templateContainer').empty();
+		var subFolder = folderChain[folderChain.length-1]
+		console.log('Opening '+subFolder.ID);
+		if (true){
 			for (var key in subFolder.folders) {
 				newFolder = subFolder.folders[key];
 				console.log(subFolder.folders[key]);
 				drawFolder(newFolder);
-			};
+				$('#emptyFolder').hide();
+			}
+		}
+		else{
+			console.log('No subfolders.');
+			$('#emptyFolder').show();
+		}
 
+		if(true){
 			for (var key in subFolder.files) {
 				newFile = subFolder.files[key];
 				console.log(subFolder.files[key]);
 				drawFile(newFile);
-			}
+				$('#emptyFile').hide();
+			}	
+		}
+		else{
+			console.log('No files in folder.')
+			$('#emptyFile').show();			
+		}
 
-			var activeFolders = "Home ";
-			for (var i=1; i<folderChain.length; i++){
-				folder = folderChain[i];
-				activeFolders += "> "+folder.name+" ";
-			}
-
-			document.getElementById("folderChain").innerHTML = activeFolders;
+		// Draw in templates contained in folder
+		var activeFolders = '<input class="btn btn-primary" type="button" onclick="moveUp(0)" id="level0" value="Home">';
+		for (var i=1; i<folderChain.length; i++) {
+			folder = folderChain[i];
+			activeFolders += '<span class="glyphicon glyphicon-chevron-right"></span><input class="btn btn-primary" type="button" onclick="moveUp('+i+')" id="level'+i+'" value="'+folder.name+'">';
 		};
+		document.getElementById("folderChain").innerHTML = activeFolders;
 	};
+
 
 	// <!-- Event Handlers -->
 	function drawFolder(folderToAdd){
 		console.log('Adding folder to view');
-		$('#emptyFolder').remove();
+		$('#emptyFolder').hide();
 		var div = document.createElement("div");
 		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
 		// div.setAttribute("draggable", "true");
@@ -260,6 +265,7 @@
 		div.style.background = "white";
 		div.style.margin = "25px";
 		div.style.padding = "0px";
+		div.style.borderStyle = "solid";
 
 
 		var table = document.createElement("table");
@@ -271,6 +277,8 @@
 		img_cell.style.padding = "0px";
 		img_cell.innerHTML = "<img src='images/folder.png' style='width:100px; height:100px; cursor:pointer;'>";
 		img_cell.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
+		// img_cell.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
+
 
 		var details_row = table.insertRow(1);
 		var input_cell = details_row.insertCell(0);
@@ -322,11 +330,13 @@
 			// "<div class='container filename text-center'> <div class='row'><div class='col-lg-8'><input type='text' name='name' placeholder='Untitled' value='Untitled'></div> <div class='col-lg-1'>A</div> <div class='col-lg-1'> B </div> </div> </div>";
 
 		console.log('GOT HERE');
+
 		document.getElementById("folderContainer").appendChild(div);
+		document.getElementById("folderName_"+folderToAdd.ID).focus();
 	};
 
 	function drawFile(fileToAdd){
-		$('#emptyFile').remove();
+		$('#emptyFile').hide();
 		var div = document.createElement("div");
 		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
 		// div.setAttribute("draggable","true");
@@ -360,6 +370,7 @@
 		input_name.setAttribute('onKeyUp', "saveFileName('"+fileToAdd.ID+"')");
 		input_name.id = "fileName_"+fileToAdd.ID;
 		input_cell.appendChild(input_name);
+
 
 		div.appendChild(table);
 
@@ -398,11 +409,12 @@
 
 		div.appendChild(options);
 		document.getElementById("fileContainer").appendChild(div);
+		document.getElementById("fileName_"+fileToAdd.ID).focus();
 	};
 
 
 	function drawTemplate(templateToAdd){
-		$('#emptyTemplate').remove();
+		$('#emptyTemplate').hide();
 		var div = document.createElement("div");
 		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
 		// div.setAttribute("draggable","true");
@@ -474,6 +486,7 @@
 
 		div.appendChild(options);
 		document.getElementById("templateContainer").appendChild(div);
+		document.getElementById("templateName_"+fileToAdd.ID).focus();
 	};
 
 
@@ -485,11 +498,11 @@
 	function closeShareDialog(){
 		var modal = document.getElementById('shareDialog');
 		modal.style.display = "none";
-	}
+	};
 
 	function shareWith(){
 		document.getElementById("shareDialog").style.display = "none";
-
+	};
 /**
 		var div = document.createElement("div");
 		div.innerHTML = "Success!";
@@ -500,7 +513,7 @@
 		}, 1000);
 		**/
 
-	};
+
 
 
 
@@ -551,27 +564,27 @@
 		<div class="col-md-10" id="mainBody">
 			<div class="container">
 				<div class="row">
-					<span class="heading"> <span class="glyphicon glyphicon-arrow-up" style="cursor: pointer;" onclick="moveUp()"></span> Folders</span>
+					<span class="heading">Folders</span>
 				</div>
 				<div class="row" id="folderChain" style="height: 50px; padding-left: 30px;"> Home  </div>
+				<div class="col-md-12" style="line-height: 100px;" id="emptyFolder"> You haven't added any folders yet! :( </div>
 				<div class="row" id="folderContainer" style="min-height: 100px;">
-					<div class="col-md-12" style="line-height: 100px;" id="emptyFolder"> You haven't added any folders yet! :( </div>
+					<!-- Icons for folders created go here -->
 				</div>
 				<div class="row">
 					<span class="heading">Files</span>
 				</div>
+				<div class="col-md-12" style="line-height: 100px;" id="emptyFile"> You haven't added any files yet! :( </div>
 				<div class="row" id="fileContainer" style="min-height: 100px;">
-					<div class="col-md-12" style="line-height: 100px;" id="emptyFile"> You haven't added any files yet! :(
-					</div>
+					<!-- Icons for notes created go here -->
 				</div>
 
 				<div class="row">
 					<span class="heading">Templates</span>
-
 				</div>
+				<div id="emptyTemplate" class="col-md-12" style="line-height: 100px;" > You haven't created any templates yet! :( </div>
 				<div class="row" id="templateContainer" style="min-height: 100px;">
-					<div id="emptyTemplate" class="col-md-12" style="line-height: 100px;" >
-					You haven't created any templates yet! :( </div>
+					<!-- Icons for templates created go here -->
 				</div>
 			</div>
 		</div>
