@@ -84,6 +84,8 @@
 
 		var PCRTemplate = new Note('PCR', 'Owner', fileCount);
 		drawTemplate(PCRTemplate);
+
+		document.activeElement.blur();
 	});
 
 	$("body").click	( function(e)
@@ -199,6 +201,19 @@
 	};
 
 
+	/*
+	 * Given the ID of a folder on the page, highlight the folder and provide additional options
+	 */
+	function openFolderDetails(newFolderID){
+		console.log('Clicked folder');
+		console.log(document.getElementById("folderTable"+newFolderID))
+		document.getElementById("folderTable"+newFolderID).style.boxShadow = "2px 2px 2px blue";
+	};
+
+	function openFileDetails(newFileID){
+
+	};
+
 	function openFolder(newFolderID){
 		// change currentFolder to the new folder
 		subFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
@@ -246,6 +261,7 @@
 			activeFolders += '<span class="glyphicon glyphicon-chevron-right"></span><input class="btn btn-primary" type="button" onclick="moveUp('+i+')" id="level'+i+'" value="'+folder.name+'">';
 		};
 		document.getElementById("folderChain").innerHTML = activeFolders;
+		document.activeElement.blur();
 	};
 
 
@@ -265,10 +281,10 @@
 		div.style.background = "white";
 		div.style.margin = "25px";
 		div.style.padding = "0px";
-		div.style.borderStyle = "solid";
-
 
 		var table = document.createElement("table");
+		table.id = "folderTable"+folderToAdd.ID;
+		table.style.boxShadow = "2px 2px 2px #66767c";
 		var img_row = table.insertRow(0);
 		var img_cell = img_row.insertCell(0);
 		img_cell.style.height = "125px";
@@ -277,7 +293,7 @@
 		img_cell.style.padding = "0px";
 		img_cell.innerHTML = "<img src='images/folder.png' style='width:100px; height:100px; cursor:pointer;'>";
 		img_cell.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
-		// img_cell.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
+		img_cell.setAttribute("onclick", "openFolderDetails('"+folderToAdd.ID+"')");
 
 
 		var details_row = table.insertRow(1);
@@ -294,7 +310,7 @@
 		div.appendChild(table);
 
 		var options = document.createElement("div");
-		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px; cursor:pointer;'></span>";
 		options.style.marginRight = "-10px";
 		options.setAttribute("class", "options");
 		options.id = "options_"+folderToAdd.ID;
@@ -308,7 +324,7 @@
 			    div.id = "sharing-options";
 			    div.style.width = "300px";
 			    div.fontFamily = "PT Sans";
-			    div.style.border = "thin solid #bababa";
+			    // div.style.border = "thin solid #bababa";
 			    div.style.backgroundColor = "white";
 			    div.style.top = e.clientY+"px";
 			    div.style.left = e.clientX+10+"px";
@@ -329,10 +345,12 @@
 		div.appendChild(options);
 			// "<div class='container filename text-center'> <div class='row'><div class='col-lg-8'><input type='text' name='name' placeholder='Untitled' value='Untitled'></div> <div class='col-lg-1'>A</div> <div class='col-lg-1'> B </div> </div> </div>";
 
-		console.log('GOT HERE');
 
 		document.getElementById("folderContainer").appendChild(div);
 		document.getElementById("folderName_"+folderToAdd.ID).focus();
+		document.getElementById("folderName_"+folderToAdd.ID).select();
+
+		console.log(document.getElementById("folderName_"+folderToAdd.ID));
 	};
 
 	function drawFile(fileToAdd){
@@ -349,6 +367,8 @@
 
 
 		var table = document.createElement("table");
+		table.id = "fileTable"+fileToAdd.ID;
+		table.style.boxShadow = "2px 2px 2px #66767c";
 		var img_row = table.insertRow(0);
 		var img_cell = img_row.insertCell(0);
 		img_cell.style.height = "150px";
@@ -357,6 +377,7 @@
 		img_cell.style.padding = "0px";
 
 		img_cell.setAttribute("ondblclick", "openFile('"+fileToAdd.ID+"')");
+		img_cell.setAttribute("onclick", "openFileDetails('"+fileToAdd.ID+"')");
 		img_cell.innerHTML = "<img src='images/file.png' style='width:120px; height:120px; cursor:pointer;'>";
 
 
@@ -376,7 +397,7 @@
 
 		var options = document.createElement("div");
 		options.style.marginRight = "-10px";
-		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
+		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px; cursor:pointer;'></span>";
 		options.setAttribute("class", "options");
 
 
@@ -410,6 +431,7 @@
 		div.appendChild(options);
 		document.getElementById("fileContainer").appendChild(div);
 		document.getElementById("fileName_"+fileToAdd.ID).focus();
+		document.getElementById("fileName_"+fileToAdd.ID).select();
 	};
 
 
@@ -427,6 +449,7 @@
 
 
 		var table = document.createElement("table");
+		table.style.boxShadow = "2px 2px 2px #66767c";
 		var img_row = table.insertRow(0);
 		var img_cell = img_row.insertCell(0);
 		img_cell.style.height = "150px";
@@ -453,7 +476,7 @@
 
 		var options = document.createElement("div");
 		options.style.marginRight = "-10px";
-		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px;'></span>";
+		options.innerHTML = "<span lass='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px; cursor:pointer;'></span>";
 		options.setAttribute("class", "options");
 
 
@@ -486,7 +509,8 @@
 
 		div.appendChild(options);
 		document.getElementById("templateContainer").appendChild(div);
-		document.getElementById("templateName_"+fileToAdd.ID).focus();
+		document.getElementById("templateName_"+templateToAdd.ID).focus();
+		document.getElementById("templateName_"+templateToAdd.ID).select();
 	};
 
 
@@ -566,7 +590,7 @@
 				<div class="row">
 					<span class="heading">Folders</span>
 				</div>
-				<div class="row" id="folderChain" style="height: 50px; padding-left: 30px;"> Home  </div>
+				<div class="row" id="folderChain" style="height: 50px; padding-left: 30px;"> <input class="btn btn-primary" type="button" onclick="moveUp(0)" id="level0" value="Home"> </div>
 				<div class="col-md-12" style="line-height: 100px;" id="emptyFolder"> You haven't added any folders yet! :( </div>
 				<div class="row" id="folderContainer" style="min-height: 100px;">
 					<!-- Icons for folders created go here -->
