@@ -182,6 +182,21 @@ var Folder = function(name, owner, ID)
 
   this.restore = function(){
     this.recycled = false;
+
+    for (var key in this.folders) {
+      newFolder = this.folders[key];  
+      newFolder.restore()
+    }
+
+    for (var key in this.files) {
+      newFile = this.files[key];  
+      newFile.restore()
+    }
+
+    for (var key in this.templates) {
+      newTemplate = this.templates[key];  
+      newTemplate.restore()
+    }
   }
   
 }

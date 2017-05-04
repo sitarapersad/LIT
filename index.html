@@ -29,6 +29,9 @@
 	var activeDocument = false;
 	var trashFolder = new Folder('Recycle Bin', 'Owner', folderCount);
 	fileCount += 1;
+
+	var trashMode = false;
+
 	$(document).ready( function() {
 
 		if (localStorage.getItem('CURRENTFOLDER') == null){
@@ -146,13 +149,14 @@
 
 	function drag(e){
 		e.preventDefault();
-		console.log($(e.target).parent());
+		// console.log($(e.target).parent());
 	}
 
 	function drop(e){
-		console.log(e.dataTransfer);
-		console.log(e.dataTransfer.getData("Text"));
-		alert('Added to ' + e.target.id+ ' !');
+		e.preventDefault();
+		// console.log(e.dataTransfer);
+		// console.log(e.dataTransfer.getData("Text"));
+		// alert('Added to ' + e.target.id+ ' !');
 	}
 
 	function saveFolderName(folderID){
@@ -194,6 +198,8 @@
 		folderChain[folderChain.length-1].addFolder(newFolder);
 		folderCount += 1;
 		drawFolder(newFolder);
+		document.getElementById("folderName_"+newFolder.ID).focus();
+		document.getElementById("folderName_"+newFolder.ID).select();
 	};
 
 	function createFile(){
@@ -202,6 +208,8 @@
 		folderChain[folderChain.length-1].addFile(newFile);
 		fileCount += 1;
 		drawFile(newFile);
+		document.getElementById("fileName_"+newFile.ID).focus();
+		document.getElementById("fileName_"+newFile.ID).select();
 	};
 
 	function createTemplate(){
@@ -210,6 +218,8 @@
 		folderChain[folderChain.length-1].addTemplate(newTemplate);
 		templateCount += 1;
 		drawTemplate(newTemplate);
+		document.getElementById("templateName_"+newTemplate.ID).focus();
+		document.getElementById("templateName_"+newTemplate.ID).select();
 	};
 
 	/*
@@ -218,9 +228,14 @@
 	function moveUp(n){
 		for (i=0; i < folderChain.length-n-1; i++){
 			folderChain.pop();
-			console.log('Popping');
 			console.log(folderChain[folderChain.length-1].ID);
 		}
+		if (folderChain.length==1){
+			trashMode = false;
+			$('#newDocumentNav').show();
+		}
+
+		console.log(folderChain.length);
 		openTopStackFolder();
 	};
 
@@ -282,7 +297,7 @@
 			for (var key in subFolder.folders) {
 				newFolder = subFolder.folders[key];
 				console.log(subFolder.folders[key]);
-				if (!newFolder.isRecycled()){
+				if (!newFolder.isRecycled()|| trashMode){
 					drawFolder(newFolder);
 					$('#emptyFolder').hide();
 				}
@@ -404,8 +419,9 @@
 	// Drag/Drop events
 
 	function dragstart(ev){
-		console.log('Start dragging '+ev.target.id);
-		ev.dataTransfer.setData("Text", ev.target.id);
+		ev.preventDefault();
+		// console.log('Start dragging '+ev.target.id);
+		// ev.dataTransfer.setData("Text", ev.target.id);
 	}
 	function allowDrop(ev)
 	{
@@ -534,8 +550,8 @@
 			    div.id = "sharing-options";
 			    div.style.width = "300px";
 			    div.fontFamily = "PT Sans";
-			    // div.style.border = "thin solid #bababa";
-			    div.style.backgroundColor = "white";
+			    div.style.border = "thin solid #bababa";
+			    div.style.backgroundColor = "#fffcf7";
 			    div.style.top = e.clientY+"px";
 			    div.style.left = e.clientX+10+"px";
 			    div.style.position = "fixed";
@@ -565,15 +581,21 @@
 			    }
 			    else{
 				    var deleteRow = createRow();
-				    deleteRow.innerHTML = '<span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Send To Trash';
+				    deleteRow.innerHTML = '<span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Send To Recycle Bin';
 				    deleteRow.setAttribute('onclick', "sendToTrash('"+docType+"','"+eltToAdd.ID+"')");
 
 				    var shareRow = createRow();
 				    shareRow.innerHTML = '<span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... '
 				    shareRow.setAttribute('onclick', 'openShareDialog()');
 
+				    var moveRow = createRow();
+				    moveRow.innerHTML = '<span class="glyphicon glyphicon-move" style="padding-right: 15px;"></span> Move to ... '
+				    moveRow.setAttribute('onclick', 'openMoveDialog()');
+
+
 				    nav.appendChild(deleteRow);
 				    nav.appendChild(shareRow);
+				    nav.appendChild(moveRow);
 			    }
 
 			    div.appendChild(nav);
@@ -591,9 +613,6 @@
 		div.appendChild(options);
 
 		document.getElementById(docType+"Container").appendChild(div);
-		document.getElementById(docType+"Name_"+eltToAdd.ID).focus();
-		document.getElementById(docType+"Name_"+eltToAdd.ID).select();
-
 		console.log(document.getElementById(docType+"Name_"+eltToAdd.ID));
 	};
 
@@ -604,6 +623,16 @@
 
 	function closeShareDialog(){
 		var modal = document.getElementById('shareDialog');
+		modal.style.display = "none";
+	};
+
+	function openMoveDialog(){
+		var modal = document.getElementById('moveDialog');
+		 modal.style.display = "block";
+	};
+
+	function closeMoveDialog(){
+		var modal = document.getElementById('moveDialog');
 		modal.style.display = "none";
 	};
 
@@ -646,27 +675,33 @@
 		document.getElementById(docType+"_"+eltID).remove();
 	}
 
-	function restoreDocument(docType, elt){
-		console.log('Removing '+elt.ID);
-		docType = 'folder';
-		var restoreElt = false; 
+	function restoreDocument(docType, eltID){
+		console.log('Removing '+eltID);
+		var restoreElt = false;
 		if (docType == 'folder'){
-			folderChain[0].addFolder(elt);
+			restoreElt = folderChain[folderChain.length-1].getFolder(eltID);
+			restoreElt.parentFolder.deleteFolder(restoreElt);
+			restoreElt.restore();
+			folderChain[0].addFolder(restoreElt);
 
 		};
 		if (docType == 'file'){
-			restoreElt = trashFolder.getFile(eltID);
+			restoreElt = folderChain[folderChain.length-1].getFile(eltID);
+			restoreElt.parentFolder.deleteFile(restoreElt);
+			restoreElt.restore();
 			folderChain[0].addFile(restoreElt);
 		};
 		if (docType == 'template'){
-			restoreElt = trashFolder.getTemplate(eltID);
+			restoreElt = folderChain[folderChain.length-1].getTemplate(eltID);
+			restoreElt.parentFolder.deleteTemplate(restoreElt);
+			restoreElt.restore();
 			folderChain[0].addFolder(restoreElt);
 		};
-		if (!recycleElt){
+		if (!restoreElt){
 			console.log('No docType detected when deleting element');
 		}
 		else{
-			console.log(recycleElt);
+			console.log(restoreElt);
 		}
 
 		
@@ -675,7 +710,9 @@
 
 
 	function openTrash(){
+		trashMode = true;
 		moveUp(0);
+		$('#newDocumentNav').hide();
 		$('#folderContainer').empty();
 		$('#fileContainer').empty();
 		$('#templateContainer').empty();
@@ -713,14 +750,20 @@
 	</div>
 	<div class="container" id="mainContainer">
 		<div class="col-md-2" id="sideNavigation">
-			<div class="row nav-option" onclick="createFolder()" id="newFileButton">
-			<span class="glyphicon glyphicon-folder-open" style="padding-right: 15px;"></span> New Notebook
+			<div id="newDocumentNav">
+				<div class="row nav-option" onclick="createFolder()" id="newFileButton">
+				<span class="glyphicon glyphicon-folder-open" style="padding-right: 15px;"></span> New Notebook
+				</div>
+				<div class="row nav-option" onclick="createFile()">
+				<span class="glyphicon glyphicon-file " style="padding-right: 15px;"></span> New Experiment
+				</div>
+				<div class="row nav-option" onclick="createTemplate()">
+				<i class="fa fa-flask" style="padding-right: 20px;"></i><!-- <span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span>  -->New Template
+				</div>
+				<hr>
 			</div>
-			<div class="row nav-option" onclick="createFile()">
-			<span class="glyphicon glyphicon-file " style="padding-right: 15px;"></span> New Experiment
-			</div>
-			<div class="row nav-option" onclick="createTemplate()">
-			<i class="fa fa-flask" style="padding-right: 20px;"></i><!-- <span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span>  -->New Template
+			<div class="row nav-option" onclick="moveUp(0)">
+			<span class="glyphicon glyphicon-home" style="padding-right: 15px;"></span> Home
 			</div>
 
 			<div class="row nav-option" onclick="openTrash()">
@@ -762,6 +805,22 @@
 			</div>
 		</div>
 	</div>
+
+
+	<!-- The Delete File Dialog Modal -->
+	<div id="moveDialog" class="modal">
+
+	  <!-- Modal content -->
+	  <div class="modal-content" id="moveDialogContent">
+	    <span class="close" onclick="closeMoveDialog()">&times;</span>
+	    <h2> Are you sure you want to delete this file?</h2>
+	    You may recover this file from the Recycle Bin if you change your mind.
+ 	    <button onclick="confirmDelete()"> Move </button> <button onclick="closeMoveDialog()"> Cancel </button>
+
+	  </div>
+
+	</div>
+
 
 
 	<!-- The Share Dialog Modal -->
