@@ -26,6 +26,14 @@
 	padding-top: 20px;
 	font-size: 24px;
 }
+/*Canvas for covering the document images*/
+.canvases {
+    width: 150px;
+    height:175px;
+	border:1px solid;
+	position: absolute;
+     /*pointer-events: none;*/
+ }
 
 #fileDirectory{
 	font-size: 30px;

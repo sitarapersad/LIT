@@ -10,7 +10,7 @@
 
 var Folder = function(name, owner, ID)
 {
-  this.ID = owner+ID;
+  this.ID = 'Folder_'+owner+ID;
 
   // Owner (should be an instance of the User class. Right now, it's a string) of the document
   this.owner = owner;
@@ -19,7 +19,8 @@ var Folder = function(name, owner, ID)
   this.files = {} ;
   this.folders = {} ;
   this.templates = {};
-
+  this.parentFolder = null;
+  this.recycled = false;
   // Other details to be filled out at a more relaxed time
   this.createDate = 0;
   this.modifiedDate = 0;
@@ -39,6 +40,7 @@ var Folder = function(name, owner, ID)
     var key = addNote.ID
     this.files[key] = addNote; 
     console.log('Add file' +addNote.ID+ ' into '+ this.ID);
+    addNote.parentFolder = this;
   }
 
   /* 
@@ -48,7 +50,46 @@ var Folder = function(name, owner, ID)
     var key = addFolder.ID;
     this.folders[key] = addFolder;
     console.log('Add folder' +addFolder.ID+ ' into '+ this.ID);
+    addFolder.parentFolder = this;
   }
+
+  /* 
+   * Add another folder to the folder.
+   */
+  this.addTemplate = function(addTemplate)  {
+    var key = addTemplate.ID;
+    this.templates[key] = addTemplate;
+    console.log('Add template' +addTemplate.ID+ ' into '+ this.ID);
+    addTemplate.parentFolder = this;
+  }
+
+  /* 
+   * Delete a note to the folder.
+   */
+  this.deleteFile = function(addNote)  {
+    var key = addNote.ID;
+    delete this.files[key];
+    console.log('Deleted file' +addNote.ID+ ' from '+ this.ID);
+  }
+
+  /* 
+   * Add another folder to the folder.
+   */
+  this.deleteFolder = function(addFolder)  {
+    var key = addFolder.ID;
+    delete this.folders[key];
+    console.log('Deleted folder ' +addFolder.name+ ' from '+ this.ID);
+  }
+
+  /* 
+   * Add another folder to the folder.
+   */
+  this.deleteTemplate = function(addTemplate)  {
+    var key = addTemplate.ID;
+    delete this.templates[key];
+    console.log('Deleted template' +addTemplate.ID+ ' from '+ this.ID);
+  }
+
 
   /* 
    * Given a valid User object, user, adds this user to the set of
@@ -116,5 +157,32 @@ var Folder = function(name, owner, ID)
     }
   }
 
+  this.recycle = function(){
+    this.recycled = true;
+
+    for (var key in this.folders) {
+      newFolder = this.folders[key];  
+      newFolder.recycle()
+    }
+
+    for (var key in this.files) {
+      newFile = this.files[key];  
+      newFile.recycle()
+    }
+
+    for (var key in this.templates) {
+      newTemplate = this.templates[key];  
+      newTemplate.recycle()
+    }
+  }
+
+  this.isRecycled = function(){
+    return this.recycled;
+  }
+
+  this.restore = function(){
+    this.recycled = false;
+  }
+  
 }
   

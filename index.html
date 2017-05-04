@@ -14,16 +14,21 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>
+	<script src="https://use.fontawesome.com/9431531002.js"></script>
 	<script src="scripts/note.js"></script>
 	<script src="scripts/folder.js"></script>
+	<script src="scripts/template.js"></script>
 		<script type="text/javascript">
 
 	var appendToPath = "file:///C:/Users/Sitara/LIT/";
 	var folderCount = 0;
 	var fileCount = 0;
+	var templateCount = 0;
 	var shareDialogOpen =  false;
-	var folderChain = []
-
+	var folderChain = [];
+	var activeDocument = false;
+	var trashFolder = new Folder('Recycle Bin', 'Owner', folderCount);
+	fileCount += 1;
 	$(document).ready( function() {
 
 		if (localStorage.getItem('CURRENTFOLDER') == null){
@@ -56,34 +61,52 @@
 			var PCRFile = new Note('PCR ', 'Owner', fileCount);
 			fileCount += 1
 
+			var PCRTemplate = new Template('PCR', 'Owner', fileCount);
+			templateCount += 1
+
 			currentFolder.addFolder(cancerFolder);
 			currentFolder.addFolder(HIVFolder);
 			currentFolder.addFolder(thyroidFolder);
 
 			currentFolder.addFile(titrationFile);
 			currentFolder.addFile(PCRFile);
+
+			currentFolder.addTemplate(PCRTemplate);
 		}
 		else{
 			currentFolder = localStorage.getItem('CURRENTFOLDER');
 		}
 		
 
+		
+		// currentFolder = Storage.getHomeFolder()
+
 		folderChain.push(currentFolder);
 
 		for (var key in currentFolder.folders) {
 			newFolder = currentFolder.folders[key];
 			console.log(currentFolder.folders[key]);
-			drawFolder(newFolder);
+			if (!newFolder.isRecycled()){
+				drawFolder(newFolder);
+			}
+			
 		}
 
 		for (var key in currentFolder.files) {
 			newFile = currentFolder.files[key];
 			console.log(currentFolder.files[key]);
-			drawFile(newFile);
+			if (!newFile.isRecycled()){
+				drawFile(newFile);
+			}
 		}
 
-		var PCRTemplate = new Note('PCR', 'Owner', fileCount);
-		drawTemplate(PCRTemplate);
+		for (var key in currentFolder.templates) {
+			newTemplate = currentFolder.templates[key];
+			console.log(currentFolder.templates[key]);
+			if (!newTemplate.isRecycled()){
+				drawTemplate(newTemplate);
+			}
+		}
 
 		document.activeElement.blur();
 	});
@@ -95,11 +118,10 @@
 	    	console.log("DISPLAY OPTIONS");
 	    }
 	    else{
-	    	console.log('REMOVE');
-	    	console.log($('#sharing-options'));
 	    	$("#sharing-options").remove()
 	    	shareDialogOpen = false;
 	    }
+
 	  }
 	);
 
@@ -108,11 +130,13 @@
 	    if (event.target == modal) {
 	        modal.style.display = "none";
 	    }
-	}
-
-	function changeURL(newUrl){
-		console.log(appendToPath +newUrl);
-		document.location.href = appendToPath +newUrl;
+	    if (activeDocument){
+	    	console.log(event.target);
+	    	if (event.target == document.getElementById(activeDocument)){
+				document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px #66767c";
+			}
+	    }
+		
 	}
 
 	// Allow files and folders to be dropped into other folders
@@ -181,18 +205,18 @@
 	};
 
 	function createTemplate(){
-		newFile = new Note('Untitled', 'Owner', fileCount);
-		console.log('Creating file in '+folderChain[folderChain.length-1].ID);
-		// folderChain[folderChain.length-1].addFile(newFile);
-		// fileCount += 1;
-		drawTemplate(newFile);
+		newTemplate = new Template('Untitled', 'Owner', templateCount);
+		console.log('Creating template '+templateCount+' in '+folderChain[folderChain.length-1].ID);
+		folderChain[folderChain.length-1].addTemplate(newTemplate);
+		templateCount += 1;
+		drawTemplate(newTemplate);
 	};
 
 	/*
-	 * Move up n layers in the directory
+	 * Move up to layer n in the directory
 	 */
 	function moveUp(n){
-		for (i=0; i<folderChain.length-n; i++){
+		for (i=0; i < folderChain.length-n-1; i++){
 			folderChain.pop();
 			console.log('Popping');
 			console.log(folderChain[folderChain.length-1].ID);
@@ -205,14 +229,39 @@
 	 * Given the ID of a folder on the page, highlight the folder and provide additional options
 	 */
 	function openFolderDetails(newFolderID){
-		console.log('Clicked folder');
-		console.log(document.getElementById("folderTable"+newFolderID))
-		document.getElementById("folderTable"+newFolderID).style.boxShadow = "2px 2px 2px blue";
+		console.log("Clicked folderTable"+newFolderID);
+		if (activeDocument){
+			document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px #66767c";
+		}
+		if (activeDocument != "folderTable"+newFolderID){
+			activeDocument = "folderTable"+newFolderID;
+			document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px blue";
+			// openNavOptions('folder',newFolderID);
+		}
+		else{
+			activeDocument = false;
+
+		}
+		
 	};
 
 	function openFileDetails(newFileID){
-
+		console.log("Clicked fileTable"+newFileID);
+		if (activeDocument){
+			document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px #66767c";
+		}
+		activeDocument = "fileTable"+newFileID;
+		document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px blue";
 	};
+
+	function openTemplateDetails(newTemplateID){
+		console.log("Clicked templateTable"+newTemplateID);
+		if (activeDocument){
+			document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px #66767c";
+		}
+		activeDocument = "templateTable"+newTemplateID;
+		document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px blue";
+	};	
 
 	function openFolder(newFolderID){
 		// change currentFolder to the new folder
@@ -229,6 +278,75 @@
 		var subFolder = folderChain[folderChain.length-1]
 		console.log('Opening '+subFolder.ID);
 		if (true){
+			// If the folder contains subfolders, draw them
+			for (var key in subFolder.folders) {
+				newFolder = subFolder.folders[key];
+				console.log(subFolder.folders[key]);
+				if (!newFolder.isRecycled()){
+					drawFolder(newFolder);
+					$('#emptyFolder').hide();
+				}
+				
+			}
+		}
+		else{
+			console.log('No subfolders.');
+			$('#emptyFolder').show();
+		}
+
+		if(true){
+			// If the folder contains files, draw them
+			for (var key in subFolder.files) {
+				newFile = subFolder.files[key];
+				console.log(subFolder.files[key]);
+				if (!newFile.isRecycled()){
+					drawFile(newFile);
+					$('#emptyFile').hide();
+				}
+				
+			}	
+		}
+		else{
+			console.log('No files in folder.')
+			$('#emptyFile').show();			
+		}
+
+		// Draw in templates contained in folder
+		if(true){
+			// If the folder contains files, draw them
+			for (var key in subFolder.templates) {
+				newTemplate = subFolder.templates[key];
+				console.log(subFolder.templates[key]);
+				if (!newTemplate.isRecycled()){
+					drawTemplate(newTemplate);
+					$('#emptyFile').hide();		
+				}
+
+			}	
+		}
+		else{
+			console.log('No files in folder.')
+			$('#emptyFile').show();			
+		}
+
+
+		var activeFolders = '<input class="btn btn-primary" type="button" onclick="moveUp(0)" id="level0" value="Home">';
+		for (var i=1; i<folderChain.length; i++) {
+			folder = folderChain[i];
+			activeFolders += '<span class="glyphicon glyphicon-chevron-right"></span><input class="btn btn-primary" type="button" onclick="moveUp('+i+')" id="level'+i+'" value="'+folder.name+'">';
+		};
+		document.getElementById("folderChain").innerHTML = activeFolders;
+		document.activeElement.blur();
+	};
+
+	function openTopStackTrashFolder(){
+		$('#folderContainer').empty();
+		$('#fileContainer').empty();
+		$('#templateContainer').empty();
+		var subFolder = folderChain[folderChain.length-1]
+		console.log('Opening '+subFolder.ID);
+		if (true){
+			// If the folder contains subfolders, draw them
 			for (var key in subFolder.folders) {
 				newFolder = subFolder.folders[key];
 				console.log(subFolder.folders[key]);
@@ -242,11 +360,14 @@
 		}
 
 		if(true){
+			// If the folder contains files, draw them
 			for (var key in subFolder.files) {
 				newFile = subFolder.files[key];
 				console.log(subFolder.files[key]);
 				drawFile(newFile);
 				$('#emptyFile').hide();
+				
+				
 			}	
 		}
 		else{
@@ -255,6 +376,22 @@
 		}
 
 		// Draw in templates contained in folder
+		if(true){
+			// If the folder contains files, draw them
+			for (var key in subFolder.templates) {
+				newTemplate = subFolder.templates[key];
+				console.log(subFolder.templates[key]);
+				drawTemplate(newTemplate);
+				$('#emptyFile').hide();		
+
+			}	
+		}
+		else{
+			console.log('No files in folder.')
+			$('#emptyFile').show();			
+		}
+
+
 		var activeFolders = '<input class="btn btn-primary" type="button" onclick="moveUp(0)" id="level0" value="Home">';
 		for (var i=1; i<folderChain.length; i++) {
 			folder = folderChain[i];
@@ -262,39 +399,105 @@
 		};
 		document.getElementById("folderChain").innerHTML = activeFolders;
 		document.activeElement.blur();
-	};
+	};	
 
+	// Drag/Drop events
 
-	// <!-- Event Handlers -->
+	function dragstart(ev){
+		console.log('Start dragging '+ev.target.id);
+		ev.dataTransfer.setData("Text", ev.target.id);
+	}
+	function allowDrop(ev)
+	{
+		ev.preventDefault();
+	}
+
+	function drag(ev)
+	{
+	// console.log('Dragging DIV');
+	// console.log(ev.target.id);
+	// console.log(ev.dataTransfer.getData("Text"));
+	// ev.dataTransfer.setData("Text",ev.target.id);
+	}
+
+	function drop(ev){
+		ev.preventDefault();
+		var data=ev.dataTransfer.getData("Text");
+		console.log('Moving '+data+' to ');
+		console.log(ev.target);
+
+		if (ev.target.id != data) {
+			var img = document.getElementById(data);
+			img.parentNode.removeChild(img); 
+		}
+	}
+
+	//  Drawing folders, files and templates on screen
 	function drawFolder(folderToAdd){
 		console.log('Adding folder to view');
 		$('#emptyFolder').hide();
+		var docType = 'folder';
+		var upperDocType = 'Folder';
+		var eltToAdd = folderToAdd;
+		var img_src = 'notebook.png';
+
+		drawDocument(eltToAdd, docType, upperDocType, img_src);
+	}
+
+	function drawFile(fileToAdd){
+		$('#emptyFile').hide();
+		var docType = 'file';
+		var upperDocType = 'File';
+		var eltToAdd = fileToAdd;
+		var img_src = 'file.png';
+
+		drawDocument(eltToAdd, docType, upperDocType, img_src);
+	}
+
+	function drawTemplate(templateToAdd){
+		$('#emptyTemplate').hide();
+		var docType = 'template';
+		var upperDocType = 'Template';
+		var eltToAdd = templateToAdd;
+		var img_src = 'science.png';
+
+		drawDocument(eltToAdd, docType, upperDocType, img_src);
+	}
+
+	function drawDocument(eltToAdd, docType, upperDocType, img_src){
 		var div = document.createElement("div");
 		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
-		// div.setAttribute("draggable", "true");
-		// div.setAttribute("ondrop","drop(event)");
-		// div.setAttribute("ondragover", "allowDrop(event)");
-		div.id = "folder_"+folderToAdd.ID;
+
+		div.id = docType+"_"+eltToAdd.ID;
 
 		div.style.width = "150px";
-		div.style.height = "150px";
+		div.style.height = "175px";
 		div.style.background = "white";
 		div.style.margin = "25px";
 		div.style.padding = "0px";
+		div.style.position = "relative";
+
+		div.setAttribute("ondrag", "drag(event)");
+		div.setAttribute("ondragstart", "dragstart(event)");
+		div.setAttribute("ondrop", "drop(event)");
+		div.setAttribute("ondragover", "allowDrop(event)");
+		div.setAttribute("draggable", true);
 
 		var table = document.createElement("table");
-		table.id = "folderTable"+folderToAdd.ID;
+		table.setAttribute("draggable", false);
+
+		table.id = docType+"Table"+eltToAdd.ID;
 		table.style.boxShadow = "2px 2px 2px #66767c";
 		var img_row = table.insertRow(0);
 		var img_cell = img_row.insertCell(0);
-		img_cell.style.height = "125px";
+		img_cell.style.height = "150px";
 		img_cell.style.width = "150px";
 		img_cell.style.backgroundColor = "#c4c4d6";
 		img_cell.style.padding = "0px";
-		img_cell.innerHTML = "<img src='images/folder.png' style='width:100px; height:100px; cursor:pointer;'>";
-		img_cell.setAttribute("ondblclick", "openFolder('"+folderToAdd.ID+"')");
-		img_cell.setAttribute("onclick", "openFolderDetails('"+folderToAdd.ID+"')");
-
+		img_cell.innerHTML = "<img src='images/"+img_src+"' style='width:120px; height:120px; cursor:pointer;' draggable='false'>";
+		img_cell.setAttribute("ondblclick", "open"+upperDocType+"('"+eltToAdd.ID+"')");
+		img_cell.setAttribute("onclick", "open"+upperDocType+"Details('"+eltToAdd.ID+"')");
+		img_cell.setAttribute("draggable", false);
 
 		var details_row = table.insertRow(1);
 		var input_cell = details_row.insertCell(0);
@@ -302,18 +505,25 @@
 		var input_name = document.createElement("input");
 		input_name.setAttribute('class', 'text-center');
 		input_name.setAttribute('type', 'text');
-		input_name.setAttribute('value', folderToAdd.name);
-		input_name.setAttribute('onKeyUp', "saveFolderName('"+folderToAdd.ID+"')");
-		input_name.id = "folderName_"+folderToAdd.ID;
+		input_name.setAttribute('value', eltToAdd.name);
+		input_name.setAttribute('onKeyUp', "save"+upperDocType+"Name('"+eltToAdd.ID+"')");
+		input_name.id = docType+"Name_"+eltToAdd.ID;
 		input_cell.appendChild(input_name);
 
 		div.appendChild(table);
+
+		var canvas = document.createElement("canvas");        
+        canvas.className = 'canvases';
+        canvas.style.border = '2px solid red';
+        canvas.style.zIndex = 100; 
+
+        // div.appendChild(canvas);
 
 		var options = document.createElement("div");
 		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px; cursor:pointer;'></span>";
 		options.style.marginRight = "-10px";
 		options.setAttribute("class", "options");
-		options.id = "options_"+folderToAdd.ID;
+		options.id = "options_"+eltToAdd.ID;
 
 		$(options).on('click', '*', function(e){
 			if (!shareDialogOpen){
@@ -331,8 +541,44 @@
 			    div.style.position = "fixed";
 			    div.style.zIndex = 5;
 
-			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
-			    document.getElementById("folderContainer").appendChild(div);
+			    var nav=document.createElement("div");
+			    nav.className = "container text-left";
+			    nav.style.width = "300px";
+
+			    function createRow(){
+			    	var row = document.createElement("div");
+			    	row.className = "row nav-option";
+			    	return row;
+			    }
+ 
+			    if (eltToAdd.isRecycled()){
+			    	var restoreRow = createRow();
+				    restoreRow.innerHTML = '<span class="glyphicon glyphicon-ok" style="padding-right: 15px;"></span> Restore To My Notebook ';
+				    restoreRow.setAttribute('onclick', "restoreDocument('"+docType+"','"+eltToAdd.ID+"')");
+
+			    	var deleteRow = createRow();
+				    deleteRow.innerHTML = '<span class="glyphicon glyphicon-remove" style="padding-right: 15px;"></span> Delete Permanently';
+				    deleteRow.setAttribute('onclick', "sendToTrash('"+docType+"','"+eltToAdd.ID+"')");
+
+				    nav.appendChild(restoreRow);
+				    nav.appendChild(deleteRow);
+			    }
+			    else{
+				    var deleteRow = createRow();
+				    deleteRow.innerHTML = '<span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Send To Trash';
+				    deleteRow.setAttribute('onclick', "sendToTrash('"+docType+"','"+eltToAdd.ID+"')");
+
+				    var shareRow = createRow();
+				    shareRow.innerHTML = '<span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... '
+				    shareRow.setAttribute('onclick', 'openShareDialog()');
+
+				    nav.appendChild(deleteRow);
+				    nav.appendChild(shareRow);
+			    }
+
+			    div.appendChild(nav);
+
+			    document.getElementById(docType+"Container").appendChild(div);
 			   shareDialogOpen = true;
 			}
 			else{
@@ -343,176 +589,13 @@
 
 
 		div.appendChild(options);
-			// "<div class='container filename text-center'> <div class='row'><div class='col-lg-8'><input type='text' name='name' placeholder='Untitled' value='Untitled'></div> <div class='col-lg-1'>A</div> <div class='col-lg-1'> B </div> </div> </div>";
 
+		document.getElementById(docType+"Container").appendChild(div);
+		document.getElementById(docType+"Name_"+eltToAdd.ID).focus();
+		document.getElementById(docType+"Name_"+eltToAdd.ID).select();
 
-		document.getElementById("folderContainer").appendChild(div);
-		document.getElementById("folderName_"+folderToAdd.ID).focus();
-		document.getElementById("folderName_"+folderToAdd.ID).select();
-
-		console.log(document.getElementById("folderName_"+folderToAdd.ID));
+		console.log(document.getElementById(docType+"Name_"+eltToAdd.ID));
 	};
-
-	function drawFile(fileToAdd){
-		$('#emptyFile').hide();
-		var div = document.createElement("div");
-		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
-		// div.setAttribute("draggable","true");
-		div.id = "file_"+fileToAdd.ID;
-		div.style.width = "150px";
-		div.style.height = "175px";
-		div.style.background = "white";
-		div.style.margin = "25px";
-		div.style.padding = "0px";
-
-
-		var table = document.createElement("table");
-		table.id = "fileTable"+fileToAdd.ID;
-		table.style.boxShadow = "2px 2px 2px #66767c";
-		var img_row = table.insertRow(0);
-		var img_cell = img_row.insertCell(0);
-		img_cell.style.height = "150px";
-		img_cell.style.width = "150px";
-		img_cell.style.backgroundColor = "#c4c4d6";
-		img_cell.style.padding = "0px";
-
-		img_cell.setAttribute("ondblclick", "openFile('"+fileToAdd.ID+"')");
-		img_cell.setAttribute("onclick", "openFileDetails('"+fileToAdd.ID+"')");
-		img_cell.innerHTML = "<img src='images/file.png' style='width:120px; height:120px; cursor:pointer;'>";
-
-
-		var details_row = table.insertRow(1);
-		var input_cell = details_row.insertCell(0);
-
-		var input_name = document.createElement("input");
-		input_name.setAttribute('class', 'text-center');
-		input_name.setAttribute('type', 'text');
-		input_name.setAttribute('value', fileToAdd.name);
-		input_name.setAttribute('onKeyUp', "saveFileName('"+fileToAdd.ID+"')");
-		input_name.id = "fileName_"+fileToAdd.ID;
-		input_cell.appendChild(input_name);
-
-
-		div.appendChild(table);
-
-		var options = document.createElement("div");
-		options.style.marginRight = "-10px";
-		options.innerHTML = "<span class='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px; cursor:pointer;'></span>";
-		options.setAttribute("class", "options");
-
-
-		$(options).on('click', '*', function(e){
-			if (!shareDialogOpen){
-			    var x =e.pageX -$(document).scrollLeft();
-			    var y =e.pageY -$(document).scrollTop();
-
-			    var div = document.createElement("div");
-			    div.id = "sharing-options";
-			    div.style.width = "300px";
-			    div.fontFamily = "PT Sans";
-			    div.style.border = "thin solid #bababa";
-			    div.style.backgroundColor = "white";
-
-			    div.style.top = e.clientY+"px";
-			    div.style.left = e.clientX+10+"px";
-			    div.style.position = "fixed";
-			    div.style.zIndex = 5;
-			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
-			    document.getElementById("folderContainer").appendChild(div);
-			   shareDialogOpen = true;
-			}
-			else{
-				$("#sharing-options").remove()
-				shareDialogOpen = false;
-			}
-		});
-
-
-		div.appendChild(options);
-		document.getElementById("fileContainer").appendChild(div);
-		document.getElementById("fileName_"+fileToAdd.ID).focus();
-		document.getElementById("fileName_"+fileToAdd.ID).select();
-	};
-
-
-	function drawTemplate(templateToAdd){
-		$('#emptyTemplate').hide();
-		var div = document.createElement("div");
-		div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
-		// div.setAttribute("draggable","true");
-		div.id = "file_"+templateToAdd.ID;
-		div.style.width = "150px";
-		div.style.height = "175px";
-		div.style.background = "white";
-		div.style.margin = "25px";
-		div.style.padding = "0px";
-
-
-		var table = document.createElement("table");
-		table.style.boxShadow = "2px 2px 2px #66767c";
-		var img_row = table.insertRow(0);
-		var img_cell = img_row.insertCell(0);
-		img_cell.style.height = "150px";
-		img_cell.style.width = "150px";
-		img_cell.style.backgroundColor = "#c4c4d6";
-		img_cell.style.padding = "0px";
-
-		img_cell.setAttribute("ondblclick", "openTemplate('"+templateToAdd.ID+"')");
-		img_cell.innerHTML = "<img src='images/science.png' style='width:120px; height:120px; cursor:pointer;'>";
-
-
-		var details_row = table.insertRow(1);
-		var input_cell = details_row.insertCell(0);
-
-		var input_name = document.createElement("input");
-		input_name.setAttribute('class', 'text-center');
-		input_name.setAttribute('type', 'text');
-		input_name.setAttribute('value', templateToAdd.name);
-		input_name.setAttribute('onKeyUp', "saveTemplateName('"+templateToAdd.ID+"')");
-		input_name.id = "templateName_"+templateToAdd.ID;
-		input_cell.appendChild(input_name);
-
-		div.appendChild(table);
-
-		var options = document.createElement("div");
-		options.style.marginRight = "-10px";
-		options.innerHTML = "<span lass='glyphicon glyphicon-option-vertical options' style='right:0; padding-top:5px; cursor:pointer;'></span>";
-		options.setAttribute("class", "options");
-
-
-		$(options).on('click', '*', function(e){
-			if (!shareDialogOpen){
-			    var x =e.pageX -$(document).scrollLeft();
-			    var y =e.pageY -$(document).scrollTop();
-
-			    var div = document.createElement("div");
-			    div.id = "sharing-options";
-			    div.style.width = "300px";
-			    div.fontFamily = "PT Sans";
-			    div.style.border = "thin solid #bababa";
-			    div.style.backgroundColor = "white";
-
-			    div.style.top = e.clientY+"px";
-			    div.style.left = e.clientX+10+"px";
-			    div.style.position = "fixed";
-			    div.style.zIndex = 5;
-			    div.innerHTML = '<div class="container text-left " style="width:300px; font-family: PT Sans;"><div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Delete </div> <div class="row nav-option" onclick="openShareDialog()"> <span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... </div> <div class="row nav-option" onclick="deleteFolder()"> <span class="glyphicon glyphicon-certificate" style="padding-right: 15px;"></span> Owned by: You </div></div>';
-			    document.getElementById("folderContainer").appendChild(div);
-			   shareDialogOpen = true;
-			}
-			else{
-				$("#sharing-options").remove()
-				shareDialogOpen = false;
-			}
-		});
-
-
-		div.appendChild(options);
-		document.getElementById("templateContainer").appendChild(div);
-		document.getElementById("templateName_"+templateToAdd.ID).focus();
-		document.getElementById("templateName_"+templateToAdd.ID).select();
-	};
-
 
 	function openShareDialog(){
 		var modal = document.getElementById('shareDialog');
@@ -527,19 +610,78 @@
 	function shareWith(){
 		document.getElementById("shareDialog").style.display = "none";
 	};
-/**
-		var div = document.createElement("div");
-		div.innerHTML = "Success!";
-		document.getElementById("shareDialogContent").appendChild(div);
-		setTimeout(function(){
-			document.getElementById("shareDialogContent").removeChild(div);
-			closeShareDialog();
-		}, 1000);
-		**/
 
 
+	function sendToTrash(docType, eltID){
+		console.log('Removing '+eltID);
+		var recycleElt = false; 
+		if (docType == 'folder'){
+			recycleElt = folderChain[folderChain.length-1].getFolder(eltID);
+			recycleElt.parentFolder.deleteFolder(recycleElt);
+			recycleElt.recycle();
+			trashFolder.addFolder(recycleElt);
+		};
+		if (docType == 'file'){
+			recycleElt = folderChain[folderChain.length-1].getFile(eltID);
+			trashFolder.addFile(recycleElt);
+			recycleElt.parentFolder.deleteFile(recycleElt);
+			recycleElt.recycle();
+			trashFolder.addFile(recycleElt);
+		};
+		if (docType == 'template'){
+			recycleElt = folderChain[folderChain.length-1].getTemplate(eltID);
+			recycleElt.parentFolder.deleteTemplate(recycleElt);
+			recycleElt.recycle();
+			trashFolder.addTemplate(recycleElt);
+
+		};
+		if (!recycleElt){
+			console.log('No docType detected when deleting element');
+		}
+		else{
+			console.log(recycleElt);
+		}
+
+		// recycleElt.recycle();
+		document.getElementById(docType+"_"+eltID).remove();
+	}
+
+	function restoreDocument(docType, elt){
+		console.log('Removing '+elt.ID);
+		docType = 'folder';
+		var restoreElt = false; 
+		if (docType == 'folder'){
+			folderChain[0].addFolder(elt);
+
+		};
+		if (docType == 'file'){
+			restoreElt = trashFolder.getFile(eltID);
+			folderChain[0].addFile(restoreElt);
+		};
+		if (docType == 'template'){
+			restoreElt = trashFolder.getTemplate(eltID);
+			folderChain[0].addFolder(restoreElt);
+		};
+		if (!recycleElt){
+			console.log('No docType detected when deleting element');
+		}
+		else{
+			console.log(recycleElt);
+		}
+
+		
+		document.getElementById(docType+"_"+eltID).remove();
+	}
 
 
+	function openTrash(){
+		moveUp(0);
+		$('#folderContainer').empty();
+		$('#fileContainer').empty();
+		$('#templateContainer').empty();
+		folderChain.push(trashFolder);
+		openTopStackTrashFolder();
+	}
 
 	</script>
 
@@ -571,43 +713,50 @@
 	</div>
 	<div class="container" id="mainContainer">
 		<div class="col-md-2" id="sideNavigation">
-			<div class="row nav-option" onclick="createFolder()">
-			<span class="glyphicon glyphicon-folder-open" style="padding-right: 15px;"></span> New Folder
+			<div class="row nav-option" onclick="createFolder()" id="newFileButton">
+			<span class="glyphicon glyphicon-folder-open" style="padding-right: 15px;"></span> New Notebook
 			</div>
 			<div class="row nav-option" onclick="createFile()">
 			<span class="glyphicon glyphicon-file " style="padding-right: 15px;"></span> New Experiment
 			</div>
 			<div class="row nav-option" onclick="createTemplate()">
-			<span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span> New Template
+			<i class="fa fa-flask" style="padding-right: 20px;"></i><!-- <span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span>  -->New Template
 			</div>
-			<div class="row nav-option">
-			<span class="glyphicon glyphicon-adjust" style="padding-right: 15px;"></span> Share
+
+			<div class="row nav-option" onclick="openTrash()">
+			<span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Recycle Bin
 			</div>
 		</div>
 
 		<div class="col-md-10" id="mainBody">
 			<div class="container">
+				<div class="row" id="folderChain" style="height: 50px; padding-left: 0px;"> <input class="btn btn-primary" type="button" onclick="moveUp(0)" id="level0" value="Home"> </div>
+
 				<div class="row">
-					<span class="heading">Folders</span>
+					<span class="heading">Notebooks</span>
 				</div>
-				<div class="row" id="folderChain" style="height: 50px; padding-left: 30px;"> <input class="btn btn-primary" type="button" onclick="moveUp(0)" id="level0" value="Home"> </div>
 				<div class="col-md-12" style="line-height: 100px;" id="emptyFolder"> You haven't added any folders yet! :( </div>
 				<div class="row" id="folderContainer" style="min-height: 100px;">
+					<!-- <div class="col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center" onclick="createFolder()">ADD FOLDER</div> -->
 					<!-- Icons for folders created go here -->
 				</div>
 				<div class="row">
-					<span class="heading">Files</span>
+					<span class="heading">Experiments</span>
 				</div>
 				<div class="col-md-12" style="line-height: 100px;" id="emptyFile"> You haven't added any files yet! :( </div>
 				<div class="row" id="fileContainer" style="min-height: 100px;">
+
+					<!-- <div class="col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center" onclick="createFile()">ADD FILE</div> -->
 					<!-- Icons for notes created go here -->
 				</div>
 
 				<div class="row">
-					<span class="heading">Templates</span>
+					<span class="heading">Templates</span> 
+					<div style="height:50x; width:45px; margin-right: 25px;" class="col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center" onclick="createTemplate()"> <img style="height:50px; width:50px;" src="images/addtemplate.png"> </div>
 				</div>
 				<div id="emptyTemplate" class="col-md-12" style="line-height: 100px;" > You haven't created any templates yet! :( </div>
 				<div class="row" id="templateContainer" style="min-height: 100px;">
+					
 					<!-- Icons for templates created go here -->
 				</div>
 			</div>

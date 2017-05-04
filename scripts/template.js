@@ -8,7 +8,7 @@
  * 
  */
 
-var Note = function(name, owner, ID)
+var Template = function(name, owner, ID)
 {
   // Randomly generate an identifier (ID)
   this.ID = owner+ID;
