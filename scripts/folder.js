@@ -8,7 +8,7 @@
  *
  */
 
-var Folder = function(name, owner)
+var Folder = function (name, owner)
 {
 	this.ID = 'Folder_' + owner + StringGenerator.randomAlphaNumericString(10);
 

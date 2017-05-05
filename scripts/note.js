@@ -8,7 +8,7 @@
  *
  */
 
-var Note = function(name, owner)
+var Note = function (name, owner)
 {
 	// Randomly generate an identifier (ID)
 	this.ID = owner + StringGenerator.randomAlphaNumericString(10);
