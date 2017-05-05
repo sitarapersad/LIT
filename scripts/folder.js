@@ -5,12 +5,12 @@
  * and by a mutable user-designated name
  *
  * The note can be shared with a mutable set of Users.
- * 
+ *
  */
 
-var Folder = function(name, owner, ID)
+var Folder = function(name, owner)
 {
-  this.ID = 'Folder_'+owner+ID;
+  this.ID = 'Folder_' + owner + StringGenerator.randomAlphaNumericString(10);
 
   // Owner (should be an instance of the User class. Right now, it's a string) of the document
   this.owner = owner;
@@ -26,72 +26,66 @@ var Folder = function(name, owner, ID)
   this.modifiedDate = 0;
 
 
-  /* 
+  /*
    * Renames the folder given a new name
    */
   this.renameFolder = function(newName)  {
-    this.name = newName; 
+    this.name = newName;
   }
 
-  /* 
+  /*
    * Add a note to the folder.
    */
   this.addFile = function(addNote)  {
     var key = addNote.ID
-    this.files[key] = addNote; 
-    console.log('Add file' +addNote.ID+ ' into '+ this.ID);
+    this.files[key] = addNote;
     addNote.parentFolder = this;
   }
 
-  /* 
+  /*
    * Add another folder to the folder.
    */
   this.addFolder = function(addFolder)  {
     var key = addFolder.ID;
     this.folders[key] = addFolder;
-    console.log('Add folder' +addFolder.ID+ ' into '+ this.ID);
     addFolder.parentFolder = this;
   }
 
-  /* 
+  /*
    * Add another folder to the folder.
    */
   this.addTemplate = function(addTemplate)  {
     var key = addTemplate.ID;
     this.templates[key] = addTemplate;
-    console.log('Add template' +addTemplate.ID+ ' into '+ this.ID);
     addTemplate.parentFolder = this;
   }
 
-  /* 
+  /*
    * Delete a note to the folder.
    */
   this.deleteFile = function(addNote)  {
     var key = addNote.ID;
     delete this.files[key];
-    console.log('Deleted file' +addNote.ID+ ' from '+ this.ID);
   }
 
-  /* 
+  /*
    * Add another folder to the folder.
    */
   this.deleteFolder = function(addFolder)  {
     var key = addFolder.ID;
     delete this.folders[key];
-    console.log('Deleted folder ' +addFolder.name+ ' from '+ this.ID);
   }
 
-  /* 
+  /*
    * Add another folder to the folder.
    */
   this.deleteTemplate = function(addTemplate)  {
     var key = addTemplate.ID;
     delete this.templates[key];
-    console.log('Deleted template' +addTemplate.ID+ ' from '+ this.ID);
   }
 
 
-  /* 
+  /*
    * Given a valid User object, user, adds this user to the set of
    * shared owners
    */
@@ -99,7 +93,7 @@ var Folder = function(name, owner, ID)
     this.sharedUsers.push(user);
   }
 
-  /* 
+  /*
    * Change the name of the note to newName
    */
   this.updateName = function(newName){
@@ -131,7 +125,7 @@ var Folder = function(name, owner, ID)
     return Object.keys(this.templates).length == 0;
   }
 
-  /* 
+  /*
    * Given an ID, return the Folder object corresponding to the ID if it exists
    */
   this.getFolder = function(ID){
@@ -144,7 +138,7 @@ var Folder = function(name, owner, ID)
     }
   }
 
-  /* 
+  /*
    * Given an ID, return the Folder object corresponding to the ID if it exists
    */
   this.getFile = function(ID){
@@ -161,17 +155,17 @@ var Folder = function(name, owner, ID)
     this.recycled = true;
 
     for (var key in this.folders) {
-      newFolder = this.folders[key];  
+      newFolder = this.folders[key];
       newFolder.recycle()
     }
 
     for (var key in this.files) {
-      newFile = this.files[key];  
+      newFile = this.files[key];
       newFile.recycle()
     }
 
     for (var key in this.templates) {
-      newTemplate = this.templates[key];  
+      newTemplate = this.templates[key];
       newTemplate.recycle()
     }
   }
@@ -184,20 +178,19 @@ var Folder = function(name, owner, ID)
     this.recycled = false;
 
     for (var key in this.folders) {
-      newFolder = this.folders[key];  
+      newFolder = this.folders[key];
       newFolder.restore()
     }
 
     for (var key in this.files) {
-      newFile = this.files[key];  
+      newFile = this.files[key];
       newFile.restore()
     }
 
     for (var key in this.templates) {
-      newTemplate = this.templates[key];  
+      newTemplate = this.templates[key];
       newTemplate.restore()
     }
   }
-  
+
 }
-  

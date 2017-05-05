@@ -5,13 +5,13 @@
  * and by a mutable user-designated name
  *
  * The note can be shared with a mutable set of Users.
- * 
+ *
  */
 
-var Template = function(name, owner, ID)
+var Template = function(name, owner)
 {
   // Randomly generate an identifier (ID)
-  this.ID = owner+ID;
+  this.ID = owner + StringGenerator.randomAlphaNumericString(10);
 
   // Owner (an instance of the User class) of the document
   this.owner = owner;
@@ -25,7 +25,7 @@ var Template = function(name, owner, ID)
   this.parentFolder = null;
   this.recycled = false;
 
-  /* 
+  /*
    * Given a valid User object, user, adds this user to the set of
    * shared owners
    */
@@ -33,7 +33,7 @@ var Template = function(name, owner, ID)
     this.sharedUsers.push(user);
   }
 
-  /* 
+  /*
    * Change the name of the note to newName
    */
   this.updateName = function(newName){
@@ -52,4 +52,4 @@ var Template = function(name, owner, ID)
   this.restore = function(){
     this.recycled = false;
   }
-} 
+}

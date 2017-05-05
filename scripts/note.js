@@ -8,10 +8,10 @@
  *
  */
 
-var Note = function(name, owner, ID)
+var Note = function(name, owner)
 {
   // Randomly generate an identifier (ID)
-  this.ID = owner + ID;
+  this.ID = owner + StringGenerator.randomAlphaNumericString(10);
 
   // Owner (an instance of the User class) of the document
   this.owner = owner;
