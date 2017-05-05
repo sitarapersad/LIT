@@ -26,7 +26,7 @@ var Note = function (name, owner)
 	this.recycled = false;
 
 	return this.ID;
-}
+};
 
 /*
 * Given a valid User object, user, adds this user to the set of
@@ -34,23 +34,23 @@ var Note = function (name, owner)
 */
 Note.prototype.shareFile = function (user) {
 	this.sharedUsers.push(user);
-}
+};
 
 /*
 * Change the name of the note to newName
 */
 Note.prototype.updateName = function (newName) {
 	this.name = newName;
-}
+};
 
 Note.prototype.recycle = function () {
 	this.recycled = true;
-}
+};
 
 Note.prototype.isRecycled = function () {
 	return this.recycled;
-}
+};
 
 Note.prototype.restore = function () {
 	this.recycled = false;
-}
+};
