@@ -5,13 +5,13 @@
  * and by a mutable user-designated name
  *
  * The note can be shared with a mutable set of Users.
- * 
+ *
  */
 
 var Note = function(name, owner, ID)
 {
   // Randomly generate an identifier (ID)
-  this.ID = owner+ID;
+  this.ID = owner + ID;
 
   // Owner (an instance of the User class) of the document
   this.owner = owner;
@@ -25,18 +25,18 @@ var Note = function(name, owner, ID)
   this.parentFolder = null;
   this.recycled = false;
 
-  /* 
+  /*
    * Given a valid User object, user, adds this user to the set of
    * shared owners
    */
-  this.shareFile = function(user){
+  this.shareFile = function (user) {
     this.sharedUsers.push(user);
   }
 
-  /* 
+  /*
    * Change the name of the note to newName
    */
-  this.updateName = function(newName){
+  this.updateName = function (newName) {
     console.log('Renaming note: '+this.name+' to '+newName);
     this.name = newName;
   }
@@ -52,4 +52,4 @@ var Note = function(name, owner, ID)
   this.restore = function(){
     this.recycled = false;
   }
-} 
+}
