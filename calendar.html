@@ -1,10 +1,207 @@
 <head>
     <link rel="import" href="globalHead.html">
     <link rel="stylesheet" href="stylesheets/calendar.css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </script>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>
+    <script>
+        var calendar_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        var calendar_months = ['Jan', 'Feb', 'Mar', 'Apr',
+            'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+        var calendar_number_of_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var active
+        var default_date = new Date();
+        var current_month;
+        var current_year;
+
+        $(document).ready();
+
+
+
+        function set_month(month, year) {
+            title = document.getElementById("monthName");
+            title.innerHTML = calendar_months[month] + " " + year;
+
+            var new_date = new Date(year, month, 1);
+            var start_day = new_date.getDay();
+            var limit = calendar_number_of_days[month];
+            var date_number = 1;
+
+            for (var i = 1; i < 7; i++) {
+                for (var j = 0; j < 7; j++) {
+                    var date_number = 7 * (i - 1) + j - start_day + 1;
+                    var day_cell = document.getElementById("R" + i + "C" + j);
+
+                    // console.log(day_cell);
+                    if (date_number <= limit && date_number >= 1) {
+                        day_cell.innerHTML = date_number;
+                        day_cell.setAttribute("class", "numbered_date")
+                    } else {
+                        day_cell.innerHTML = " ";
+                        day_cell.setAttribute("class", "blank_date");
+                    }
+
+                    if (date_number == 1) {
+                        document.getElementById(active).removeAttribute("class");
+                        active = "R" + i + "C" + j;
+                        day_cell.setAttribute("class", "active");
+                    }
+                }
+            }
+
+        }
+
+        function make_calendar() {
+
+            //preconfiguration of dates
+            var weekday_i = default_date.getDay();
+            var month_i = default_date.getMonth();
+            var year = default_date.getFullYear();
+            var day_name = calendar_weekdays[weekday_i];
+            var month_name = calendar_months[month_i];
+            current_month = month_i;
+            current_year = year;
+            var number_of_days = calendar_number_of_days[month_i];
+            if (month_i == 1) {
+                if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+                    number_of_days = 29;
+                }
+            }
+
+            var container = document.getElementById("calendarContainer");
+            // container.setAttribute("style", "border: 1px solid green");
+
+            var title = document.createElement("div");
+            title.setAttribute("id", "monthRow");
+            title.setAttribute("class", "row");
+            // title.setAttribute("style", "border: 1px blue solid");
+
+            var left_arrow_container = document.createElement("div");
+            left_arrow_container.setAttribute("class", "col-md-2");
+            left_arrow_container.setAttribute("id", "leftArrow");
+            left_arrow_container.setAttribute("style", "border: 1px white solid;");
+            var left_arrow_node = document.createTextNode("<");
+            left_arrow_container.appendChild(left_arrow_node);
+            title.appendChild(left_arrow_container);
+
+
+            var title_container = document.createElement("div");
+            title_container.setAttribute("class", "col-md-8");
+            title_container.setAttribute("id", "monthName");
+            // title_container.setAttribute("style", "border: 1px green solid");
+            var title_text = document.createTextNode(month_name + " " + year);
+            title_container.appendChild(title_text);
+
+            title.appendChild(title_container);
+
+            var right_arrow_container = document.createElement("div");
+            right_arrow_container.setAttribute("class", "col-md-2");
+            right_arrow_container.setAttribute("id", "rightArrow");
+            right_arrow_container.setAttribute("style", "border: 1px white solid");
+            var right_arrow_node = document.createTextNode(">");
+            right_arrow_container.appendChild(right_arrow_node);
+            title.appendChild(right_arrow_container);
+
+            container.appendChild(title);
+
+            var tbl = document.createElement('table');
+            tbl.setAttribute("id", "calendarTable");
+
+            var tbdy = document.createElement('tbody');
+
+
+
+
+            for (var i = 0; i < 7; i++) {
+                if (i == 0) {
+
+                    var tr_days = document.createElement('tr');
+                    tr_days.setAttribute("id", "calendar_row_names");
+                    for (var k = 0; k < 7; k++) {
+                        var td = document.createElement('td');
+                        td.setAttribute("id", "day_names");
+                        var day = document.createTextNode(calendar_weekdays[k]);
+                        td.appendChild(day);
+
+                        tr_days.appendChild(td);
+                        // tr_days.setAttribute("style", "border: 1px solid black");
+                    }
+                    tbdy.appendChild(tr_days);
+                } else if (i >= 1) {
+                    var tr = document.createElement('tr');
+
+
+                    for (var j = 0; j < 7; j++) {
+
+                        var td = document.createElement('td');
+                        td.setAttribute("id", "R" + i + "C" + j);
+
+                        var date_number = 7 * (i - 1) + j - weekday_i;
+                        if (date_number <= number_of_days && date_number >= 1) {
+                            var day = document.createTextNode(date_number);
+                            // console.log(number_of_days);
+                            td.setAttribute("class", "numbered_date");
+                        } else {
+                            var day = document.createTextNode(" ");
+                            td.setAttribute("class", "blank_date");
+                        }
+
+
+                        td.appendChild(day);
+                        var default_date_number = default_date.getDate();
+                        if (default_date_number == date_number + 1) {
+                            td.setAttribute("class", "active");
+                            active = td.getAttribute("id");
+                            // console.log("default active, ", active);
+                        }
+                        tr.appendChild(td);
+                    };
+                    tbdy.appendChild(tr);
+                }
+
+            }
+            tbl.appendChild(tbdy);
+
+            container.appendChild(tbl);
+        }
+
+
+        $(document).on("click", ".numbered_date", function(evt) {
+            // active = evt.target.id;
+            // console.log(evt.target.id);
+
+            if (evt.target.id.match(/R\dC\d/g)) {
+                document.getElementById(active).removeAttribute("class");
+
+                active = evt.target.id;
+                document.getElementById(active).setAttribute("class", "active");
+
+
+            }
+        });
+
+        $(document).on("click", "#leftArrow", function(evt) {
+            if (current_month == 0) {
+                current_year -= 1;
+                current_month = 11;
+            } else {
+                current_month -= 1;
+            }
+
+            set_month(current_month, current_year);
+        })
+
+        $(document).on("click", "#rightArrow", function(evt) {
+            if (current_month == 11) {
+                current_year += 1;
+                current_month = 0;
+            } else {
+                current_month += 1;
+            }
+            set_month(current_month, current_year);
+        })
+    </script>
 
 </head>
 
@@ -16,17 +213,17 @@
 
         <div class="col-md-8" id="searchColumn">
             <div class="row" style="padding-right: 20px;">
-              <input class="form-control input-md search" placeholder= "Search experiments ..." type="text">
+                <input class="form-control input-md search" placeholder="Search experiments ..." type="text">
             </div>
             <div class="row">
                 <nav class="navbar navbar-default">
-                  <div class="container-fluid text-center" style="width: 100%; padding-left: 0px; padding-right: 20px;">
-                    <ul class="nav navbar-nav" style="width: 100%;" >
-                      <li style='width:33.3%' ><a href="index.html">My Notebook</a></li>
-                      <li style='width:33.3% '><a href="shared.html">Shared With Me</a></li>
-                      <li style='width:33.3%' class="active"><a href="calendar.html"><span class="glyphicons glyphicon-family"></span>Calendar</a></li>
-                    </ul>
-                  </div>
+                    <div class="container-fluid text-center" style="width: 100%; padding-left: 0px; padding-right: 20px;">
+                        <ul class="nav navbar-nav" style="width: 100%;">
+                            <li style='width:33.3%'><a href="index.html">My Notebook</a></li>
+                            <li style='width:33.3% '><a href="shared.html">Shared With Me</a></li>
+                            <li style='width:33.3%' class="active"><a href="calendar.html"><span class="glyphicons glyphicon-family"></span>Calendar</a></li>
+                        </ul>
+                    </div>
                 </nav>
             </div>
         </div>
@@ -35,87 +232,30 @@
         </div>
     </div>
 
-    <div class="container" id="mainContainer" contenteditable="true">
-    <div class="row" id="giant-row">
-        <div class="col-md-1" id="spcae-taker">
-        </div>
-        <div class="col-md-5" id="calendar">
-            <div class="month">
-
-                <ul>
-                    <li class="prev">&#10094;</li>
-                    <li class="next">&#10095;</li>
-                    <li>
-                        April 2017<br>
-
-                    </li>
-                </ul>
+    <div class="container" id="mainContainer" contenteditable="false">
+        <div class="row" id="giant-row">
+            <div class="col-md-1" id="space-taker">
             </div>
-
-            <ul class="weekdays">
-                <li>Sun</li>
-                <li>Mon</li>
-                <li>Tue</li>
-                <li>Wed</li>
-                <li>Thu</li>
-                <li>Fri</li>
-                <li>Sat</li>
-
-            </ul>
-
-            <ul class="days">
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
-                <li>6</li>
-                <li>7</li>
-                <li>8</li>
-                <li>9</li>
-                <li>10</li>
-                <li>11</li>
-                <li>12</li>
-                <li>13</li>
-                <li>14</li>
-                <li>15</li>
-                <li>16</li>
-                <li>17</li>
-                <li>18</li>
-                <li><span class="active">19</span></li>
-                <li>20</li>
-                <li>21</li>
-                <li>22</li>
-                <li>23</li>
-                <li>24</li>
-                <li>25</li>
-                <li>26</li>
-                <li>27</li>
-                <li>28</li>
-                <li>29</li>
-                <li>30</li>
-
-            </ul>
-        </div>
-        <div class="col-md-5" id="tasks">
-            <div class="row" id="tasks-header">
-                <h1> Tasks for Today </h1>
+            <div class="col-md-5" id="calendarContainer-col">
+                <div id="calendarContainer">
+                    <script>
+                        make_calendar();
+                    </script>
+                </div>
             </div>
-            <div id="task-list">
-                <form method="get" class="task-text">
-                    <input type="checkbox" class="check"> Make sure to write out the protocol for tomorrow's PCR experiment. <br><br>
-                    <input type="checkbox" class="check"> Re-run the gel electrophoresis experiment with 2 grams of agarose.  <br><br>
-                    <input type="checkbox" class="check"> Ask Rob to share the collagen distillation lab folder with you. <br> <br>
-                </form>
+            <div class="col-md-5" id="tasks">
+                <div class="row" id="tasks-header">
+                    <h1> Tasks for Today </h1>
+                </div>
+                <div id="task-list">
+                    <form method="get" class="task-text">
+                        <input type="checkbox" class="check"> Make sure to write out the protocol for tomorrow's PCR experiment. <br><br>
+                        <input type="checkbox" class="check"> Re-run the gel electrophoresis experiment with 2 grams of agarose. <br><br>
+                        <input type="checkbox" class="check"> Ask Rob to share the collagen distillation lab folder with you. <br> <br>
+                    </form>
 
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </body>
