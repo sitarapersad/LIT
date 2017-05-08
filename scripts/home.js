@@ -8,6 +8,9 @@ var trashFolder = new Folder('Recycle Bin', 'Owner', folderCount);
 fileCount += 1;
 
 var trashMode = false;
+var modelClicked = null;
+var DELETE_docType = null;
+var DELETE_eltID = null;
 
 document.body.addEventListener("click", function (e) {
 	if (e.target.className.includes("options")){
@@ -25,7 +28,6 @@ window.onclick = function(event) {
 		modal.style.display = "none";
 	}
 	if (activeDocument){
-		console.log(event.target);
 		if (event.target == document.getElementById(activeDocument)){
 			document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px #66767c";
 		}
@@ -113,11 +115,18 @@ function createTemplate(){
  * Move up to layer n in the directory
  */
 function moveUp(n){
-	for (i=0; i < folderChain.length-n-1; i++){
-		folderChain.pop();
-		console.log(folderChain[folderChain.length-1].ID);
+	console.log(folderChain);
+	if (folderChain.length > 1){
+		for (i=0; i < folderChain.length-n; i++){
+			console.log('Popping'+i)
+			folderChain.pop();
+			// console.log(folderChain[folderChain.length-1].ID);
+		}		
 	}
+
+	console.log(folderChain);
 	if (folderChain.length==1){
+		console.log('Exiting trashMode');
 		trashMode = false;
 		$('#newDocumentNav').show();
 	}
@@ -456,23 +465,23 @@ function drawDocument(eltToAdd, docType, upperDocType, img_src){
 
 			if (eltToAdd.isRecycled()){
 				var restoreRow = createRow();
-				restoreRow.innerHTML = '<span class="glyphicon glyphicon-ok" style="padding-right: 15px;"></span> Restore To My Notebook ';
+				restoreRow.innerHTML = '<span class="glyphicon glyphicon-ok green" style="padding-right: 15px;"></span> Restore To My Notebook ';
 				restoreRow.setAttribute('onclick', "restoreDocument('"+docType+"','"+eltToAdd.ID+"')");
 
 				var deleteRow = createRow();
-				deleteRow.innerHTML = '<span class="glyphicon glyphicon-remove" style="padding-right: 15px;"></span> Delete Permanently';
-				deleteRow.setAttribute('onclick', "sendToTrash('"+docType+"','"+eltToAdd.ID+"')");
+				deleteRow.innerHTML = '<span class="glyphicon glyphicon-remove red" style="padding-right: 15px;"></span> Delete Permanently';
+				deleteRow.setAttribute('onclick', "openDeleteDialog('"+docType+"','"+eltToAdd.ID+"')");
 
 				nav.appendChild(restoreRow);
 				nav.appendChild(deleteRow);
 			}
 			else{
 				var deleteRow = createRow();
-				deleteRow.innerHTML = '<span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Send To Recycle Bin';
+				deleteRow.innerHTML = '<span class="glyphicon glyphicon-trash red" style="padding-right: 15px;"></span> Send To Recycle Bin';
 				deleteRow.setAttribute('onclick', "sendToTrash('"+docType+"','"+eltToAdd.ID+"')");
 
 				var shareRow = createRow();
-				shareRow.innerHTML = '<span class="glyphicon glyphicon-user" style="padding-right: 15px;"></span> Share with... '
+				shareRow.innerHTML = '<span class="glyphicon glyphicon-share-alt" style="padding-right: 15px; color: #4587d8;"></span> Share with... '
 				shareRow.setAttribute('onclick', 'openShareDialog()');
 
 				var moveRow = createRow();
@@ -500,28 +509,132 @@ function drawDocument(eltToAdd, docType, upperDocType, img_src){
 	div.appendChild(options);
 
 	document.getElementById(docType+"Container").appendChild(div);
-	console.log(document.getElementById(docType+"Name_"+eltToAdd.ID));
+	// console.log(document.getElementById(docType+"Name_"+eltToAdd.ID));
 };
 
-function openShareDialog(){
-	var modal = document.getElementById('shareDialog');
-	 modal.style.display = "block";
+function openDeleteDialog(docType, eltID){
+	DELETE_docType = docType;
+	DELETE_eltID = eltID;
+	console.log('Opening delete dialog');
+	clicked = null;
+	$("#deleteDialog").modal('show');
 };
 
-function closeShareDialog(){
-	var modal = document.getElementById('shareDialog');
-	modal.style.display = "none";
+$("#deleteDialog .modal-footer > button").click(function() {
+  clicked = $(this).text();
+  $("#deleteDialog").modal('hide');
+});
+
+$("#deleteDialog").on('hide.bs.modal', function() {
+	if (clicked === null){
+	    console.log("The user didn't click anything");
+	} 
+	else {
+	    console.log("The user has clicked: " + clicked);
+		if (clicked=="Yes, delete this file!"){
+			deletePermanently(DELETE_docType, DELETE_eltID);
+		}
+	}
+	DELETE_docType = null;
+	DELETE_eltID = null;
+});
+
+function openMoveDialog(docType, eltID){
+	MOVE_docType = docType;
+	MOVE_eltID = eltID;
+	console.log('Opening move dialog');
+	clicked = null;
+	$("#moveDialog").modal('show');
+	var currentFolder = folderChain[0];
+
+	populateMoveDialog(currentFolder);
 };
 
-function openMoveDialog(){
-	var modal = document.getElementById('moveDialog');
-	 modal.style.display = "block";
+function populateMoveDialog(currentFolder){
+	var folderID = [],
+    	folderName = [];
+    console.log(currentFolder.name)
+	for (var folder in currentFolder.folders) {
+		console.log(folder);
+		console.log(currentFolder.getFolder(folder));
+		folderID.push(folder);
+		folderName.push(currentFolder.getFolder(folder).name);
+	}
+	console.log(folderName);
+
+	$('#moveDialog .currentFolder').html(currentFolder.name);
+    $("#jqxlistbox").jqxListBox({ source: folderName, width: '200px', height: '150px' });
+
+    // bind to 'select' event.
+    $('#jqxlistbox').bind('select', function (event) {
+        var args = event.args;
+        var item = $('#jqxlistbox').jqxListBox('getItem', args.index);
+        console.log(args);
+        $("#eventlog").html('Selected: ' + item.label);
+    });
+    $('#jqxlistbox').bind('dblclick', function (event) {
+    	alert('Doubleclicked!');
+        var args = event.args;
+        console.log(args.index);
+        var item = $('#jqxlistbox').jqxListBox('getItem', args.index);
+        // $("#eventlog").html('Selected: ' + item.label);
+    });
+    $("#button").jqxButton();
+    $("#button").click(function () {
+        var item = $('#jqxlistbox').jqxListBox('getSelectedItem');
+        if (item != null) {
+            alert(item.label);
+        }
+    });
+}
+
+$("#moveDialog .modal-footer > button").click(function() {
+  clicked = $(this).text();
+  $("#moveDialog").modal('hide');
+});
+
+$("#moveDialog").on('hide.bs.modal', function() {
+	if (clicked === null){
+	    console.log("The user didn't click anything");
+	} 
+	else {
+	    console.log("The user has clicked: " + clicked);
+		if (clicked=="Yes, delete this file!"){
+			deletePermanently(DELETE_docType, DELETE_eltID);
+		}
+	}
+	MOVE_docType = null;
+	MOVE_eltID = null;
+});
+
+
+function openShareDialog(docType, eltID){
+	SHARE_docType = docType;
+	SHARE_eltID = eltID;
+	console.log('Opening share dialog');
+	clicked = null;
+	$("#shareDialog").modal('show');
 };
 
-function closeMoveDialog(){
-	var modal = document.getElementById('moveDialog');
-	modal.style.display = "none";
-};
+$("#shareDialog .modal-footer > button").click(function() {
+  clicked = $(this).text();
+  $("#shareDialog").modal('hide');
+});
+
+$("#shareDialog").on('hide.bs.modal', function() {
+	if (clicked === null){
+	    console.log("The user didn't click anything");
+	} 
+	else {
+	    console.log("The user has clicked: " + clicked);
+		if (clicked=="Yes, delete this file!"){
+			deletePermanently(DELETE_docType, DELETE_eltID);
+		}
+	}
+	SHARE_docType = null;
+	SHARE_eltID = null;
+});
+
 
 function shareWith(){
 	document.getElementById("shareDialog").style.display = "none";
@@ -549,6 +662,39 @@ function sendToTrash(docType, eltID){
 		recycleElt.parentFolder.deleteTemplate(recycleElt);
 		recycleElt.recycle();
 		trashFolder.addTemplate(recycleElt);
+
+	};
+	if (!recycleElt){
+		console.log('No docType detected when deleting element');
+	}
+	else{
+		console.log(recycleElt);
+	}
+
+	// recycleElt.recycle();
+	document.getElementById(docType+"_"+eltID).remove();
+}
+
+function deletePermanently(docType, eltID){
+	var recycleElt = false;
+	if (docType == 'folder'){
+		recycleElt = folderChain[folderChain.length-1].getFolder(eltID);
+		recycleElt.parentFolder.deleteFolder(recycleElt);
+		recycleElt.recycle();
+		// trashFolder.addFolder(recycleElt);
+	};
+	if (docType == 'file'){
+		recycleElt = folderChain[folderChain.length-1].getFile(eltID);
+		trashFolder.addFile(recycleElt);
+		recycleElt.parentFolder.deleteFile(recycleElt);
+		recycleElt.recycle();
+		// trashFolder.addFile(recycleElt);
+	};
+	if (docType == 'template'){
+		recycleElt = folderChain[folderChain.length-1].getTemplate(eltID);
+		recycleElt.parentFolder.deleteTemplate(recycleElt);
+		recycleElt.recycle();
+		// trashFolder.addTemplate(recycleElt);
 
 	};
 	if (!recycleElt){
@@ -597,8 +743,9 @@ function restoreDocument(docType, eltID){
 
 
 function openTrash(){
-	trashMode = true;
 	moveUp(0);
+	trashMode = true;
+	console.log('Entering trashMode');
 	$('#newDocumentNav').hide();
 	$('#folderContainer').empty();
 	$('#fileContainer').empty();
