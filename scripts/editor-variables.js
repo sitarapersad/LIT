@@ -21,44 +21,69 @@ $(document).ready(function() {
 	displayModal();
 	displaySteps();
 
-	$(document).on("click", "#submit-vars", function(){
-		document.getElementById("myModal").style.display = "none";
-
-		var node = document.getElementById("mainContainer");
-		while (node.hasChildNodes()) {
-		    node.removeChild(node.lastChild);
-		}
-
-		displaySteps();
-		var newModal = document.createElement("div");
-		newModal.id = "myModal";
-		newModal.setAttribute("class", "modal");
-		document.getElementById("mainContainer").appendChild(newModal);
-		displayModal();
-	});
 
 	$(document).on("click", ".var", function() {
-		document.getElementById("myModal").style.display = "block";
+		document.getElementById("myModal-vars").style.display = "block";
+		$('#myModal-vars').animate({width:"500px"});
+		$('#mainContainer').animate({left:"500px"});
 	});
+
 
 	$(document).on("click", ".edit-var", function() {
 		var editableText = $(this);
 		var elementId = this.id.split("_");
 		var variableNum = elementId[1];
 		var stepNum = elementId[2];
-		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
-		document.getElementById(toHighlight).style.borderColor = '#457796';
-		document.getElementById(toHighlight).style.borderWidth = 'thick';
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#457796';
+						document.getElementById(toHighlight).style.borderWidth = 'thick';
+					}
+			}
+
 
 		editableText.blur(editableTextBlurred);
 	});
 
 	$(document).on("click", ".close", function() {
-		document.getElementById("myModal").style.display = "none";
+		document.getElementById("myModal-vars").style.display = "none";
+
+		updateVariables();
+		var newModal = document.createElement("div");
+		newModal.id = "myModal-vars";
+		newModal.setAttribute("class", "modal");
+		document.getElementsByTagName("BODY")[0].appendChild(newModal);
+		displayModal();
+		$('#mainContainer').animate({left:0});
+		$('#myModal-vars').animate({width:0});
+		
 	});
 
 	$(document).on("click", ".edit-amount", function() {
 		var editableTextAmount = $(this);
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#457796';
+						document.getElementById(toHighlight).style.borderWidth = 'thick';
+					}
+			}
+
 		editableTextAmount.blur(editableTextAmountBlurred);
 	});
 
@@ -68,17 +93,37 @@ $(document).ready(function() {
 		var elementId = this.id.split("_");
 		var variableNum = elementId[1];
 		var stepNum = elementId[2];
-		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
-		document.getElementById(toHighlight).style.borderColor = '#457796';
-		document.getElementById(toHighlight).style.borderWidth = 'thick';
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#457796';
+						document.getElementById(toHighlight).style.borderWidth = 'thick';
+					}
+			}
 
 		editableTextFactor.blur(editableTextFactorBlurred);
 	});
 
 	window.onclick = function(event) {
-		if (event.target == document.getElementById("myModal")) {
-			document.getElementById("myModal").style.display = "none";
-		}
+		if (event.target == document.getElementById("modal-content-vars")) {
+			document.getElementById("myModal-vars").style.display = "none";
+
+
+			updateVariables();
+			var newModal = document.createElement("div");
+			newModal.id = "myModal-vars";
+			newModal.setAttribute("class", "modal");
+			document.getElementsByTagName("BODY")[0].appendChild(newModal);
+			displayModal();
+			$('#mainContainer').animate({left:0});
+			$('#myModal-vars').animate({width:0});
+			}
 	}
 
 	function editableTextAmountBlurred() {
@@ -86,7 +131,24 @@ $(document).ready(function() {
 		var variableNum = elementId[1];
 		variablesList[variableNum].setValue(parseFloat(this.value));
 
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
+						document.getElementById(toHighlight).style.borderWidth = 'thin';
+					}
+		}
+
 		displayModal();
+		updateVariables();
 	}
 
 	function editableTextBlurred() {
@@ -94,9 +156,19 @@ $(document).ready(function() {
 		var variableNum = elementId[1];
 		var stepNum = elementId[2];
 
-		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
-		document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
-		document.getElementById(toHighlight).style.borderWidth = 'thin';
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
+						document.getElementById(toHighlight).style.borderWidth = 'thin';
+					}
+		}
 		for (var m = 0; m < stepsList[stepNum].getVars().length; m++) {
 			if (stepsList[stepNum].getVars()[m].getName() == variablesList[variableNum].getName()) {
 				variablesList[variableNum].setValue(parseFloat(this.value) / (stepsList[stepNum].getFactors()[m]));
@@ -104,6 +176,7 @@ $(document).ready(function() {
 		}
 
 		displayModal();
+		updateVariables();
 	}
 
 	function editableTextFactorBlurred() {
@@ -121,11 +194,12 @@ $(document).ready(function() {
 		}
 
 		displayModal();
+		updateVariables();
 	}
 
 
 	function displayModal() {
-		var node = document.getElementById("modal-content");
+		var node = document.getElementById("modal-content-vars");
 		if (node != null) {
 			while (node.hasChildNodes()) {
 			    node.removeChild(node.lastChild);
@@ -133,18 +207,18 @@ $(document).ready(function() {
 		}
 		else {  
 			var modalDiv = document.createElement("div");
-			modalDiv.setAttribute("class", "modal-content");
-			modalDiv.id = "modal-content";
-			document.getElementById("myModal").appendChild(modalDiv);
+			modalDiv.setAttribute("class", "modal-content-vars");
+			modalDiv.id = "modal-content-vars";
+			document.getElementById("myModal-vars").appendChild(modalDiv);
 		}
 
 		var divClose = document.createElement("SPAN");
 		divClose.setAttribute("class", "close");
 		divClose.innerHTML = "&times;";
-		document.getElementById("modal-content").appendChild(divClose);
+		document.getElementById("modal-content-vars").appendChild(divClose);
 		var headerOne = document.createElement("div");
 		headerOne.innerHTML = "<h1> Variable List </h1>";
-		document.getElementById("modal-content").appendChild(headerOne);
+		document.getElementById("modal-content-vars").appendChild(headerOne);
 
 		for (var i = 0 ; i<variablesList.length; i++) {
 			var divModal = document.createElement("div");
@@ -171,19 +245,37 @@ $(document).ready(function() {
 			html_string += "<br>";
 			html_string += "<br>";
 			divModal.innerHTML = html_string;
-			document.getElementById("modal-content").appendChild(divModal);
-		}
-		var btn = document.createElement("BUTTON");        // Create a <button> element
-		var t = document.createTextNode("Done");       // Create a text node
-		btn.appendChild(t); 
-		btn.id="submit-vars";                             // Append the text to <button>
-		document.getElementById("modal-content").appendChild(btn);  
+			document.getElementById("modal-content-vars").appendChild(divModal);
+		}                            
 	}
 
 	function displaySteps() {
+		var node = document.getElementById("mainContainer");
+		while (node.hasChildNodes()) {
+		    node.removeChild(node.lastChild);
+		}
+
 		for (var n = 0 ; n<stepsList.length; n++) {
 			var divNew = stepsList[n].display();
 			document.getElementById("mainContainer").appendChild(divNew);
+		}
+	}
+
+	function updateVariables() {
+		var variables = document.getElementsByClassName("var");
+		for (var i = 0; i < variables.length; i++) {
+			var elementId = variables[i].id.split("_");
+			var stepNum = elementId[1];
+			var variableName = elementId[2];
+			var variableNum = -1;
+
+			for (var j = 0; j < stepsList[stepNum].getVars().length; j++) {
+				if (stepsList[stepNum].getVars()[j].getName() == variableName) {
+					variableNum = j;
+				}
+			}
+
+			variables[i].innerHTML = stepsList[stepNum].getVarValue(variableNum);
 		}
 	}
 });

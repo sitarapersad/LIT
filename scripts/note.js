@@ -24,7 +24,7 @@ var Note = function (name, owner)
 
 	this.parentFolder = null;
 	this.recycled = false;
-
+	this.fileType = "file";
 	return this.ID;
 };
 

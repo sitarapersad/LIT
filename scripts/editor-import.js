@@ -1,17 +1,17 @@
 
 $(document).ready(function() {
 	$(document).on("click", "#import", function() {
-		document.getElementById("myModal").style.display = "block";
+		document.getElementById("myModal-import").style.display = "block";
 	});
 
 	window.onclick = function(event) {
-		if (event.target == document.getElementById("myModal")) {
+		if (event.target == document.getElementById("myModal-import")) {
 			document.getElementById("myModal").style.display = "none";
 		}
 	}
 
 	$(document).on("click", ".close", function() {
-		document.getElementById("myModal").style.display = "none";
+		document.getElementById("myModal-import").style.display = "none";
 	});
 
 	$(document).on("click", "#submit-import", function() {
@@ -25,7 +25,7 @@ $(document).ready(function() {
 		}
 
 		if (checkedValue != null) {
-			window.location = "editor.html#show"
+			window.location = "note.html"
 		}
 		else {
 			alert("You need to select at least one protocol!");

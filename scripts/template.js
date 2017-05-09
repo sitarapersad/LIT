@@ -25,6 +25,8 @@ var Template = function (name, owner)
 	this.parentFolder = null;
 	this.recycled = false;
 
+	this.fileType = "template";
+
 	return this.ID;
 };
 

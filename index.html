@@ -3,9 +3,10 @@
 
 <head>
 	<link rel="import" href="globalHead.html">
-
 	<link rel="stylesheet" href="stylesheets/homeStyle.css">
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="jqwidgets/styles/jqx.darkblue.css" type="text/css" />
 </head>
 
 <body>
@@ -37,6 +38,14 @@
 	</div>
 	<div class="container" id="mainContainer">
 		<div class="col-md-2" id="sideNavigation">
+			<div class="row nav-option" onclick="moveUp(0)">
+			<span class="glyphicon glyphicon-home" style="padding-right: 15px;"></span> Home
+			</div>
+
+			<div class="row nav-option" onclick="openTrash()">
+			<span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Recycle Bin
+			</div>
+			<hr>
 			<div id="newDocumentNav">
 				<div class="row nav-option" onclick="createFolder()" id="newFileButton">
 				<span class="glyphicon glyphicon-folder-open" style="padding-right: 15px;"></span> New Notebook
@@ -49,13 +58,7 @@
 				</div>
 				<hr>
 			</div>
-			<div class="row nav-option" onclick="moveUp(0)">
-			<span class="glyphicon glyphicon-home" style="padding-right: 15px;"></span> Home
-			</div>
 
-			<div class="row nav-option" onclick="openTrash()">
-			<span class="glyphicon glyphicon-trash" style="padding-right: 15px;"></span> Recycle Bin
-			</div>
 		</div>
 
 		<div class="col-md-10" id="mainBody">
@@ -82,55 +85,85 @@
 
 				<div class="row">
 					<span class="heading">Templates</span>
-					<div style="height:50x; width:45px; margin-right: 25px;" class="col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center" onclick="createTemplate()"> <img style="height:50px; width:50px;" src="images/addtemplate.png"> </div>
 				</div>
 				<div id="emptyTemplate" class="col-md-12" style="line-height: 100px;" > You haven't created any templates yet! :( </div>
 				<div class="row" id="templateContainer" style="min-height: 100px;">
 
 					<!-- Icons for templates created go here -->
+
 				</div>
+<!-- 				<div class="col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center document" onclick="createTemplate()"> <img src='images/addTemplate.png' style='width:120px; height:120px; cursor:pointer;' draggable='false'>; </div> -->
 			</div>
 		</div>
 	</div>
 
 
 	<!-- The Delete File Dialog Modal -->
-	<div id="moveDialog" class="modal">
+	<div class="modal fade" id="moveDialog">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-body">
+	        <p> <b>Please select your destination folder.</b> </p>
+	        <p> Click to select a folder. Double-click to explore a folder.</p>
+	        <div class="currentFolder" style="background-color: #6d9cd6; width: 202px; font-weight: bold; cursor: default;"> </div>
+                <div id='jqxlistbox'>
+				</div>
+				<div style="margin-top: 10px;" id="eventlog">
+				</div>
 
-	  <!-- Modal content -->
-	  <div class="modal-content" id="moveDialogContent">
-		<span class="close" onclick="closeMoveDialog()">&times;</span>
-		<h2> Are you sure you want to delete this file?</h2>
-		You may recover this file from the Recycle Bin if you change your mind.
-		<button onclick="confirmDelete()"> Move </button> <button onclick="closeMoveDialog()"> Cancel </button>
 
+	        <div class="subFolders"></div>
+
+			</div>
+			<div class="modal-footer">
+		        <button class="btn btn-default">Move</button>
+		        <button class="btn btn-default">Cancel</button>
+	      </div>
+	    </div>
 	  </div>
-
 	</div>
 
 
-
-	<!-- The Share Dialog Modal -->
-	<div id="shareDialog" class="modal">
-
-	  <!-- Modal content -->
-	  <div class="modal-content" id="shareDialogContent">
-		<span class="close" onclick="closeShareDialog()">&times;</span>
-		<h2> Select which lab members you would like to share with. </h2>
-		<form method="get">
-				<input type="checkbox" class="person"> David Bau <br>
-				<input type="checkbox" class="person"> Rob Miller <br>
-				<input type="checkbox" class="person"> Stefanie Mueller <br>
-				<input type="checkbox" class="person"> Derek Smith<br>
-				<input type="checkbox" class="person"> Tina Wang<br>
-				<input type="checkbox" class="person"> Other (email address): <input type="text" name="sharedEmail"> <br>
-
-		</form>
-		<button onclick="shareWith()"> Done </button>
-
+	<!-- The Delete File Dialog Modal -->
+	<div class="modal fade" id="deleteDialog">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-body">
+	        <p> <b>Are you sure you want to delete this document?</b> </p>
+	        <p> <span class="red">This action cannot be undone!</span></p>
+	      </div>
+	      <div class="modal-footer">
+	        <button class="btn btn-default">Yes, delete this file!</button>
+	        <button class="btn btn-default">No, keep this file!</button>
+	      </div>
+	    </div>
 	  </div>
-
 	</div>
+
+	<!-- The Share File Dialog Modal -->
+	<div class="modal fade" id="shareDialog">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-body">
+	      		<p> <b>Select which lab members you would like to share with. </b></p>
+				<form method="get">
+						<input type="checkbox" class="person"> David Bau <br>
+						<input type="checkbox" class="person"> Rob Miller <br>
+						<input type="checkbox" class="person"> Stefanie Mueller <br>
+						<input type="checkbox" class="person"> Derek Smith<br>
+						<input type="checkbox" class="person"> Tina Wang<br>
+						<input type="checkbox" class="person"> Other (email address): <input type="text" name="sharedEmail"> <br>
+
+				</form>
+	      </div>
+	      <div class="modal-footer">
+	        <button class="btn btn-default">Share</button>
+	        <button class="btn btn-default">Cancel</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
 
 
 	<footer class="text-center">
@@ -141,6 +174,10 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>
+	<script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
+	<script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
+	<script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
+	<script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
 	<script src="https://use.fontawesome.com/9431531002.js"></script>
 	<script src="scripts/string-generator.js"></script>
 	<script src="scripts/note.js"></script>
