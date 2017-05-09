@@ -34,9 +34,20 @@ $(document).ready(function() {
 		var elementId = this.id.split("_");
 		var variableNum = elementId[1];
 		var stepNum = elementId[2];
-		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
-		document.getElementById(toHighlight).style.borderColor = '#457796';
-		document.getElementById(toHighlight).style.borderWidth = 'thick';
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#457796';
+						document.getElementById(toHighlight).style.borderWidth = 'thick';
+					}
+			}
+
 
 		editableText.blur(editableTextBlurred);
 	});
@@ -44,7 +55,7 @@ $(document).ready(function() {
 	$(document).on("click", ".close", function() {
 		document.getElementById("myModal-vars").style.display = "none";
 
-		displaySteps();
+		updateVariables();
 		var newModal = document.createElement("div");
 		newModal.id = "myModal-vars";
 		newModal.setAttribute("class", "modal");
@@ -82,9 +93,19 @@ $(document).ready(function() {
 		var elementId = this.id.split("_");
 		var variableNum = elementId[1];
 		var stepNum = elementId[2];
-		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
-		document.getElementById(toHighlight).style.borderColor = '#457796';
-		document.getElementById(toHighlight).style.borderWidth = 'thick';
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#457796';
+						document.getElementById(toHighlight).style.borderWidth = 'thick';
+					}
+			}
 
 		editableTextFactor.blur(editableTextFactorBlurred);
 	});
@@ -94,7 +115,7 @@ $(document).ready(function() {
 			document.getElementById("myModal-vars").style.display = "none";
 
 
-			displaySteps();
+			updateVariables();
 			var newModal = document.createElement("div");
 			newModal.id = "myModal-vars";
 			newModal.setAttribute("class", "modal");
@@ -124,11 +145,10 @@ $(document).ready(function() {
 						document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
 						document.getElementById(toHighlight).style.borderWidth = 'thin';
 					}
-			}
-
+		}
 
 		displayModal();
-		displaySteps();
+		updateVariables();
 	}
 
 	function editableTextBlurred() {
@@ -136,9 +156,19 @@ $(document).ready(function() {
 		var variableNum = elementId[1];
 		var stepNum = elementId[2];
 
-		var toHighlight = "area_" + stepNum.toString() +"_"+ variablesList[variableNum].getName().toString();
-		document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
-		document.getElementById(toHighlight).style.borderWidth = 'thin';
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
+						document.getElementById(toHighlight).style.borderWidth = 'thin';
+					}
+		}
 		for (var m = 0; m < stepsList[stepNum].getVars().length; m++) {
 			if (stepsList[stepNum].getVars()[m].getName() == variablesList[variableNum].getName()) {
 				variablesList[variableNum].setValue(parseFloat(this.value) / (stepsList[stepNum].getFactors()[m]));
@@ -146,7 +176,7 @@ $(document).ready(function() {
 		}
 
 		displayModal();
-		displaySteps();
+		updateVariables();
 	}
 
 	function editableTextFactorBlurred() {
@@ -164,7 +194,7 @@ $(document).ready(function() {
 		}
 
 		displayModal();
-		displaySteps();
+		updateVariables();
 	}
 
 
@@ -228,6 +258,24 @@ $(document).ready(function() {
 		for (var n = 0 ; n<stepsList.length; n++) {
 			var divNew = stepsList[n].display();
 			document.getElementById("mainContainer").appendChild(divNew);
+		}
+	}
+
+	function updateVariables() {
+		var variables = document.getElementsByClassName("var");
+		for (var i = 0; i < variables.length; i++) {
+			var elementId = variables[i].id.split("_");
+			var stepNum = elementId[1];
+			var variableName = elementId[2];
+			var variableNum = -1;
+
+			for (var j = 0; j < stepsList[stepNum].getVars().length; j++) {
+				if (stepsList[stepNum].getVars()[j].getName() == variableName) {
+					variableNum = j;
+				}
+			}
+
+			variables[i].innerHTML = stepsList[stepNum].getVarValue(variableNum);
 		}
 	}
 });
