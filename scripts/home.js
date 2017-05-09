@@ -521,12 +521,11 @@ function openMoveDialog(docType, eltID){
 	console.log('Opening move dialog for '+MOVE_doc.name);
 	clicked = null;
 	$("#moveDialog").modal('show');
-	var currentFolder = folderChain[0];
-
 	populateMoveDialog(currentFolder);
 };
 
 function populateMoveDialog(currentFolder){
+	console.log('Open '+currentFolder.name);
 	var folderID = [],
     	folderName = [];
     var disable = -1;
@@ -541,13 +540,18 @@ function populateMoveDialog(currentFolder){
     }
 
 
-	$('#moveDialog .currentFolder').html(currentFolder.name);
+	$('#moveDialog .currentFolder').html("<span class='glyphicon glyphicon-circle-arrow-up' style='padding:10px;'></span>"+currentFolder.name);
 	$('#moveDialog .currentFolder').dblclick(function (event) {
 		if (currentFolder.parentFolder){
 			var newFolder = currentFolder.parentFolder;
 			populateMoveDialog(newFolder);			
 		}
 
+	});
+
+	$('#moveDialog .currentFolder').click(function (event) {
+		MOVE_to = currentFolder
+		$("#eventlog").html('Destination Folder: ' + currentFolder.name);
 	});
     $("#jqxlistbox").jqxListBox({ source: folderName, width: '200px', height: '150px' });
 
@@ -588,6 +592,9 @@ $("#moveDialog").on('hide.bs.modal', function() {
 	else {
 	    console.log("The user has clicked: " + clicked);
 		if (clicked=="Move"){
+			if (MOVE_doc.parentFolder.ID != MOVE_to.ID){
+				document.getElementById(MOVE_doc.fileType+"_"+MOVE_doc.ID).remove();
+			}
 			if (MOVE_doc.fileType == "folder"){
 				MOVE_doc.parentFolder.deleteFolder(MOVE_doc);
 				MOVE_to.addFolder(MOVE_doc);
@@ -600,7 +607,6 @@ $("#moveDialog").on('hide.bs.modal', function() {
 				MOVE_doc.parentFolder.deleteTemplate(MOVE_doc);
 				MOVE_to.addTemplate(MOVE_doc);
 			}
-			document.getElementById(MOVE_doc.fileType+"_"+MOVE_doc.ID).remove();
 		}
 	}
 	MOVE_doc = null;
