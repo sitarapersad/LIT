@@ -22,7 +22,7 @@ $(document).ready(function() {
 	displaySteps();
 
 	$(document).on("click", "#submit-vars", function(){
-		document.getElementById("myModal").style.display = "none";
+		document.getElementById("myModal-vars").style.display = "none";
 
 		var node = document.getElementById("mainContainer");
 		while (node.hasChildNodes()) {
@@ -31,14 +31,14 @@ $(document).ready(function() {
 
 		displaySteps();
 		var newModal = document.createElement("div");
-		newModal.id = "myModal";
+		newModal.id = "myModal-vars";
 		newModal.setAttribute("class", "modal");
-		document.getElementById("mainContainer").appendChild(newModal);
+		document.getElementsByTagName("BODY")[0].appendChild(newModal);
 		displayModal();
 	});
 
 	$(document).on("click", ".var", function() {
-		document.getElementById("myModal").style.display = "block";
+		document.getElementById("myModal-vars").style.display = "block";
 	});
 
 	$(document).on("click", ".edit-var", function() {
@@ -54,7 +54,7 @@ $(document).ready(function() {
 	});
 
 	$(document).on("click", ".close", function() {
-		document.getElementById("myModal").style.display = "none";
+		document.getElementById("myModal-vars").style.display = "none";
 	});
 
 	$(document).on("click", ".edit-amount", function() {
@@ -76,8 +76,8 @@ $(document).ready(function() {
 	});
 
 	window.onclick = function(event) {
-		if (event.target == document.getElementById("myModal")) {
-			document.getElementById("myModal").style.display = "none";
+		if (event.target == document.getElementById("myModal-vars")) {
+			document.getElementById("myModal-vars").style.display = "none";
 		}
 	}
 
@@ -125,7 +125,7 @@ $(document).ready(function() {
 
 
 	function displayModal() {
-		var node = document.getElementById("modal-content");
+		var node = document.getElementById("modal-content-vars");
 		if (node != null) {
 			while (node.hasChildNodes()) {
 			    node.removeChild(node.lastChild);
@@ -133,18 +133,18 @@ $(document).ready(function() {
 		}
 		else {  
 			var modalDiv = document.createElement("div");
-			modalDiv.setAttribute("class", "modal-content");
-			modalDiv.id = "modal-content";
-			document.getElementById("myModal").appendChild(modalDiv);
+			modalDiv.setAttribute("class", "modal-content-vars");
+			modalDiv.id = "modal-content-vars";
+			document.getElementById("myModal-vars").appendChild(modalDiv);
 		}
 
 		var divClose = document.createElement("SPAN");
 		divClose.setAttribute("class", "close");
 		divClose.innerHTML = "&times;";
-		document.getElementById("modal-content").appendChild(divClose);
+		document.getElementById("modal-content-vars").appendChild(divClose);
 		var headerOne = document.createElement("div");
 		headerOne.innerHTML = "<h1> Variable List </h1>";
-		document.getElementById("modal-content").appendChild(headerOne);
+		document.getElementById("modal-content-vars").appendChild(headerOne);
 
 		for (var i = 0 ; i<variablesList.length; i++) {
 			var divModal = document.createElement("div");
@@ -171,13 +171,13 @@ $(document).ready(function() {
 			html_string += "<br>";
 			html_string += "<br>";
 			divModal.innerHTML = html_string;
-			document.getElementById("modal-content").appendChild(divModal);
+			document.getElementById("modal-content-vars").appendChild(divModal);
 		}
 		var btn = document.createElement("BUTTON");        // Create a <button> element
 		var t = document.createTextNode("Done");       // Create a text node
 		btn.appendChild(t); 
 		btn.id="submit-vars";                             // Append the text to <button>
-		document.getElementById("modal-content").appendChild(btn);  
+		document.getElementById("modal-content-vars").appendChild(btn);  
 	}
 
 	function displaySteps() {
