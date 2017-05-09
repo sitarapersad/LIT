@@ -11,7 +11,8 @@ var trashMode = false;
 var modelClicked = null;
 var DELETE_docType = null;
 var DELETE_eltID = null;
-
+var MOVE_doc = null;
+var MOVE_to = null;
 document.body.addEventListener("click", function (e) {
 	if (e.target.className.includes("options")){
 		console.log("DISPLAY OPTIONS");
@@ -378,16 +379,9 @@ function drawTemplate(templateToAdd){
 
 function drawDocument(eltToAdd, docType, upperDocType, img_src){
 	var div = document.createElement("div");
-	div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center");
+	div.setAttribute("class", "col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center document");
 
 	div.id = docType+"_"+eltToAdd.ID;
-
-	div.style.width = "150px";
-	div.style.height = "175px";
-	div.style.background = "white";
-	div.style.margin = "25px";
-	div.style.padding = "0px";
-	div.style.position = "relative";
 
 	div.setAttribute("ondrag", "drag(event)");
 	div.setAttribute("ondragstart", "dragstart(event)");
@@ -486,7 +480,7 @@ function drawDocument(eltToAdd, docType, upperDocType, img_src){
 
 				var moveRow = createRow();
 				moveRow.innerHTML = '<span class="glyphicon glyphicon-move" style="padding-right: 15px;"></span> Move to ... '
-				moveRow.setAttribute('onclick', 'openMoveDialog()');
+				moveRow.setAttribute('onclick', "openMoveDialog('"+docType+"','"+eltToAdd.ID+"')");
 
 
 				nav.appendChild(deleteRow);
@@ -512,37 +506,19 @@ function drawDocument(eltToAdd, docType, upperDocType, img_src){
 	// console.log(document.getElementById(docType+"Name_"+eltToAdd.ID));
 };
 
-function openDeleteDialog(docType, eltID){
-	DELETE_docType = docType;
-	DELETE_eltID = eltID;
-	console.log('Opening delete dialog');
-	clicked = null;
-	$("#deleteDialog").modal('show');
-};
-
-$("#deleteDialog .modal-footer > button").click(function() {
-  clicked = $(this).text();
-  $("#deleteDialog").modal('hide');
-});
-
-$("#deleteDialog").on('hide.bs.modal', function() {
-	if (clicked === null){
-	    console.log("The user didn't click anything");
-	} 
-	else {
-	    console.log("The user has clicked: " + clicked);
-		if (clicked=="Yes, delete this file!"){
-			deletePermanently(DELETE_docType, DELETE_eltID);
-		}
-	}
-	DELETE_docType = null;
-	DELETE_eltID = null;
-});
 
 function openMoveDialog(docType, eltID){
-	MOVE_docType = docType;
-	MOVE_eltID = eltID;
-	console.log('Opening move dialog');
+	var currentFolder = folderChain[folderChain.length-1]
+	if (docType == 'folder'){
+		MOVE_doc = currentFolder.getFolder(eltID);	
+	}
+	if (docType == 'file'){
+		MOVE_doc = currentFolder.getFile(eltID);	
+	}
+	if (docType == 'template'){
+		MOVE_doc = currentFolder.getTemplate(eltID);	
+	}
+	console.log('Opening move dialog for '+MOVE_doc.name);
 	clicked = null;
 	$("#moveDialog").modal('show');
 	var currentFolder = folderChain[0];
@@ -553,39 +529,51 @@ function openMoveDialog(docType, eltID){
 function populateMoveDialog(currentFolder){
 	var folderID = [],
     	folderName = [];
-    console.log(currentFolder.name)
+    var disable = -1;
+
 	for (var folder in currentFolder.folders) {
-		console.log(folder);
-		console.log(currentFolder.getFolder(folder));
 		folderID.push(folder);
 		folderName.push(currentFolder.getFolder(folder).name);
 	}
 	console.log(folderName);
+    if (MOVE_doc.fileType == "folder"){
+    	disable = folderID.indexOf(MOVE_doc.ID);
+    }
+
 
 	$('#moveDialog .currentFolder').html(currentFolder.name);
+	$('#moveDialog .currentFolder').dblclick(function (event) {
+		if (currentFolder.parentFolder){
+			var newFolder = currentFolder.parentFolder;
+			populateMoveDialog(newFolder);			
+		}
+
+	});
     $("#jqxlistbox").jqxListBox({ source: folderName, width: '200px', height: '150px' });
+
+    // Don't allow movement to current folder
+    if (disable != -1){
+    	$("#jqxlistbox").jqxListBox('disableAt', disable);
+    }
+    
 
     // bind to 'select' event.
     $('#jqxlistbox').bind('select', function (event) {
         var args = event.args;
         var item = $('#jqxlistbox').jqxListBox('getItem', args.index);
-        console.log(args);
-        $("#eventlog").html('Selected: ' + item.label);
+        var ID = folderID[args.index];
+        MOVE_to = currentFolder.getFolder(ID);
+        console.log(MOVE_to.name);
+        $("#eventlog").html('Destination Folder: ' + item.label);
     });
-    $('#jqxlistbox').bind('dblclick', function (event) {
-    	alert('Doubleclicked!');
-        var args = event.args;
-        console.log(args.index);
-        var item = $('#jqxlistbox').jqxListBox('getItem', args.index);
-        // $("#eventlog").html('Selected: ' + item.label);
-    });
-    $("#button").jqxButton();
-    $("#button").click(function () {
-        var item = $('#jqxlistbox').jqxListBox('getSelectedItem');
-        if (item != null) {
-            alert(item.label);
-        }
-    });
+
+	$("#jqxlistbox .jqx-listitem-state-normal").dblclick(function (event) {
+		var item = $(event.target).text();
+		var index = folderName.indexOf(item);
+		var ID = folderID[index];
+		var newFolder = currentFolder.getFolder(ID);
+		populateMoveDialog(newFolder);
+	});
 }
 
 $("#moveDialog .modal-footer > button").click(function() {
@@ -599,12 +587,24 @@ $("#moveDialog").on('hide.bs.modal', function() {
 	} 
 	else {
 	    console.log("The user has clicked: " + clicked);
-		if (clicked=="Yes, delete this file!"){
-			deletePermanently(DELETE_docType, DELETE_eltID);
+		if (clicked=="Move"){
+			if (MOVE_doc.fileType == "folder"){
+				MOVE_doc.parentFolder.deleteFolder(MOVE_doc);
+				MOVE_to.addFolder(MOVE_doc);
+			}
+			if (MOVE_doc.fileType == "file"){
+				MOVE_doc.parentFolder.deleteFile(MOVE_doc);
+				MOVE_to.addFile(MOVE_doc);
+			}		
+			if (MOVE_doc.fileType == "template"){
+				MOVE_doc.parentFolder.deleteTemplate(MOVE_doc);
+				MOVE_to.addTemplate(MOVE_doc);
+			}
+			document.getElementById(MOVE_doc.fileType+"_"+MOVE_doc.ID).remove();
 		}
 	}
-	MOVE_docType = null;
-	MOVE_eltID = null;
+	MOVE_doc = null;
+	MOVE_to = null;
 });
 
 
@@ -639,6 +639,33 @@ $("#shareDialog").on('hide.bs.modal', function() {
 function shareWith(){
 	document.getElementById("shareDialog").style.display = "none";
 };
+
+function openDeleteDialog(docType, eltID){
+	DELETE_docType = docType;
+	DELETE_eltID = eltID;
+	console.log('Opening delete dialog');
+	clicked = null;
+	$("#deleteDialog").modal('show');
+};
+
+$("#deleteDialog .modal-footer > button").click(function() {
+  clicked = $(this).text();
+  $("#deleteDialog").modal('hide');
+});
+
+$("#deleteDialog").on('hide.bs.modal', function() {
+	if (clicked === null){
+	    console.log("The user didn't click anything");
+	} 
+	else {
+	    console.log("The user has clicked: " + clicked);
+		if (clicked=="Yes, delete this file!"){
+			deletePermanently(DELETE_docType, DELETE_eltID);
+		}
+	}
+	DELETE_docType = null;
+	DELETE_eltID = null;
+});
 
 
 function sendToTrash(docType, eltID){

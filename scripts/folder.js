@@ -24,7 +24,7 @@ var Folder = function (name, owner)
 	// Other details to be filled out at a more relaxed time
 	this.createDate = 0;
 	this.modifiedDate = 0;
-
+	this.fileType = "folder";
 	return this.ID;
 };
 

@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="stylesheets/homeStyle.css">
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 	<link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
+	<link rel="stylesheet" href="jqwidgets/styles/jqx.darkblue.css" type="text/css" />
 </head>
 
 <body>
@@ -84,13 +85,14 @@
 
 				<div class="row">
 					<span class="heading">Templates</span>
-					<div style="height:50x; width:45px; margin-right: 25px;" class="col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center" onclick="createTemplate()"> <img style="height:50px; width:50px;" src="images/addtemplate.png"> </div>
 				</div>
 				<div id="emptyTemplate" class="col-md-12" style="line-height: 100px;" > You haven't created any templates yet! :( </div>
 				<div class="row" id="templateContainer" style="min-height: 100px;">
 
 					<!-- Icons for templates created go here -->
+
 				</div>
+<!-- 				<div class="col-md-4 col-sm-4 col-lg-4 col-xs-4 col-xl-4 control-label center-block text-center document" onclick="createTemplate()"> <img src='images/addTemplate.png' style='width:120px; height:120px; cursor:pointer;' draggable='false'>; </div> -->
 			</div>
 		</div>
 	</div>
@@ -102,12 +104,11 @@
 	    <div class="modal-content">
 	      <div class="modal-body">
 	        <p> <b>Please select your destination folder.</b> </p>
+	        <p> Click to select a folder. Double-click to explore a folder.</p>
 	        <div class="currentFolder" style="background-color: grey;"> </div>
                 <div id='jqxlistbox'>
 				</div>
-				<div style="margin-top: 10px;">
-					<input id="button" type="button" value="Get Selected Item" />
-					<div id="eventlog"></div>
+				<div style="margin-top: 10px;" id="eventlog">
 				</div>
 
 
