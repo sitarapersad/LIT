@@ -11,6 +11,10 @@ body {
 
 	background-size: 400px 400px;
 	overflow-y: scroll;
+
+    position:absolute;
+    left: 0;
+    right: 0;
 }
 
 #sideNaviation{
@@ -52,7 +56,7 @@ body {
  }
 
 /* The Modal (background) */
-.modal {
+#myModal-import {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -66,12 +70,34 @@ body {
 }
 
 /* Modal Content/Box */
-.modal-content {
+#modal-content-import {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 45%; /* Could be more or less, depending on screen size */
+}
+
+#myModal-vars {
+    display: none; /* Hidden by default */
+    position: absolute; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    top: 0px;
+    width: 0px;
+    bottom: 0px;
+
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.8); 
+}
+
+/* Modal Content/Box */
+#modal-content-vars {
+    background-color: #fefefe;
+    margin: 2% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
 }
 
 /* The Close Button */
@@ -98,4 +124,9 @@ input[type="checkbox"]{
 
 #mainContainer img {
 	width: 200px;
+}
+
+#footer {
+    position: relative;
+    top:1000px;
 }

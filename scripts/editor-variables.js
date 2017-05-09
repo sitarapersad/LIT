@@ -21,25 +21,13 @@ $(document).ready(function() {
 	displayModal();
 	displaySteps();
 
-	$(document).on("click", "#submit-vars", function(){
-		document.getElementById("myModal-vars").style.display = "none";
-
-		var node = document.getElementById("mainContainer");
-		while (node.hasChildNodes()) {
-		    node.removeChild(node.lastChild);
-		}
-
-		displaySteps();
-		var newModal = document.createElement("div");
-		newModal.id = "myModal-vars";
-		newModal.setAttribute("class", "modal");
-		document.getElementsByTagName("BODY")[0].appendChild(newModal);
-		displayModal();
-	});
 
 	$(document).on("click", ".var", function() {
 		document.getElementById("myModal-vars").style.display = "block";
+		$('#myModal-vars').animate({width:"500px"});
+		$('#mainContainer').animate({left:"500px"});
 	});
+
 
 	$(document).on("click", ".edit-var", function() {
 		var editableText = $(this);
@@ -55,6 +43,16 @@ $(document).ready(function() {
 
 	$(document).on("click", ".close", function() {
 		document.getElementById("myModal-vars").style.display = "none";
+
+		displaySteps();
+		var newModal = document.createElement("div");
+		newModal.id = "myModal-vars";
+		newModal.setAttribute("class", "modal");
+		document.getElementsByTagName("BODY")[0].appendChild(newModal);
+		displayModal();
+		$('#mainContainer').animate({left:0});
+		$('#myModal-vars').animate({width:0});
+		
 	});
 
 	$(document).on("click", ".edit-amount", function() {
@@ -76,9 +74,19 @@ $(document).ready(function() {
 	});
 
 	window.onclick = function(event) {
-		if (event.target == document.getElementById("myModal-vars")) {
+		if (event.target == document.getElementById("modal-content-vars")) {
 			document.getElementById("myModal-vars").style.display = "none";
-		}
+
+
+			displaySteps();
+			var newModal = document.createElement("div");
+			newModal.id = "myModal-vars";
+			newModal.setAttribute("class", "modal");
+			document.getElementsByTagName("BODY")[0].appendChild(newModal);
+			displayModal();
+			$('#mainContainer').animate({left:0});
+			$('#myModal-vars').animate({width:0});
+			}
 	}
 
 	function editableTextAmountBlurred() {
@@ -87,6 +95,7 @@ $(document).ready(function() {
 		variablesList[variableNum].setValue(parseFloat(this.value));
 
 		displayModal();
+		displaySteps();
 	}
 
 	function editableTextBlurred() {
@@ -104,6 +113,7 @@ $(document).ready(function() {
 		}
 
 		displayModal();
+		displaySteps();
 	}
 
 	function editableTextFactorBlurred() {
@@ -121,6 +131,7 @@ $(document).ready(function() {
 		}
 
 		displayModal();
+		displaySteps();
 	}
 
 
@@ -172,15 +183,15 @@ $(document).ready(function() {
 			html_string += "<br>";
 			divModal.innerHTML = html_string;
 			document.getElementById("modal-content-vars").appendChild(divModal);
-		}
-		var btn = document.createElement("BUTTON");        // Create a <button> element
-		var t = document.createTextNode("Done");       // Create a text node
-		btn.appendChild(t); 
-		btn.id="submit-vars";                             // Append the text to <button>
-		document.getElementById("modal-content-vars").appendChild(btn);  
+		}                            
 	}
 
 	function displaySteps() {
+		var node = document.getElementById("mainContainer");
+		while (node.hasChildNodes()) {
+		    node.removeChild(node.lastChild);
+		}
+
 		for (var n = 0 ; n<stepsList.length; n++) {
 			var divNew = stepsList[n].display();
 			document.getElementById("mainContainer").appendChild(divNew);
