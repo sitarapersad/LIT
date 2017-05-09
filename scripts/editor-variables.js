@@ -57,6 +57,22 @@ $(document).ready(function() {
 
 	$(document).on("click", ".edit-amount", function() {
 		var editableTextAmount = $(this);
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#457796';
+						document.getElementById(toHighlight).style.borderWidth = 'thick';
+					}
+			}
+
 		editableTextAmount.blur(editableTextAmountBlurred);
 	});
 
@@ -93,6 +109,23 @@ $(document).ready(function() {
 		var elementId = this.id.split("_");
 		var variableNum = elementId[1];
 		variablesList[variableNum].setValue(parseFloat(this.value));
+
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		for (var j = 0; j<stepsList.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < stepsList[j].getVars().length; k++) {
+						if (stepsList[j].getVars()[k].getName() == variablesList[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ variablesList[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
+						document.getElementById(toHighlight).style.borderWidth = 'thin';
+					}
+			}
+
 
 		displayModal();
 		displaySteps();
