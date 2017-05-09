@@ -14,8 +14,20 @@
         var default_date = new Date();
         var current_month;
         var current_year;
+        var task_storage = {};
+        $(document).ready(
+            function() {
+                var allTasks = document.getElementById("tasks").getElementsByTagName("LI");
+                for (i = 0; i < allTasks.length; i++) {
+                    var span = document.createElement("SPAN");
+                    var txt = document.createTextNode("\u00D7");
+                    span.className = "close";
+                    span.appendChild(txt);
+                    allTasks[i].appendChild(span);
+                }
+            }
+        );
 
-        $(document).ready();
 
 
 
@@ -46,6 +58,7 @@
                         document.getElementById(active).removeAttribute("class");
                         active = "R" + i + "C" + j;
                         day_cell.setAttribute("class", "active");
+                        change_task_title(active);
                     }
                 }
             }
@@ -150,7 +163,7 @@
 
                         td.appendChild(day);
                         var default_date_number = default_date.getDate();
-                        if (default_date_number == date_number + 1) {
+                        if (default_date_number == date_number) {
                             td.setAttribute("class", "active");
                             active = td.getAttribute("id");
                             // console.log("default active, ", active);
@@ -167,16 +180,59 @@
         }
 
 
+        function change_task_title(active) {
+            var current_day = document.getElementById(active).innerHTML;
+            var month_year = document.getElementById("monthName").innerHTML.split(" ");
+
+            if (month_year[1] == default_date.getFullYear() &&
+                month_year[0] == calendar_months[default_date.getMonth()] &&
+                current_day == default_date.getDate()) {
+                document.getElementById("taskTitleHeader").innerHTML = "Tasks for Today";
+            } else {
+                document.getElementById("taskTitleHeader").innerHTML = "Tasks for " +
+                    month_year[0] + " " + current_day + ", " + month_year[1];
+            }
+        }
+
+        function newTask() {
+            var inputTask = document.getElementById("newTaskInput").value;
+            if (inputTask == "") {
+                alert("Please write something for your task!");
+            } else {
+                makeTask(inputTask);
+            }
+
+
+            document.getElementById("newTaskInput").value = "";
+
+        }
+
+        function makeTask(input) {
+            var li = document.createElement("li");
+
+            var text = document.createTextNode(input);
+
+            li.appendChild(text);
+
+
+            document.getElementById("taskListProper").appendChild(li);
+
+            var span = document.createElement("SPAN");
+            var txt = document.createTextNode("\u00D7");
+            span.className = "close";
+            span.appendChild(txt);
+            li.appendChild(span);
+        }
+
         $(document).on("click", ".numbered_date", function(evt) {
-            // active = evt.target.id;
-            // console.log(evt.target.id);
 
             if (evt.target.id.match(/R\dC\d/g)) {
-                document.getElementById(active).removeAttribute("class");
+                document.getElementById(active).setAttribute("class", "numbered_date");
 
                 active = evt.target.id;
                 document.getElementById(active).setAttribute("class", "active");
 
+                change_task_title(active);
 
             }
         });
@@ -201,6 +257,15 @@
             }
             set_month(current_month, current_year);
         })
+
+        $(document).on("click", ".close", function(evt) {
+            var parent = evt.target.parentElement;
+            parent.style.display = "none";
+        })
+
+        $(document).on("click", "li", function(evt) {
+            evt.target.classList.toggle('checked');
+        })
     </script>
 
 </head>
@@ -217,11 +282,11 @@
             </div>
             <div class="row">
                 <nav class="navbar navbar-default">
-                    <div class="container-fluid text-center" style="width: 100%; padding-left: 0px; padding-right: 20px;">
-                        <ul class="nav navbar-nav" style="width: 100%;">
-                            <li style='width:33.3%'><a href="index.html">My Notebook</a></li>
-                            <li style='width:33.3% '><a href="shared.html">Shared With Me</a></li>
-                            <li style='width:33.3%' class="active"><a href="calendar.html"><span class="glyphicons glyphicon-family"></span>Calendar</a></li>
+                    <div class="container-fluid text-center" style="width: 100% !important; padding-left: 0px !important; padding-right: 20px !important;">
+                        <ul class="nav navbar-nav" style="width: 100% !important;">
+                            <li style='width:33.3% !important'><a href="index.html">My Notebook</a></li>
+                            <li style='width:33.3% !important'><a href="shared.html">Shared With Me</a></li>
+                            <li style='width:33.3% !important' class="active"><a href="calendar.html"><span class="glyphicons glyphicon-family"></span>Calendar</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -244,15 +309,23 @@
                 </div>
             </div>
             <div class="col-md-5" id="tasks">
-                <div class="row" id="tasks-header">
-                    <h1> Tasks for Today </h1>
+                <div class="row" id="tasksHeader">
+                    <h1 id="taskTitleHeader"> Tasks for Today </h1>
                 </div>
                 <div id="task-list">
-                    <form method="get" class="task-text">
-                        <input type="checkbox" class="check"> Make sure to write out the protocol for tomorrow's PCR experiment. <br><br>
-                        <input type="checkbox" class="check"> Re-run the gel electrophoresis experiment with 2 grams of agarose. <br><br>
-                        <input type="checkbox" class="check"> Ask Rob to share the collagen distillation lab folder with you. <br> <br>
-                    </form>
+                    <div class="row" id="addTaskRow">
+                        <input type="text" id="newTaskInput" placeholder="Make new task ...">
+                        <span onclick="newTask()" class="addNewTaskButton">Add</span>
+                    </div>
+
+
+                    <ul id="taskListProper">
+                        <li class="checked">Make sure to write out the protocol for tomorrow's PCR experiment.</li>
+                        <li>Re-run the gel electrophoresis experiment with 2 grams of agarose.</li>
+                        <li>Ask Rob to share the collagen distillation lab folder with you.</li>
+
+                    </ul>
+
 
                 </div>
             </div>
