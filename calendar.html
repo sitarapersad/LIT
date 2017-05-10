@@ -21,18 +21,13 @@
                 var allTasks = document.getElementById("tasks").getElementsByTagName("LI");
 
                 var day_task = make_name(default_date.getDate(), default_date.getMonth(), default_date.getFullYear());
+                if (localStorage.getItem(day_task) === null) {
 
-                localStorage.setItem(day_task, document.getElementById("taskListProper").innerHTML);
+                    localStorage.setItem(day_task, document.getElementById("taskListProper").innerHTML);
 
-                for (i = 0; i < allTasks.length; i++) {
-                    current_child = allTasks[i].firstChild;
+                } else {
+                    document.getElementById("taskListProper").innerHTML = localStorage.getItem(day_task);
 
-                    //adding cancel
-                    var span = document.createElement("SPAN");
-                    var txt = document.createTextNode("\u00D7");
-                    span.className = "close";
-                    span.appendChild(txt);
-                    allTasks[i].appendChild(span);
 
                 }
             }

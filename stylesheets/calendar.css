@@ -8,10 +8,15 @@ table {
     margin: 0px;
     font-size: 22px;
     color: #666;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 td:hover {
     background: #ffdacc;
+    cursor: pointer;
     /*background: #ffdd63;*/
     /*background: red;*/
 }
@@ -51,6 +56,7 @@ td:hover {
 #rightArrow:hover {
     background: #eed490;
     color: #6f5411;
+    cursor: pointer;
 }
 
 #calendar_row_names {
@@ -61,6 +67,17 @@ td:hover {
     color: black;
     text-align: center;
     font-size: 18px;
+}
+
+#day_names {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#day_names:hover {
+    cursor: default;
 }
 
 #day_names {
@@ -179,6 +196,11 @@ div {
     float: left;
 }
 
+.functionButton1:hover {
+    background: goldenrod;
+    cursor: pointer;
+}
+
 .functionButton2 {
     padding: 11.5px 8px;
     background: #e4ba4e;
@@ -189,8 +211,14 @@ div {
     float: right;
 }
 
+.functionButton2:hover {
+    background: goldenrod;
+    cursor: pointer;
+}
+
 .addNewtaskButton:hover {
     background: goldenrod;
+    cursor: pointer;
 }
 
 #mainContainer {
@@ -204,7 +232,7 @@ div {
 #taskListProper {
     margin: 0px;
     padding: 0px;
-    height: 330px;
+    height: 282.5px;
     background: lightgoldenrodyellow;
     overflow-y: auto;
 }
@@ -271,10 +299,4 @@ div {
 .close:hover {
     background-color: gray;
     color: white;
-}
-
-input[type="checkbox"] {
-    width: 16px;
-    /*Desired width*/
-    height: 16px;
 }
