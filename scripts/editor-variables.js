@@ -5,7 +5,6 @@ $(document).ready(function() {
 	displayModal();
 	displaySteps();
 
-
 	$(document).on("click", ".var", function() {
 		document.getElementById("myModal-vars").style.display = "block";
 		displayModal();
@@ -279,6 +278,11 @@ $(document).ready(function() {
 	window.onclick = function(event) {
 		if (event.target == document.getElementById("myModal-add")) {
 			document.getElementById("myModal-add").style.display = "none";
+			$("#step-num").empty();
+			$("#existing-variables").empty();
+			document.getElementById("step-content").value="";
+			stepAdded = new Step([], [], [], 0);
+			lastVariableAdded = 0;
 		}
 	}
 
@@ -287,6 +291,12 @@ $(document).ready(function() {
 
 	$(document).on("click", ".close", function() {
 		document.getElementById("myModal-add").style.display = "none";
+
+			$("#step-num").empty();
+		$("#existing-variables").empty();
+		document.getElementById("step-content").value="";
+		stepAdded = new Step([], [], [], 0);
+		lastVariableAdded = 0;
 	});
 
 	$(document).on("click", "#submit-add", function() {
