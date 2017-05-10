@@ -33,19 +33,19 @@ var Storage = (function () {
 		homeFolder = new Folder(JSON.parse(homeFolder));
 	} else {
 		// Initialization of folder hierarchy
-		homeFolder = new Folder({name: "Home", owner: "Owner"});
-		var cancerFolder = new Folder({name: "Cancer", owner: "Owner"});
-		var cancerFolder1 = new Folder({name: "Breast Cancer", owner: "Owner"});
-		var cancerFolder2 = new Folder({name: "Lung Cancer", owner: "Owner"});
+		homeFolder = new Folder({name: "Home", owner: "David"});
+		var cancerFolder = new Folder({name: "Cancer", owner: "David"});
+		var cancerFolder1 = new Folder({name: "Breast Cancer", owner: "David"});
+		var cancerFolder2 = new Folder({name: "Lung Cancer", owner: "David"});
 
 		cancerFolder.addFolder(cancerFolder1);
 		cancerFolder.addFolder(cancerFolder2);
 
-		var HIVFolder = new Folder({name: "HIV", owner: "Owner"});
-		var thyroidFolder = new Folder({name: "Thyroid", owner: "Owner"});
-		var titrationFile = new Note({name: "Titration", owner: "Owner"});
-		var PCRFile = new Note({name: "PCR ", owner: "Owner"});
-		var PCRTemplate = new Template({name: "PCR", owner: "Owner"});
+		var HIVFolder = new Folder({name: "HIV", owner: "David"});
+		var thyroidFolder = new Folder({name: "Thyroid", owner: "David"});
+		var titrationFile = new Note({name: "Titration", owner: "David"});
+		var PCRFile = new Note({name: "PCR ", owner: "David"});
+		var PCRTemplate = new Template({name: "PCR", owner: "David"});
 
 		homeFolder.addFolder(cancerFolder);
 		homeFolder.addFolder(HIVFolder);
@@ -68,11 +68,11 @@ var Storage = (function () {
 		sharedFolder = new Folder(JSON.parse(sharedFolder));
 	} else {
 		// Initialization of folder hierarchy
-		sharedFolder = new Folder({name: "Home", owner: "Owner"});
-		var geneFolder = new Folder({name: "Gene Splice", owner: "Owner"});
-		var crisprFolder = new Folder({name: "CRISPR", owner: "Owner"});
-		var titrationFile2 = new Note({name: "Titration", owner: "Owner"});
-		var ribosomeTemplate = new Template({name: "Ribosome Profile", owner: "Owner"});
+		sharedFolder = new Folder({name: "Home", owner: "Rob"});
+		var geneFolder = new Folder({name: "Gene Splice", owner: "Stephanie"});
+		var crisprFolder = new Folder({name: "CRISPR", owner: "Rob"});
+		var titrationFile2 = new Note({name: "Titration", owner: "Eric"});
+		var ribosomeTemplate = new Template({name: "Ribosome Profile", owner: "George"});
 
 		sharedFolder.addFolder(geneFolder);
 		sharedFolder.addFolder(crisprFolder);

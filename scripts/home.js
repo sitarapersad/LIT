@@ -141,14 +141,20 @@ function moveUp(n){
 function openFolderDetails(newFolderID){
 	if (activeDocument){
 		document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px #66767c";
+		$("#detailsNav").hide()
 	}
 	if (activeDocument != "folderTable"+newFolderID){
 		activeDocument = "folderTable"+newFolderID;
 		document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px blue";
-		// openNavOptions('folder',newFolderID);
+		var showFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
+		console.log(showFolder);
+		$("#detailsNav").show();
+		$("#docName").html("Notebook Name: "+showFolder.name);
+		$("#docOwner").html("Owned By: "+showFolder.owner);
 	}
 	else{
 		activeDocument = false;
+		$("#detailsNav").hide()
 
 	}
 
@@ -157,17 +163,43 @@ function openFolderDetails(newFolderID){
 function openFileDetails(newFileID){
 	if (activeDocument){
 		document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px #66767c";
+		$("#detailsNav").hide()
 	}
-	activeDocument = "fileTable"+newFileID;
-	document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px blue";
+	if (activeDocument != "fileTable"+newFileID){
+		activeDocument = "fileTable"+newFileID;
+		document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px blue";
+		var showFolder = folderChain[folderChain.length-1].getFile(newFileID);
+		console.log(showFolder);
+		$("#detailsNav").show();
+		$("#docName").html("Experiment Name: "+showFolder.name);
+		$("#docOwner").html("Owned By: "+showFolder.owner);
+	}
+	else{
+		activeDocument = false;
+		$("#detailsNav").hide()
+
+	}
 };
 
 function openTemplateDetails(newTemplateID){
 	if (activeDocument){
 		document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px #66767c";
+		$("#detailsNav").hide()
 	}
-	activeDocument = "templateTable"+newTemplateID;
-	document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px blue";
+	if (activeDocument != "templateTable"+newTemplateID){
+		activeDocument = "templateTable"+newTemplateID;
+		document.getElementById(activeDocument).style.boxShadow = "2px 2px 2px blue";
+		var showFolder = folderChain[folderChain.length-1].getTemplate(newTemplateID);
+		console.log(showFolder);
+		$("#detailsNav").show();
+		$("#docName").html("Template Name: "+showFolder.name);
+		$("#docOwner").html("Owned By: "+showFolder.owner);
+	}
+	else{
+		activeDocument = false;
+		$("#detailsNav").hide()
+
+	}
 };
 
 function openFolder(newFolderID){
