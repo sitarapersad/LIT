@@ -149,7 +149,7 @@ function openFolderDetails(newFolderID){
 		var showFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
 		console.log(showFolder);
 		$("#detailsNav").show();
-		$("#docName").html("Notebook Name: "+showFolder.name);
+		$("#docName").html("Notebook: "+showFolder.name);
 		$("#docOwner").html("Owned By: "+showFolder.owner);
 	}
 	else{
@@ -171,7 +171,7 @@ function openFileDetails(newFileID){
 		var showFolder = folderChain[folderChain.length-1].getFile(newFileID);
 		console.log(showFolder);
 		$("#detailsNav").show();
-		$("#docName").html("Experiment Name: "+showFolder.name);
+		$("#docName").html("Experiment: "+showFolder.name);
 		$("#docOwner").html("Owned By: "+showFolder.owner);
 	}
 	else{
@@ -192,7 +192,7 @@ function openTemplateDetails(newTemplateID){
 		var showFolder = folderChain[folderChain.length-1].getTemplate(newTemplateID);
 		console.log(showFolder);
 		$("#detailsNav").show();
-		$("#docName").html("Template Name: "+showFolder.name);
+		$("#docName").html("Template: "+showFolder.name);
 		$("#docOwner").html("Owned By: "+showFolder.owner);
 	}
 	else{
