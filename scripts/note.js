@@ -33,13 +33,15 @@ var Note = function (initialData)
 	else this.parentFolder = null;
 
 	if (initialData.recycled) this.recycled = initialData.recycled;
-	this.recycled = false;
-	this.fileType = "file";
+	else this.recycled = false;
+
 	return this.ID;
 };
 
 Note.prototype = Object.create(EventCapableObject.prototype);
 Note.prototype.constructor = Note;
+
+Object.defineProperty(Note.prototype, "fileType", {value: "file"});
 
 Note.prototype.serialize = function () {
 	var serializedObject = {};
