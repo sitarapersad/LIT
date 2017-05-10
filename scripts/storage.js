@@ -33,11 +33,36 @@ var Storage = (function () {
 		saveHomeFolder();
 	}
 
+	var sharedFolder = window.localStorage.getItem("sharedFolder");
+
+	if (sharedFolder && sharedFolder != "undefined") {
+		sharedFolder = new Folder(JSON.parse(sharedFolder));
+	} else {
+		// Initialization of folder hierarchy
+		sharedFolder = new Folder({name: "Home", owner: "Owner"});
+		var geneFolder = new Folder({name: "Gene Splice", owner: "Owner"});
+		var crisprFolder = new Folder({name: "CRISPR", owner: "Owner"});
+		var titrationFile2 = new Note({name: "Titration", owner: "Owner"});
+		var ribosomeTemplate = new Template({name: "Ribosome Profile", owner: "Owner"});
+
+		sharedFolder.addFolder(geneFolder);
+		sharedFolder.addFolder(crisprFolder);
+		sharedFolder.addFile(titrationFile2);
+		sharedFolder.addTemplate(ribosomeTemplate);
+
+		saveHomeFolder();
+	}
+
 	// Set event listener for home folder here
 	homeFolder.addEventListener("changed", saveHomeFolder);
+	sharedFolder.addEventListener("changed", saveSharedFolder);
 
 	function saveHomeFolder() {
 		window.localStorage.setItem("homeFolder", JSON.stringify(homeFolder.serialize()));
+	}
+
+	function saveSharedFolder() {
+		window.localStorage.setItem("sharedFolder", JSON.stringify(sharedFolder.serialize()));
 	}
 
 	// API
@@ -46,9 +71,11 @@ var Storage = (function () {
 	var that = {};
 
 	that.homeFolder = homeFolder;
+	that.sharedFolder = sharedFolder;
 
 	that.purge = function () {
 		window.localStorage.removeItem("homeFolder");
+		window.localStorage.removeItem("sharedFolder");
 	};
 
 	Object.freeze(that);

@@ -5,46 +5,6 @@ var fileCount = 0;
 var shareDialogOpen =  false;
 var folderChain = []
 
-$(document).ready( function() {
-
-	var currentFolder = new Folder('Home', 'Owner', folderCount);
-	folderCount += 1;
-
-	var geneFolder = new Folder('Gene Splice', 'Owner', folderCount);
-	folderCount += 1;
-
-	var crisprFolder = new Folder('CRISPR', 'Owner', folderCount);
-	folderCount += 1
-
-
-	var titrationFile = new Note('Titration', 'Owner', fileCount);
-	fileCount += 1
-
-	currentFolder.addFolder(geneFolder);
-	currentFolder.addFolder(crisprFolder);
-
-	currentFolder.addFile(titrationFile);
-
-	folderChain.push(currentFolder);
-
-	for (var key in currentFolder.folders) {
-		newFolder = currentFolder.folders[key];
-		console.log(currentFolder.folders[key]);
-		drawFolder(newFolder);
-	}
-
-	for (var key in currentFolder.files) {
-		newFile = currentFolder.files[key];
-		console.log(currentFolder.files[key]);
-		drawFile(newFile);
-	}
-
-	var PCRTemplate = new Note('Ribosome Profile', 'Owner', fileCount);
-	drawTemplate(PCRTemplate);
-});
-
-
-
 $("body").click	(function (e) {
 	console.log(e.target.className);
 	if(e.target.className.includes("options")){
@@ -94,42 +54,46 @@ function saveFolderName(folderID){
 
 function saveFileName(fileID){
 	var changeFile = folderChain[folderChain.length-1].getFile(fileID);
-	console.log(changeFile);
 	var newName = document.getElementById("fileName_"+fileID).value;
 	changeFile.updateName(newName);
 }
 
+function saveTemplateName(templateID){
+	var changeTemplate = folderChain[folderChain.length-1].getTemplate(templateID);
+	var newName = document.getElementById("templateName_"+templateID).value;
+	changeTemplate.updateName(newName);
+}
 
 function openFolder(newFolderID){
-// Clear the current folders from the page
+	// Clear the current folders from the page
 
-$('#folderContainer').empty();
-$('#fileContainer').empty();
-$('#templateContainer').empty();
-// change currentFolder to the new folder
-subFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
-folderChain.push(subFolder);
-// Load the subfolders and subfiles
-console.log('Opening '+folderChain[folderChain.length-1].ID);
-for (var key in subFolder.folders) {
-	newFolder = subFolder.folders[key];
-	console.log(subFolder.folders[key]);
-	drawFolder(newFolder);
-};
+	$('#folderContainer').empty();
+	$('#fileContainer').empty();
+	$('#templateContainer').empty();
+	// change currentFolder to the new folder
+	subFolder = folderChain[folderChain.length-1].getFolder(newFolderID);
+	folderChain.push(subFolder);
+	// Load the subfolders and subfiles
+	console.log('Opening '+folderChain[folderChain.length-1].ID);
+	for (var key in subFolder.folders) {
+		newFolder = subFolder.folders[key];
+		console.log(subFolder.folders[key]);
+		drawFolder(newFolder);
+	};
 
-for (var key in subFolder.files) {
-	newFile = subFolder.files[key];
-	console.log(subFolder.files[key]);
-	drawFile(newFile);
-}
+	for (var key in subFolder.files) {
+		newFile = subFolder.files[key];
+		console.log(subFolder.files[key]);
+		drawFile(newFile);
+	}
 
-var activeFolders = "Home ";
-for (var i=1; i<folderChain.length; i++) {
-	folder = folderChain[i];
-	activeFolders += "> "+folder.name +" ";
-}
+	var activeFolders = "Home ";
+	for (var i=1; i<folderChain.length; i++) {
+		folder = folderChain[i];
+		activeFolders += "> "+folder.name +" ";
+	}
 
-document.getElementById("folderChain").innerHTML = activeFolders;
+	document.getElementById("folderChain").innerHTML = activeFolders;
 };
 
 function openFile(newFileID){
@@ -141,7 +105,7 @@ function openFile(newFileID){
 function openTemplate(newTemplateID){
 	// Open the URL for the file editor, need to find a way to pass data about the ID
 	localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
-	document.location.href = "editor.html";
+	document.location.href = "note.html#template";
 };
 
 
@@ -460,3 +424,73 @@ function shareWith() {
 		closeShareDialog();
 	}, 1000);
 };
+
+
+function openTopStackFolder() {
+	$('#folderContainer').empty();
+	$('#fileContainer').empty();
+	$('#templateContainer').empty();
+	var subFolder = folderChain[folderChain.length-1]
+	if (subFolder){
+		// If the folder contains subfolders, draw them
+		for (var key in subFolder.folders) {
+			newFolder = subFolder.folders[key];
+			if (!newFolder.isRecycled() || trashMode) {
+				drawFolder(newFolder);
+				$('#emptyFolder').hide();
+			}
+
+		}
+	}
+	else{
+		console.log('No subfolders.');
+		$('#emptyFolder').show();
+	}
+
+	if(subFolder){
+		// If the folder contains files, draw them
+		for (var key in subFolder.files) {
+			newFile = subFolder.files[key];
+			if (!newFile.isRecycled()){
+				drawFile(newFile);
+				$('#emptyFile').hide();
+			}
+
+		}
+	}
+	else{
+		console.log('No files in folder.')
+		$('#emptyFile').show();
+	}
+
+	// Draw in templates contained in folder
+	if(subFolder){
+		// If the folder contains files, draw them
+		for (var key in subFolder.templates) {
+			newTemplate = subFolder.templates[key];
+			if (!newTemplate.isRecycled()){
+				drawTemplate(newTemplate);
+				$('#emptyFile').hide();
+			}
+
+		}
+	}
+	else{
+		console.log('No files in folder.')
+		$('#emptyFile').show();
+	}
+
+
+	var activeFolders = '<input class="btn btn-primary" type="button" onclick="moveUp(0)" id="level0" value="Home">';
+	for (var i=1; i<folderChain.length; i++) {
+		folder = folderChain[i];
+		activeFolders += '<span class="glyphicon glyphicon-chevron-right"></span><input class="btn btn-primary" type="button" onclick="moveUp('+i+')" id="level'+i+'" value="'+folder.name+'">';
+	};
+	document.getElementById("folderChain").innerHTML = activeFolders;
+	document.activeElement.blur();
+};
+
+// Startup
+
+folderChain.push(Storage.sharedFolder);
+openTopStackFolder();
