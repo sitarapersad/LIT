@@ -1,0 +1,20 @@
+#signOutButton {
+	background: white;
+	border: solid 1px rgb(102, 118, 124);
+	box-shadow: rgb(102, 118, 124) 2px 2px 2px;
+	display: none;
+	margin-top: 5px;
+	padding: 5px;
+	width: 75px;
+	margin-left: auto;
+	cursor: pointer;
+	outline: none;
+}
+
+#signOutButton:hover {
+	background: #DDDDDD;
+}
+
+#signOutButton:active {
+	background: #BBBBBB;
+}

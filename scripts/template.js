@@ -8,26 +8,52 @@
  *
  */
 
-var Template = function (name, owner)
+var Template = function (initialData)
 {
+	EventCapableObject.call(this);
+
 	// Randomly generate an identifier (ID)
-	this.ID = owner + StringGenerator.randomAlphaNumericString(10);
+	if (initialData.ID) this.ID = initialData.ID;
+	else this.ID = initialData.owner + StringGenerator.randomAlphaNumericString(10);
 
 	// Owner (an instance of the User class) of the document
-	this.owner = owner;
-	this.name = name;
-	this.sharedUsers = [] ;
+	this.owner = initialData.owner;
+	this.name = initialData.name;
 
-	// Other details to be filled out at a more relaxed time
-	this.createDate = 0;
-	this.modifiedDate = 0;
+	if (initialData.sharedUsers) this.sharedUsers = initialData.sharedUsers;
+	else this.sharedUsers = [];
 
-	this.parentFolder = null;
+	if (initialData.createDate) this.createDate = initialData.createDate;
+	else this.createDate = 0;
+
+	if (initialData.modifiedDate) this.modifiedDate = initialData.modifiedDate;
+	else this.modifiedDate = 0;
+
+	if (initialData.parentFolder) this.parentFolder = initialData.parentFolder;
+	else this.parentFolder = null;
+
+	if (initialData.recycled) this.recycled = initialData.recycled;
 	this.recycled = false;
 
 	this.fileType = "template";
 
 	return this.ID;
+};
+
+Template.prototype = Object.create(EventCapableObject.prototype);
+Template.prototype.constructor = Template;
+
+Template.prototype.serialize = function () {
+	var serializedObject = {};
+	serializedObject.ID = this.ID;
+	serializedObject.recycled = this.recycledObject;
+	serializedObject.owner = this.owner;
+	serializedObject.name = this.name;
+	serializedObject.sharedUsers = this.sharedUsers;
+	serializedObject.createDate = this.createDate;
+	serializedObject.modifiedDate = this.modifiedDate;
+	serializedObject.recycled = this.recycled;
+	return serializedObject;
 };
 
 /*
@@ -36,6 +62,7 @@ var Template = function (name, owner)
  */
 Template.prototype.shareFile = function (user) {
 	this.sharedUsers.push(user);
+	this.emitEvent("changed");
 };
 
 /*
@@ -43,16 +70,19 @@ Template.prototype.shareFile = function (user) {
  */
 Template.prototype.updateName = function (newName) {
 	this.name = newName;
+	this.emitEvent("changed");
 };
 
 Template.prototype.recycle = function () {
 	this.recycled = true;
+	this.emitEvent("changed");
 };
 
 Template.prototype.isRecycled = function () {
 	return this.recycled;
 };
 
-this.restore = function () {
+Template.prototype.restore = function () {
 	this.recycled = false;
+	this.emitEvent("changed");
 };

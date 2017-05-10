@@ -8,24 +8,91 @@
  *
  */
 
-var Folder = function (name, owner)
+var Folder = function (initialData)
 {
-	this.ID = "Folder_" + owner + StringGenerator.randomAlphaNumericString(10);
+	EventCapableObject.call(this);
+
+	if (initialData.ID) this.ID = initialData.ID;
+	else this.ID = "Folder_" + initialData.owner + StringGenerator.randomAlphaNumericString(10);
 
 	// Owner (should be an instance of the User class. Right now, it's a string) of the document
-	this.owner = owner;
-	this.name = name;
-	this.sharedUsers = [] ;
-	this.files = {} ;
-	this.folders = {} ;
+	this.owner = initialData.owner;
+	this.name = initialData.name;
+
+	if (initialData.sharedUsers) this.sharedUsers = initialData.sharedUsers;
+	else this.sharedUsers = [];
+
+	if (initialData.createDate) this.createDate = initialData.createDate;
+	else this.createDate = 0;
+
+	if (initialData.modifiedDate) this.modifiedDate = initialData.modifiedDate;
+	else this.modifiedDate = 0;
+
+	if (initialData.parentFolder) this.parentFolder	= initalData.parentFolder;
+	else this.parentFolder = null;
+
+	if (initialData.recycled) this.recycled = initialData.recycled;
+	else this.recycled = false;
+
+	this.folders = {};
+	if (initialData.folders) {
+		for (var folderKey in initialData.folders) {
+			this.addFolder(new Folder(initialData.folders[folderKey]));
+		}
+	}
+
+	this.files = {};
+	if (initialData.files) {
+		for (var fileKey in initialData.files) {
+			this.addFile(new Note(initialData.files[fileKey]));
+		}
+	}
+
 	this.templates = {};
-	this.parentFolder = null;
-	this.recycled = false;
-	// Other details to be filled out at a more relaxed time
-	this.createDate = 0;
-	this.modifiedDate = 0;
-	this.fileType = "folder";
+	if (initialData.templates) {
+		for (var templateKey in initialData.templates) {
+			this.addTemplate(new Template(initialData.templates[templateKey]));
+		}
+	}
+
 	return this.ID;
+};
+
+Folder.prototype = Object.create(EventCapableObject.prototype);
+Folder.prototype.constructor = Folder;
+
+Object.defineProperty(Folder.prototype, "fileType", {value: "folder"});
+
+Folder.prototype.serialize = function () {
+	var serializedObject = {};
+	serializedObject.ID = this.ID;
+	serializedObject.owner = this.owner;
+	serializedObject.name = this.name;
+	serializedObject.sharedUsers = this.sharedUsers;
+	serializedObject.createDate = this.createDate;
+	serializedObject.modifiedDate = this.modifiedDate;
+	serializedObject.recycled = this.recycled;
+
+	serializedObject.folders = {};
+	serializedObject.files = {};
+	serializedObject.templates = {};
+
+	for (var folderKey in this.folders)
+	{
+		serializedObject.folders[folderKey] = this.folders[folderKey].serialize();
+	}
+
+	for (var fileKey in this.files)
+	{
+		serializedObject.files[fileKey] = this.files[fileKey].serialize();
+	}
+
+	for (var templateKey in this.templates)
+	{
+		serializedObject.templates[templateKey] = this.templates[templateKey].serialize();
+	}
+
+	return serializedObject;
 };
 
 /*
@@ -33,6 +100,7 @@ var Folder = function (name, owner)
 */
 Folder.prototype.renameFolder = function (newName) {
 	this.name = newName;
+	this.emitEvent("changed");
 };
 
 /*
@@ -42,6 +110,11 @@ Folder.prototype.addFile = function (addNote)  {
 	var key = addNote.ID;
 	this.files[key] = addNote;
 	addNote.parentFolder = this;
+	var self = this;
+	addNote.addEventListener("changed", function () {
+		self.emitEvent("changed");
+	});
+	this.emitEvent("changed");
 };
 
 /*
@@ -51,6 +124,11 @@ Folder.prototype.addFolder = function (addFolder) {
 	var key = addFolder.ID;
 	this.folders[key] = addFolder;
 	addFolder.parentFolder = this;
+	var self = this;
+	addFolder.addEventListener("changed", function () {
+		self.emitEvent("changed");
+	});
+	this.emitEvent("changed");
 };
 
 /*
@@ -60,6 +138,11 @@ Folder.prototype.addTemplate = function (addTemplate) {
 	var key = addTemplate.ID;
 	this.templates[key] = addTemplate;
 	addTemplate.parentFolder = this;
+	var self = this;
+	addTemplate.addEventListener("changed", function () {
+		self.emitEvent("changed");
+	});
+	this.emitEvent("changed");
 };
 
 /*
@@ -68,6 +151,7 @@ Folder.prototype.addTemplate = function (addTemplate) {
 Folder.prototype.deleteFile = function (addNote) {
 	var key = addNote.ID;
 	delete this.files[key];
+	this.emitEvent("changed");
 };
 
 /*
@@ -76,6 +160,7 @@ Folder.prototype.deleteFile = function (addNote) {
 Folder.prototype.deleteFolder = function (addFolder) {
 	var key = addFolder.ID;
 	delete this.folders[key];
+	this.emitEvent("changed");
 };
 
 /*
@@ -84,6 +169,7 @@ Folder.prototype.deleteFolder = function (addFolder) {
 Folder.prototype.deleteTemplate = function (addTemplate) {
 	var key = addTemplate.ID;
 	delete this.templates[key];
+	this.emitEvent("changed");
 };
 
 /*
@@ -92,6 +178,7 @@ Folder.prototype.deleteTemplate = function (addTemplate) {
 */
 Folder.prototype.shareFile = function (user) {
 	this.sharedUsers.push(user);
+	this.emitEvent("changed");
 };
 
 /*
@@ -99,6 +186,7 @@ Folder.prototype.shareFile = function (user) {
 */
 Folder.prototype.updateName = function (newName) {
 	this.name = newName;
+	this.emitEvent("changed");
 };
 
 /*
@@ -148,6 +236,16 @@ Folder.prototype.getFile = function (ID) {
 	}
 };
 
+Folder.prototype.getTemplate = function (ID) {
+	if (ID in this.templates) {
+		return this.templates[ID];
+	}
+	else{
+		console.log("File not found:", ID); // eslint-disable-line no-console
+		return false;
+	}
+};
+
 Folder.prototype.recycle = function () {
 	this.recycled = true;
 
@@ -165,6 +263,7 @@ Folder.prototype.recycle = function () {
 		newTemplate = this.templates[key];
 		newTemplate.recycle();
 	}
+	this.emitEvent("changed");
 };
 
 Folder.prototype.isRecycled = function () {
@@ -188,4 +287,5 @@ Folder.prototype.restore = function () {
 		newTemplate = this.templates[key];
 		newTemplate.restore();
 	}
+	this.emitEvent("changed");
 };

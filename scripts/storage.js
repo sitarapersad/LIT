@@ -1,22 +1,25 @@
+/* exported Storage */
 
 var Storage = (function () {
 	var homeFolder = window.localStorage.getItem("homeFolder");
 
-	if (!homeFolder) {
+	if (homeFolder && homeFolder != "undefined") {
+		homeFolder = new Folder(JSON.parse(homeFolder));
+	} else {
 		// Initialization of folder hierarchy
-		homeFolder = new Folder('Home', 'Owner');
-		var cancerFolder = new Folder('Cancer', 'Owner');
-		var cancerFolder1 = new Folder('Breast Cancer', 'Owner');
-		var cancerFolder2 = new Folder('Lung Cancer', 'Owner');
+		homeFolder = new Folder({name: "Home", owner: "Owner"});
+		var cancerFolder = new Folder({name: "Cancer", owner: "Owner"});
+		var cancerFolder1 = new Folder({name: "Breast Cancer", owner: "Owner"});
+		var cancerFolder2 = new Folder({name: "Lung Cancer", owner: "Owner"});
 
 		cancerFolder.addFolder(cancerFolder1);
 		cancerFolder.addFolder(cancerFolder2);
 
-		var HIVFolder = new Folder('HIV', 'Owner');
-		var thyroidFolder = new Folder('Thyroid', 'Owner');
-		var titrationFile = new Note('Titration', 'Owner');
-		var PCRFile = new Note('PCR ', 'Owner');
-		var PCRTemplate = new Template('PCR', 'Owner');
+		var HIVFolder = new Folder({name: "HIV", owner: "Owner"});
+		var thyroidFolder = new Folder({name: "Thyroid", owner: "Owner"});
+		var titrationFile = new Note({name: "Titration", owner: "Owner"});
+		var PCRFile = new Note({name: "PCR ", owner: "Owner"});
+		var PCRTemplate = new Template({name: "PCR", owner: "Owner"});
 
 		homeFolder.addFolder(cancerFolder);
 		homeFolder.addFolder(HIVFolder);
@@ -30,10 +33,36 @@ var Storage = (function () {
 		saveHomeFolder();
 	}
 
+	var sharedFolder = window.localStorage.getItem("sharedFolder");
+
+	if (sharedFolder && sharedFolder != "undefined") {
+		sharedFolder = new Folder(JSON.parse(sharedFolder));
+	} else {
+		// Initialization of folder hierarchy
+		sharedFolder = new Folder({name: "Home", owner: "Owner"});
+		var geneFolder = new Folder({name: "Gene Splice", owner: "Owner"});
+		var crisprFolder = new Folder({name: "CRISPR", owner: "Owner"});
+		var titrationFile2 = new Note({name: "Titration", owner: "Owner"});
+		var ribosomeTemplate = new Template({name: "Ribosome Profile", owner: "Owner"});
+
+		sharedFolder.addFolder(geneFolder);
+		sharedFolder.addFolder(crisprFolder);
+		sharedFolder.addFile(titrationFile2);
+		sharedFolder.addTemplate(ribosomeTemplate);
+
+		saveHomeFolder();
+	}
+
 	// Set event listener for home folder here
+	homeFolder.addEventListener("changed", saveHomeFolder);
+	sharedFolder.addEventListener("changed", saveSharedFolder);
 
 	function saveHomeFolder() {
-		console.log("Will save home folder");
+		window.localStorage.setItem("homeFolder", JSON.stringify(homeFolder.serialize()));
+	}
+
+	function saveSharedFolder() {
+		window.localStorage.setItem("sharedFolder", JSON.stringify(sharedFolder.serialize()));
 	}
 
 	// API
@@ -42,6 +71,12 @@ var Storage = (function () {
 	var that = {};
 
 	that.homeFolder = homeFolder;
+	that.sharedFolder = sharedFolder;
+
+	that.purge = function () {
+		window.localStorage.removeItem("homeFolder");
+		window.localStorage.removeItem("sharedFolder");
+	};
 
 	Object.freeze(that);
 	return that;
