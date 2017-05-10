@@ -15,15 +15,11 @@ var Variable = function (val, name) {
 		return this.value;
 	}
 
- 	this.getName = function() {
- 		return this.name;
- 	}
+	this.getName = function () {
+		return this.name;
+	}
 
- 	this.setName = function(newName) {
- 		this.name = newName;
- 	}
-
- }
-
+	this.setName = function (newName) {
+		this.name = newName;
+	}
 }
-
