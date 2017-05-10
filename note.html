@@ -97,20 +97,22 @@
 			<br>
 			<font size="4"><b> Step content: </font></b>
 	  	</form>
-	 	<textarea rows="4" cols="70" name="step-content" form="step-info"></textarea>
+	 	<textarea rows="4" cols="70" id="step-content" name="step-content" form="step-info"></textarea>
 	 	<br>
 	 	<div id="add-variable-form">
 	 		<input type='radio' value='existing-var' id='existing-var'><font size="3"><b>From existing variable</b></font><br>
 	 		Existing variable to use:
-	 		<select id="existing-variables" name="existing-variables">
+	 		<select id="existing-variables" id="existing-variables">
 	 		</select>
 	 		<br>
-	 		Scaling factor: <textarea rows="1" cols="5" name="scaling-factor"></textarea>
+	 		Scaling factor: <textarea rows="1" cols="5" id="existing-var-fac"></textarea>
 	 		<br>
 	 		<input type='radio' value='new-var' id='new-var'><font size="3"><b>Create new variable</b></font><br>
-	 		Variable name: <textarea rows="1" cols="25" name="new-var-name"></textarea>
+	 		Variable name: <textarea rows="1" cols="25" id="new-var-name"></textarea>
 	 		<br>
-	 		Variable value: <textarea rows="1" cols="5" name="new-var-val"></textarea>
+	 		Variable value: <textarea rows="1" cols="5" id="new-var-val"></textarea>
+	 		<br>
+	 		Variable factor: <textarea rows="1" cols="5" id="new-var-fac"></textarea>
 	 		<br>
 	  		<button id="add-var"> Add Variable </button>
 	  	</div>

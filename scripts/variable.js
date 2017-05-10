@@ -18,4 +18,9 @@
  	this.getName = function() {
  		return this.name;
  	}
+
+ 	this.setName = function(newName) {
+ 		this.name = newName;
+ 	}
+
  }

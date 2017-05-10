@@ -25,6 +25,7 @@ $(document).ready(function() {
 
 	$(document).on("click", ".var", function() {
 		document.getElementById("myModal-vars").style.display = "block";
+		displayModal();
 		$('#myModal-vars').animate({width:"500px"});
 		$('#mainContainer').animate({left:"500px"});
 	});
@@ -120,12 +121,23 @@ $(document).ready(function() {
 	function editableTextAmountBlurred() {
 		var elementId = this.id.split("_");
 		var variableNum = elementId[1];
-		var stepNum = elementId[2];
 		editorContent.vars[variableNum].setValue(parseFloat(this.value));
 
-		var toHighlight = "area_" + stepNum.toString() +"_"+ editorContent.vars[variableNum].getName().toString();
-		document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
-		document.getElementById(toHighlight).style.borderWidth = 'thin';
+		var elementId = this.id.split("_");
+		var variableNum = elementId[1];
+		for (var j = 0; j<editorContent.steps.length; j++) {
+					var indexOfValue = null;
+					for (var k = 0; k  < editorContent.steps[j].getVars().length; k++) {
+						if (editorContent.steps[j].getVars()[k].getName() == editorContent.vars[variableNum].getName()) {
+							indexOfValue = k;
+							}
+					}
+					if (indexOfValue != null){
+						var toHighlight = "area_" + j.toString() +"_"+ editorContent.vars[variableNum].getName().toString();
+						document.getElementById(toHighlight).style.borderColor = '#CFCFCF';
+						document.getElementById(toHighlight).style.borderWidth = 'thin';
+					}
+			}
 
 		displayModal();
 		updateVariables();
@@ -211,7 +223,7 @@ $(document).ready(function() {
 					for (var k = 0; k  < editorContent.steps[j].getVars().length; k++) {
 						if (editorContent.steps[j].getVars()[k].getName() == editorContent.vars[i].getName()) {
 							indexOfValue = k;
-							}
+						}
 					}
 					if (indexOfValue != null){
 						html_string = html_string + "<b> Step " + (j+1).toString() + ": </b>";
@@ -255,7 +267,7 @@ $(document).ready(function() {
 				}
 			}
 
-			variables[i].innerHTML = editorContent.steps[stepNum].getVarValue(variableNum);
+			variables[i].innerHTML = editorContent.steps[stepNum].getVarValue(variableNum); 
 		}
 	}
 
@@ -267,7 +279,7 @@ $(document).ready(function() {
 			var dropdown = document.getElementById("step-num");
 			var option = document.createElement("option");
 			option.text=(i+1).toString();
-			option.value="step_" + i.toString();
+			option.value=(i+1).toString();
 			dropdown.add(option);
 		}
 
@@ -275,7 +287,7 @@ $(document).ready(function() {
 			var dropdown = document.getElementById("existing-variables");
 			var option = document.createElement("option");
 			option.text="Variable " + (j+1).toString() + ": " + editorContent.vars[j].getName();
-			option.value="var_" + j.toString();
+			option.value= j.toString();
 			dropdown.add(option);
 		}
 	});
@@ -287,6 +299,9 @@ $(document).ready(function() {
 		}
 	}
 
+	var stepAdded = new Step([], [], [], 0);
+	var lastVariableAdded = 0;
+
 	$(document).on("click", ".close", function() {
 		document.getElementById("myModal-add").style.display = "none";
 	});
@@ -296,7 +311,109 @@ $(document).ready(function() {
 	});
 
 	$(document).on("click", "#add-var", function() {
+		if (stepAdded.getContent().length == 0) {
+			var e = document.getElementById("step-num");
+			stepAdded.setNumber(parseInt(e.options[e.selectedIndex].value));
+		}
 
+		var textSoFar = document.getElementById("step-content").value;
+		var textSoFarCut = textSoFar.substring(lastVariableAdded, textSoFar.length);
+		if (document.getElementById('existing-var').checked) {
+			var newFactor = parseFloat(document.getElementById("existing-var-fac").value);
+			var e = document.getElementById("existing-variables");
+			var varNum = parseInt(e.options[e.selectedIndex].value);
+			var newVariable = editorContent.vars[varNum];
+			stepAdded.appendChunk(textSoFarCut, newVariable, newFactor);
+			console.log(stepAdded.getVars());
+
+			document.getElementById("step-content").value = textSoFar + " " + (newVariable.getValue()*newFactor).toString() + " ";
+
+			document.getElementById("existing-var-fac").value = "";
+			document.getElementById("existing-var").checked = false;
+
+		} else if (document.getElementById('new-var').checked) {
+			var newName = document.getElementById("new-var-name").value;
+			var newValue = parseFloat(document.getElementById("new-var-val").value);
+			var newFactor = parseFloat(document.getElementById("new-var-fac").value);
+			var newVariable = new Variable(newValue, newName);
+			editorContent.vars.push(newVariable);
+
+			stepAdded.appendChunk(textSoFarCut, newVariable, newFactor);
+			document.getElementById("step-content").value = textSoFar + " " + (newValue*newFactor).toString() + " ";
+
+			document.getElementById("new-var-name").value = "";
+			document.getElementById("new-var-val").value = "";
+			document.getElementById("new-var-fac").value = "";
+			document.getElementById("new-var").checked = false;
+
+			$("#existing-variables").empty();
+			for (var j = 0; j <editorContent.vars.length; j++) {
+				var dropdown = document.getElementById("existing-variables");
+				var option = document.createElement("option");
+				option.text="Variable " + (j+1).toString() + ": " + editorContent.vars[j].getName();
+				option.value= j.toString();
+				dropdown.add(option);
+			}
+		}
+
+		document.getElementById("step-content").focus;
+		lastVariableAdded = document.getElementById("step-content").value.length; 
 	});
+
+	$(document).on("click", "#submit-add", function() {
+
+		var textSoFar = document.getElementById("step-content").value;
+		if (stepAdded.getContent().length == 0) {
+			var e = document.getElementById("step-num");
+			stepAdded.setNumber(parseInt(e.options[e.selectedIndex].value));
+		}
+		if (textSoFar.length != lastVariableAdded) {
+			var textSoFarCut = textSoFar.substring(lastVariableAdded, textSoFar.length);
+			stepAdded.appendText(textSoFarCut);
+		}
+
+
+		var stepsListContent = editorContent.steps;
+		if(stepAdded.getNumber() > editorContent.steps.length) {
+			editorContent.steps.push(stepAdded);
+		}
+		else {
+			stepsListContent.splice(stepAdded.getNumber()-1, 0, stepAdded);
+			stepsListContent.join();
+			editorContent.steps = stepsListContent;
+		}
+
+		appendStepDisplay(stepAdded);
+		// Clear dropdown options for step number when close
+		$("#step-num").empty();
+		$("#existing-variables").empty();
+		document.getElementById("step-content").value="";
+		stepAdded = new Step([], [], [], 0);
+		lastVariableAdded = 0;
+	});
+
+	function appendStepDisplay(stepAdded) {
+		var stepNum = stepAdded.getNumber();
+		document.getElementById("mainContainer").insertBefore(stepAdded.display(), document.getElementById("mainContainer").children[stepNum-1]);
+		for (var i = stepNum; i < editorContent.steps.length; i++) {
+			var currentHTML = document.getElementById("mainContainer").children[i].innerHTML;
+			var otherPortion = currentHTML.split("</b>")[1];
+			editorContent.steps[i].setNumber(i+1);
+			document.getElementById("mainContainer").children[i].innerHTML = "<b> Step "+ (i+1).toString() + " : </b>" + otherPortion;
+		}
+
+		var variables = document.getElementsByClassName("var");
+		for (var i = 0; i < variables.length; i++) {
+			var elementId = variables[i].id.split("_");
+			var oldStepNum = elementId[1];
+			var variableName = elementId[2];
+			var variableNum = -1;
+
+			if (oldStepNum >= stepNum) {
+				variables[i].id = "area_" + (parseInt(oldStepNum) + 1).toString() + "_" + variableName; 
+			}
+
+		}
+	}
 });
 
