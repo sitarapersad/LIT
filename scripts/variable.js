@@ -25,5 +25,4 @@ var Variable = function (val, name) {
 
  }
 
-}
 
