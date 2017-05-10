@@ -101,6 +101,39 @@ var Storage = (function () {
 		window.localStorage.setItem("files", JSON.stringify(files));
 	}
 
+	function getFilenameFromFolder(id, folder) {
+		var filename = undefined;
+		filename = getFilenameInternal(id, folder.folders);
+		for (var i in folder.files)
+		{
+			if (folder.files[i].ID == id) {
+				filename = folder.files[i].name;
+			}
+		}
+
+		for (i in folder.templates)
+		{
+			if (folder.templates[i].ID == id) {
+				filename = folder.templates[i].name;
+			}
+		}
+		return filename;
+	}
+
+	function getFilenameInternal(id, folders) {
+		var filename = undefined;
+		for (var i in folders)
+		{
+			filename = getFilenameFromFolder(id, folders[i]);
+			if (filename) break;
+		}
+		return filename;
+	}
+
+	function getFilename(id) {
+		return getFilenameInternal(id, {"a": homeFolder, "b": sharedFolder});
+	}
+
 	// API
 	// -------------------------------------------------------------------------
 
@@ -120,7 +153,7 @@ var Storage = (function () {
 			saveContent(id, {steps: [], vars: []});
 		}
 		content = files[id];
-		content.name = "me";
+		content.name = getFilename(id);
 		return content;
 	};
 
