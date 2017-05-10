@@ -42,7 +42,8 @@
 #savingIndicator {
 	display: inline-block;
 	margin-left: 20px;
-	font-size: 12px;
+	font-size: 14px;
 	width: 100px;
 	text-align: left;
+	color: #A9A9A9;
 }
