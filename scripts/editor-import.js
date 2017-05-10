@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 	window.onclick = function(event) {
 		if (event.target == document.getElementById("myModal-import")) {
-			document.getElementById("myModal").style.display = "none";
+			document.getElementById("myModal-import").style.display = "none";
 		}
 	}
 
