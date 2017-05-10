@@ -125,6 +125,8 @@ div {
     background: goldenrod;
     width: 100%;
     text-align: center;
+    padding: 32.5px 25px;
+    letter-spacing: 3px;
 }
 
 #tasks {
@@ -132,23 +134,24 @@ div {
     /*border: 1px solid black;*/
     height: 100%;
     padding: 0px;
-    background: lightgoldenrodyellow;
     margin: 5px;
 }
 
 #addTaskRow {
     margin: 0px;
     align-items: stretch;
-    padding: 3px 1px;
+    background: lightgoldenrodyellow;
+    border-bottom: 1px solid #e4ba4e;
 }
 
 #newTaskInput {
     width: 80%;
     font-size: 20px;
+    padding: 10px 6px 10px 38px;
 }
 
 .addNewTaskButton {
-    padding: 2.5px 5px;
+    padding: 11.5px 8px;
     background: #e4ba4e;
     font-size: 20px;
     width: 20%;
@@ -156,6 +159,34 @@ div {
     border-bottom: 1px solid #e4ba4e;
     text-align: center;
     /*margin-right: 5px;*/
+}
+
+#taskFunctionButtons {
+    margin: 0px;
+    padding: 5px 0px;
+    background: lightgoldenrodyellow;
+    height: 50px;
+    /*align-content: space-around;*/
+}
+
+.functionButton1 {
+    padding: 11.5px 8px;
+    background: #e4ba4e;
+    font-size: 18px;
+    width: 50%;
+    border: 1px solid lightgoldenrodyellow;
+    text-align: center;
+    float: left;
+}
+
+.functionButton2 {
+    padding: 11.5px 8px;
+    background: #e4ba4e;
+    font-size: 18px;
+    width: 50%;
+    border: 1px solid lightgoldenrodyellow;
+    text-align: center;
+    float: right;
 }
 
 .addNewtaskButton:hover {
@@ -174,6 +205,9 @@ div {
     margin: 0px;
     padding: 0px;
     list-style-type: none;
+    height: 330px;
+    background: lightgoldenrodyellow;
+    overflow-y: auto;
 }
 
 #taskListProper li {
@@ -190,8 +224,15 @@ div {
     user-select: none;
 }
 
+#taskListProper li:nth-child(odd) {
+    /*background: #f5e5bc;*/
+    background: #ffe299;
+}
+
+#taskListProper li:nth-child(odd):hover,
 #taskListProper li:hover {
-    background: #ebcb7a;
+    /*background: #ebcb7a;*/
+    background: #ffcc4d;
 }
 
 #taskListProper li.checked {
