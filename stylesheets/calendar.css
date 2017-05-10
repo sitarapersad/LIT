@@ -204,7 +204,6 @@ div {
 #taskListProper {
     margin: 0px;
     padding: 0px;
-    list-style-type: none;
     height: 330px;
     background: lightgoldenrodyellow;
     overflow-y: auto;
@@ -222,6 +221,14 @@ div {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+#taskListProper li::before {
+    content: "\25C7";
+    position: absolute;
+    top: 12px;
+    left: 11px;
+    transform: rotate(45deg);
 }
 
 #taskListProper li:nth-child(odd) {
@@ -242,13 +249,13 @@ div {
 }
 
 #taskListProper li.checked::before {
-    content: '';
+    content: "\25C7";
     position: absolute;
     border-color: #fff;
     border-style: solid;
     border-width: 0 2px 2px 0;
-    top: 16px;
-    left: 16px;
+    top: 11px;
+    left: 15.5px;
     transform: rotate(45deg);
     height: 15px;
     width: 7px;
