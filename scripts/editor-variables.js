@@ -2,6 +2,19 @@
 $(document).ready(function() {
 	var editorContent = Storage.getContent(window.location.hash.slice(1));
 
+	document.getElementById("filename").innerText = editorContent.name;
+	var savingIndicator = document.getElementById("savingIndicator");
+	document.getElementById("mainContainer").addEventListener("keydown", function () {
+		savingIndicator.innerText = "Edited";
+	});
+	document.getElementById("mainContainer").addEventListener("click", function () {
+		savingIndicator.innerText = "Edited";
+	});
+	setInterval(function () {
+		savingIndicator.innerText = "Saved";
+	}, 5000);
+
+
 	displayModal();
 	displaySteps();
 
@@ -256,7 +269,7 @@ $(document).ready(function() {
 				}
 			}
 
-			variables[i].innerHTML = (editorContent.steps[stepNum].getFactors()[variableNum]*editorContent.vars[varIndex].getValue()).toString(); 
+			variables[i].innerHTML = (editorContent.steps[stepNum].getFactors()[variableNum]*editorContent.vars[varIndex].getValue()).toString();
 		}
 	}
 
@@ -357,7 +370,7 @@ $(document).ready(function() {
 		}
 
 		document.getElementById("step-content").focus;
-		lastVariableAdded = document.getElementById("step-content").value.length; 
+		lastVariableAdded = document.getElementById("step-content").value.length;
 	});
 
 	$(document).on("click", "#submit-add", function() {
@@ -410,7 +423,7 @@ $(document).ready(function() {
 			var variableNum = -1;
 
 			if (oldStepNum >= stepNum) {
-				variables[i].id = "area_" + (parseInt(oldStepNum) + 1).toString() + "_" + variableName; 
+				variables[i].id = "area_" + (parseInt(oldStepNum) + 1).toString() + "_" + variableName;
 			}
 
 		}
