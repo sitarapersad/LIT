@@ -13,6 +13,7 @@ var DELETE_docType = null;
 var DELETE_eltID = null;
 var MOVE_doc = null;
 var MOVE_to = null;
+
 document.body.addEventListener("click", function (e) {
 	if (e.target.className.includes("options")) {
 		console.log("DISPLAY OPTIONS");

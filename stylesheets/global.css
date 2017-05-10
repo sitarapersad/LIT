@@ -29,6 +29,7 @@ body{
 
 #leftColumn{
 	height: 100%;
+	text-align: left;
 }
 
 .search {
@@ -76,4 +77,8 @@ ul.nav {
 	height: 50px;
 	border-radius: 50%;
 	cursor: pointer;
+}
+
+footer {
+	margin-bottom: 10px;
 }

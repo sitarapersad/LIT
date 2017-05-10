@@ -1,3 +1,5 @@
+/* exported Storage */
+
 var Storage = (function () {
 	var homeFolder = window.localStorage.getItem("homeFolder");
 
