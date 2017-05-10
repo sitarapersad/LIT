@@ -3,6 +3,32 @@
 var Storage = (function () {
 	var homeFolder = window.localStorage.getItem("homeFolder");
 
+	var files = window.localStorage.getItem("files");
+	if (files && files != "undefined") {
+		files = JSON.parse(files);
+
+		for (var fileKey in files)
+		{
+			var file = files[fileKey];
+
+			for (var i = 0; i < file.steps.length; i++)
+			{
+				var vars = file.steps[i].variables;
+				for (var j = 0; j < vars.length; j++) {
+					vars[j] = new Variable(vars[j].value, vars[j].name);
+				}
+				file.steps[i] = new Step(file.steps[i].content, file.steps[i].variables, file.steps[i].scales, file.steps[i].number);
+			}
+
+			for (i = 0; i < file.vars.length; i++)
+			{
+				file.vars[i] = new Variable(file.vars[i].value, file.vars[i].name);
+			}
+		}
+	} else {
+		files = {};
+	}
+
 	if (homeFolder && homeFolder != "undefined") {
 		homeFolder = new Folder(JSON.parse(homeFolder));
 	} else {
@@ -30,6 +56,9 @@ var Storage = (function () {
 
 		homeFolder.addTemplate(PCRTemplate);
 
+		saveContent(titrationFile.ID, generateCannedContent());
+		saveContent(PCRFile.ID, generateCannedContent());
+		saveContent(PCRTemplate.ID, generateCannedContent());
 		saveHomeFolder();
 	}
 
@@ -50,7 +79,9 @@ var Storage = (function () {
 		sharedFolder.addFile(titrationFile2);
 		sharedFolder.addTemplate(ribosomeTemplate);
 
-		saveHomeFolder();
+		saveContent(titrationFile2.ID, generateCannedContent());
+		saveContent(ribosomeTemplate.ID, generateCannedContent());
+		saveSharedFolder();
 	}
 
 	// Set event listener for home folder here
@@ -65,6 +96,11 @@ var Storage = (function () {
 		window.localStorage.setItem("sharedFolder", JSON.stringify(sharedFolder.serialize()));
 	}
 
+	function saveContent(id, content) {
+		files[id] = content;
+		window.localStorage.setItem("files", JSON.stringify(files));
+	}
+
 	// API
 	// -------------------------------------------------------------------------
 
@@ -76,8 +112,38 @@ var Storage = (function () {
 	that.purge = function () {
 		window.localStorage.removeItem("homeFolder");
 		window.localStorage.removeItem("sharedFolder");
+		window.localStorage.removeItem("files");
+	};
+
+	that.getContent = function (id) {
+		if (!files[id]) {
+			saveContent(id, {steps: [], vars: []});
+		}
+		return files[id];
 	};
 
 	Object.freeze(that);
 	return that;
 })();
+
+function generateCannedContent() {
+	var stepsList = [];
+	var variablesList = [];
+
+	var agAmount = new Variable(1.0, "Grams of agarose");
+	var bariumAmount = new Variable(15.0, "Milligrams of barium");
+	var stepOne = new Step(["Measure", "g of agarose. Mix in", "mg of barium."], [agAmount, bariumAmount], [1.0, 3.0], 1);
+	var stepTwo = new Step(["Mix agarose power with", "mL 1xTAE in a microwaveable flask. Mix in another", "mg of barium."], [agAmount, bariumAmount], [100.0, 1.0], 2);
+	var stepThree = new Step(["Microwave for 1-3 minutes."], [], [], 3);
+	var stepFour = new Step(["Let solution cool down."], [], [], 4);
+	var stepFive = new Step(["Add EtBr at", "microL of stock solution."], [agAmount], [2.0], 5);
+	stepsList.push(stepOne);
+	stepsList.push(stepTwo);
+	stepsList.push(stepThree);
+	stepsList.push(stepFour);
+	stepsList.push(stepFive);
+	variablesList.push(agAmount);
+	variablesList.push(bariumAmount);
+
+	return {steps: stepsList, vars: variablesList};
+}

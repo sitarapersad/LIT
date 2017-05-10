@@ -33,15 +33,15 @@ var Template = function (initialData)
 	else this.parentFolder = null;
 
 	if (initialData.recycled) this.recycled = initialData.recycled;
-	this.recycled = false;
-
-	this.fileType = "template";
+	else this.recycled = false;
 
 	return this.ID;
 };
 
 Template.prototype = Object.create(EventCapableObject.prototype);
 Template.prototype.constructor = Template;
+
+Object.defineProperty(Template.prototype, "fileType", {value: "template"});
 
 Template.prototype.serialize = function () {
 	var serializedObject = {};

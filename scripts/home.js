@@ -78,14 +78,12 @@ function saveTemplateName(templateID) {
 
 function openFile(newFileID) {
 	// Open the URL for the file editor, need to find a way to pass data about the ID
-	localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
-	document.location.href = "note.html";
+	document.location.href = `note.html#${newFileID}`;
 };
 
 function openTemplate(newTemplateID){
 	// Open the URL for the file editor, need to find a way to pass data about the ID
-	localStorage.setItem('DIRECTORY',JSON.stringify(folderChain[0]));
-	document.location.href = "editor.html";
+	document.location.href = `note.html#${newTemplateID}`;;
 };
 
 
