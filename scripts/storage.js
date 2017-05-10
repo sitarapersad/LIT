@@ -172,6 +172,10 @@ var Storage = (function () {
 		return content;
 	};
 
+	that.resetNote = function (id) {
+		saveContent(id, generateCannedContent());
+	};
+
 	Object.freeze(that);
 	return that;
 })();

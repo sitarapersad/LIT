@@ -25,7 +25,8 @@ $(document).ready(function() {
 		}
 
 		if (checkedValue != null) {
-			window.location = "note.html"
+			Storage.resetNote(window.location.hash.slice(1));
+			window.location.reload();
 		}
 		else {
 			alert("You need to select at least one protocol!");
