@@ -209,7 +209,7 @@ $(document).ready(function() {
 					}
 					if (indexOfValue != null){
 						html_string = html_string + "<b> Step " + (j+1).toString() + ": </b>";
-						html_string = html_string + "<textarea class='edit-var' rows='1' id='var_"+i.toString() + "_" + j.toString() + "'>" + (editorContent.steps[j].getVarValue(indexOfValue)).toString() + "</textarea>";
+						html_string = html_string + "<textarea class='edit-var' rows='1' id='var_"+i.toString() + "_" + j.toString() + "'>" + (editorContent.steps[j].getFactors()[indexOfValue]*editorContent.vars[i].getValue()).toString() + "</textarea>";
 						html_string = html_string + " (scaling factor: ";
 						html_string = html_string + "<textarea class='edit-factor' rows='1' cols='1' id='var_"+i.toString() + "_" + j.toString() + "'>" + (editorContent.steps[j].getFactors()[indexOfValue]).toString() + "</textarea>";
 						html_string = html_string + ")";
@@ -249,7 +249,14 @@ $(document).ready(function() {
 				}
 			}
 
-			variables[i].innerHTML = editorContent.steps[stepNum].getVarValue(variableNum); 
+			var varIndex = -1;
+			for (var j = 0; j<editorContent.vars.length; j++) {
+				if (editorContent.vars[j].getName() == variableName) {
+					varIndex = j;
+				}
+			}
+
+			variables[i].innerHTML = (editorContent.steps[stepNum].getFactors()[variableNum]*editorContent.vars[varIndex].getValue()).toString(); 
 		}
 	}
 
