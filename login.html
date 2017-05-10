@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<link rel="import" href="globalHead.html">
-	<link rel="stylesheet" href="stylesheets/note.css">
+	<link rel="stylesheet" href="stylesheets/login.css">
 	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 </head>
 
@@ -9,29 +9,34 @@
 
 <body>
 	<div style="padding-top: 15em; "">
-    <div class="container" style="background-color: white;  width: 500px; padding-top: 20px; padding-bottom: 20px; outline: 2px grey solid">
+    <div class="container" style="background-color: white;  width: 500px; padding-top: 20px; padding-bottom: 20px; outline: 2px #e5e5e5 solid">
     	<div class="row center-block" style="padding: 15px;">
     		<div class="col-md-12 text-center">
 	            <img style="width: 200px; height: 200px;" src="images/LIT-logo.png" alt="LIT"> <hr>
-	            Please enter your login details below. <hr>
+	            Please enter your login details below. 
+                <div id="errors" style="color: red;">
+                </div>
+                <hr>
             </div>
+
+
         </div>
 
-    	<div class="row center-block" style="padding-bottom: : 15px;">
+    	<div class="row center-block" style="padding-bottom: : 50px;">
     		<div class="col-md-3 text-right">
 	            <label for="usermail">Email</label>
             </div>
             <div class="col-md-9 text-center">
-            	<input type="email" name="usermail" placeholder="yourname@email.com" required>
+            	<input type="email" class="form_in" id = "username" name="usermail" placeholder="kerberos@mit.edu" required>
             </div>
         </div>
 
-    	<div class="row center-block" style="padding: 15px;">
+    	<div class="row center-block" style="padding-bottom: : 50px;">
     		<div class="col-md-3 text-right">
 	            <label for="password">Password</label>
             </div>
             <div class="col-md-9 text-center">
-            	<input type="password" name="password" placeholder="password" required>
+            	<input type="password" class="form_in" id="password" name="password" placeholder="password" required>
             </div>
         </div>
 
@@ -51,8 +56,24 @@
 </html>
 
 <script type="text/javascript">
-
-function verifyInfo(){
-
-}
+    function verifyInfo(){
+        if (document.getElementById("username").value != "dbau@mit.edu"){
+            $("#errors").empty()
+            $("#errors").html("Error! User does not exist.")
+        }
+        else{
+            if (document.getElementById("password").value != "A+LIT"){
+                $("#errors").empty()
+                $("#errors").html("Error! Password incorrect.")
+            }
+            else{
+                $("#errors").empty()
+                document.location.href = `index.html`;
+            }
+        }
+    }
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js"></script>

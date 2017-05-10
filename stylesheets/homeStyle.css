@@ -121,3 +121,17 @@ input[type="checkbox"]{
 	padding: 0px;
 	position: "relative";
 }
+
+#moveCurrentFolder{
+	background-color: #6d9cd6;
+	width: 202px;
+	font-weight: bold;
+	cursor: default;
+}
+
+#moveCurrentFolder:hover {
+	background-color: orange;
+	width: 202px;
+	font-weight: bold;
+	cursor: default;
+}

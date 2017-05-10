@@ -83,7 +83,7 @@ function openFile(newFileID) {
 
 function openTemplate(newTemplateID){
 	// Open the URL for the file editor, need to find a way to pass data about the ID
-	document.location.href = `note.html#${newTemplateID}`;;
+	document.location.href = `note.html#${newTemplateID}`;
 };
 
 
