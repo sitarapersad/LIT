@@ -4,7 +4,7 @@ var templateCount = 0;
 var shareDialogOpen =  false;
 var folderChain = [];
 var activeDocument = false;
-var trashFolder = new Folder("Recycle Bin", "Owner", folderCount);
+var trashFolder = Storage.trashFolder;
 fileCount += 1;
 
 var trashMode = false;
@@ -88,7 +88,7 @@ function openTemplate(newTemplateID){
 
 
 function createFolder(){
-	newFolder = new Folder('Untitled', 'Owner', folderCount);
+	newFolder = new Folder({name:'Untitled', owner: 'Owner'});
 	folderChain[folderChain.length-1].addFolder(newFolder);
 	folderCount += 1;
 	drawFolder(newFolder);
@@ -97,7 +97,7 @@ function createFolder(){
 };
 
 function createFile(){
-	newFile = new Note('Untitled', 'Owner', fileCount);
+	newFile = new Note({name:'Untitled', owner: 'Owner'});
 	folderChain[folderChain.length-1].addFile(newFile);
 	fileCount += 1;
 	drawFile(newFile);
@@ -106,7 +106,7 @@ function createFile(){
 };
 
 function createTemplate(){
-	newTemplate = new Template('Untitled', 'Owner', templateCount);
+	newTemplate = new Template({name: 'Untitled', owner: 'Owner'});
 	folderChain[folderChain.length-1].addTemplate(newTemplate);
 	templateCount += 1;
 	drawTemplate(newTemplate);

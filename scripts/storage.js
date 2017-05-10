@@ -84,9 +84,18 @@ var Storage = (function () {
 		saveSharedFolder();
 	}
 
+	var trashFolder = window.localStorage.getItem("trashFolder");
+
+	if (trashFolder && trashFolder != "undefined") {
+		trashFolder = new Folder(JSON.parse(trashFolder));
+	} else {
+		trashFolder = new Folder({name: "Recycle Bin", owner: "Owner"});
+	}
+
 	// Set event listener for home folder here
 	homeFolder.addEventListener("changed", saveHomeFolder);
 	sharedFolder.addEventListener("changed", saveSharedFolder);
+	trashFolder.addEventListener("changed", saveTrashFolder);
 
 	function saveHomeFolder() {
 		window.localStorage.setItem("homeFolder", JSON.stringify(homeFolder.serialize()));
@@ -94,6 +103,10 @@ var Storage = (function () {
 
 	function saveSharedFolder() {
 		window.localStorage.setItem("sharedFolder", JSON.stringify(sharedFolder.serialize()));
+	}
+
+	function saveTrashFolder() {
+		window.localStorage.setItem("trashFolder", JSON.stringify(trashFolder.serialize()));
 	}
 
 	function saveContent(id, content) {
@@ -141,10 +154,12 @@ var Storage = (function () {
 
 	that.homeFolder = homeFolder;
 	that.sharedFolder = sharedFolder;
+	that.trashFolder = trashFolder;
 
 	that.purge = function () {
 		window.localStorage.removeItem("homeFolder");
 		window.localStorage.removeItem("sharedFolder");
+		window.localStorage.removeItem("trashFolder");
 		window.localStorage.removeItem("files");
 	};
 
