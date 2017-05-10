@@ -119,7 +119,9 @@ var Storage = (function () {
 		if (!files[id]) {
 			saveContent(id, {steps: [], vars: []});
 		}
-		return files[id];
+		content = files[id];
+		content.name = "me";
+		return content;
 	};
 
 	Object.freeze(that);
