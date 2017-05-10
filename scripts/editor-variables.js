@@ -1,23 +1,6 @@
 
 $(document).ready(function() {
-
-	var stepsList = [];
-	var variablesList= [];
-	var editorContent = {steps: stepsList, vars: variablesList};
-	var agAmount = new Variable(1.0, "Grams of agarose");
-	var bariumAmount = new Variable(15.0, "Milligrams of barium");
-	var stepOne = new Step(["Measure", "g of agarose. Mix in", "mg of barium."], [agAmount, bariumAmount], [1.0, 3.0], 1);
-	var stepTwo = new Step(["Mix agarose power with", "mL 1xTAE in a microwaveable flask. Mix in another", "mg of barium."], [agAmount, bariumAmount], [100.0, 1.0], 2);
-	var stepThree = new Step(["Microwave for 1-3 minutes."], [], [], 3);
-	var stepFour = new Step(["Let solution cool down."], [], [], 4);
-	var stepFive = new Step(["Add EtBr at", "microL of stock solution."], [agAmount], [2.0], 5);
-	stepsList.push(stepOne);
-	stepsList.push(stepTwo);
-	stepsList.push(stepThree);
-	stepsList.push(stepFour);
-	stepsList.push(stepFive);
-	variablesList.push(agAmount);
-	variablesList.push(bariumAmount);
+	var editorContent = Storage.getContent(window.location.hash.slice(1));
 
 	displayModal();
 	displaySteps();
@@ -65,7 +48,7 @@ $(document).ready(function() {
 		displayModal();
 		$('#mainContainer').animate({left:0});
 		$('#myModal-vars').animate({width:0});
-		
+
 	});
 
 	$(document).on("click", ".edit-amount", function() {
@@ -195,9 +178,9 @@ $(document).ready(function() {
 		if (node != null) {
 			while (node.hasChildNodes()) {
 			    node.removeChild(node.lastChild);
-			}	
+			}
 		}
-		else {  
+		else {
 			var modalDiv = document.createElement("div");
 			modalDiv.setAttribute("class", "modal-content-vars");
 			modalDiv.id = "modal-content-vars";
@@ -238,7 +221,7 @@ $(document).ready(function() {
 			html_string += "<br>";
 			divModal.innerHTML = html_string;
 			document.getElementById("modal-content-vars").appendChild(divModal);
-		}                            
+		}
 	}
 
 	function displaySteps() {
@@ -416,4 +399,3 @@ $(document).ready(function() {
 		}
 	}
 });
-

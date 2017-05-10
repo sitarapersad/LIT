@@ -11,12 +11,26 @@
         ];
         var calendar_number_of_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
         var active
+        var default_id;
         var default_date = new Date();
         var current_month;
         var current_year;
-        var task_storage = {};
+
         $(document).ready(
             function() {
+                var allTasks = document.getElementById("tasks").getElementsByTagName("LI");
+
+                var day_task = make_name(default_date.getDate(), default_date.getMonth(), default_date.getFullYear());
+                if (localStorage.getItem(day_task) === null) {
+
+                    localStorage.setItem(day_task, document.getElementById("taskListProper").innerHTML);
+
+                } else {
+                    document.getElementById("taskListProper").innerHTML = localStorage.getItem(day_task);
+
+
+
+                }
                 var allTasks = document.getElementById("tasks").getElementsByTagName("LI");
                 for (i = 0; i < allTasks.length; i++) {
                     var span = document.createElement("SPAN");
@@ -65,9 +79,15 @@
 
         }
 
+        function make_name(day, month, year) {
+            return day + " " + calendar_months[month] + " " + year;
+        }
+
         function make_calendar() {
 
             //preconfiguration of dates
+            var start = new Date(default_date.getFullYear(), default_date.getMonth(), 1);
+            var start_date = start.getDay();
             var weekday_i = default_date.getDay();
             var month_i = default_date.getMonth();
             var year = default_date.getFullYear();
@@ -125,53 +145,53 @@
 
 
 
+            var tr_days = document.createElement('tr');
+            tr_days.setAttribute("id", "calendar_row_names");
+            for (var k = 0; k < 7; k++) {
+                var td = document.createElement('td');
+                td.setAttribute("id", "day_names");
+                var day = document.createTextNode(calendar_weekdays[k]);
+                td.appendChild(day);
 
-            for (var i = 0; i < 7; i++) {
-                if (i == 0) {
+                tr_days.appendChild(td);
+                // tr_days.setAttribute("style", "border: 1px solid black");
+            }
+            tbdy.appendChild(tr_days);
 
-                    var tr_days = document.createElement('tr');
-                    tr_days.setAttribute("id", "calendar_row_names");
-                    for (var k = 0; k < 7; k++) {
-                        var td = document.createElement('td');
-                        td.setAttribute("id", "day_names");
-                        var day = document.createTextNode(calendar_weekdays[k]);
-                        td.appendChild(day);
+            for (var i = 1; i < 7; i++) {
+                var tr = document.createElement('tr');
 
-                        tr_days.appendChild(td);
-                        // tr_days.setAttribute("style", "border: 1px solid black");
+
+                for (var j = 0; j < 7; j++) {
+
+                    var td = document.createElement('td');
+                    td.setAttribute("id", "R" + i + "C" + j);
+
+                    var date_number = 7 * (i - 1) + j - start_date + 1;
+                    if (date_number <= number_of_days && date_number >= 1) {
+                        var day = document.createTextNode(date_number);
+                        // console.log(number_of_days);
+                        td.setAttribute("class", "numbered_date");
+                    } else {
+                        var day = document.createTextNode(" ");
+                        td.setAttribute("class", "blank_date");
                     }
-                    tbdy.appendChild(tr_days);
-                } else if (i >= 1) {
-                    var tr = document.createElement('tr');
 
 
-                    for (var j = 0; j < 7; j++) {
 
-                        var td = document.createElement('td');
-                        td.setAttribute("id", "R" + i + "C" + j);
+                    td.appendChild(day);
+                    var default_date_number = default_date.getDate();
+                    if (default_date_number == date_number) {
+                        td.setAttribute("class", "active");
+                        active = td.getAttribute("id");
+                        default_id = td.getAttribute("id");
 
-                        var date_number = 7 * (i - 1) + j - weekday_i;
-                        if (date_number <= number_of_days && date_number >= 1) {
-                            var day = document.createTextNode(date_number);
-                            // console.log(number_of_days);
-                            td.setAttribute("class", "numbered_date");
-                        } else {
-                            var day = document.createTextNode(" ");
-                            td.setAttribute("class", "blank_date");
-                        }
+                        // console.log("default active, ", active);
+                    }
+                    tr.appendChild(td);
+                };
+                tbdy.appendChild(tr);
 
-
-                        td.appendChild(day);
-                        var default_date_number = default_date.getDate();
-                        if (default_date_number == date_number) {
-                            td.setAttribute("class", "active");
-                            active = td.getAttribute("id");
-                            // console.log("default active, ", active);
-                        }
-                        tr.appendChild(td);
-                    };
-                    tbdy.appendChild(tr);
-                }
 
             }
             tbl.appendChild(tbdy);
@@ -179,11 +199,20 @@
             container.appendChild(tbl);
         }
 
+        function update_task_storage(active) {
+            var current_day = document.getElementById(active).innerHTML;
+            var month_year = document.getElementById("monthName").innerHTML.split(" ");
+            var task_storage_key = current_day + " " + document.getElementById("monthName").innerHTML;
+
+            localStorage.setItem(task_storage_key, document.getElementById("taskListProper").innerHTML);
+        }
 
         function change_task_title(active) {
             var current_day = document.getElementById(active).innerHTML;
             var month_year = document.getElementById("monthName").innerHTML.split(" ");
+            var task_storage_key = current_day + " " + document.getElementById("monthName").innerHTML;
 
+            change_task_list(task_storage_key);
             if (month_year[1] == default_date.getFullYear() &&
                 month_year[0] == calendar_months[default_date.getMonth()] &&
                 current_day == default_date.getDate()) {
@@ -191,6 +220,14 @@
             } else {
                 document.getElementById("taskTitleHeader").innerHTML = "Tasks for " +
                     month_year[0] + " " + current_day + ", " + month_year[1];
+            }
+        }
+
+        function change_task_list(key) {
+            if (localStorage.getItem(key) !== null) {
+                document.getElementById("taskListProper").innerHTML = localStorage.getItem(key);
+            } else {
+                document.getElementById("taskListProper").innerHTML = "";
             }
         }
 
@@ -208,7 +245,17 @@
         }
 
         function makeTask(input) {
+
+
             var li = document.createElement("li");
+
+            // var spanBox = document.createElement("SPAN");
+            // var textBox = document.createTextNode("\u2610");
+            // spanBox.className = "checkbox";
+            // spanBox.appendChild(textBox);
+
+            // // li.appendChild(spanBox);
+
 
             var text = document.createTextNode(input);
 
@@ -222,6 +269,27 @@
             span.className = "close";
             span.appendChild(txt);
             li.appendChild(span);
+
+            update_task_storage(active);
+        }
+
+        function deleteAllTasks() {
+            localStorage.clear();
+            document.getElementById("taskListProper").innerHTML = "";
+        }
+
+        function returnDefault() {
+
+
+            document.getElementById(active).setAttribute("class", "numbered_date");
+            set_month(default_date.getMonth(), default_date.getFullYear());
+            document.getElementById(active).setAttribute("class", "numbered_date");
+            active = default_id;
+            document.getElementById(active).setAttribute("class", "active");
+
+
+            change_task_title(active);
+
         }
 
         $(document).on("click", ".numbered_date", function(evt) {
@@ -261,10 +329,27 @@
         $(document).on("click", ".close", function(evt) {
             var parent = evt.target.parentElement;
             parent.style.display = "none";
+            update_task_storage(active);
         })
 
         $(document).on("click", "li", function(evt) {
             evt.target.classList.toggle('checked');
+            update_task_storage(active);
+        })
+
+        $(document).on("keyup", function(evt) {
+            if (evt.keyCode == 13) {
+                if (document.getElementById("newTaskInput").value != "") {
+                    newTask();
+                }
+            }
+        })
+
+        $(document).on("click", "#deleteAllTasks", function(evt) {
+            if (confirm("Are you sure? This will clear all of your tasks over the entire course of the calendar, not just the day you are looking at.")) {
+                deleteAllTasks();
+            } else {;
+            }
         })
     </script>
 
@@ -294,6 +379,7 @@
         </div>
         <div class="col-md-2" style="text-align: right;">
             <img id="profileImage" src="resources/noProfileImage.png"></img>
+            <button id="signOutButton">Sign Out</button>
         </div>
     </div>
 
@@ -308,10 +394,12 @@
                     </script>
                 </div>
             </div>
+
             <div class="col-md-5" id="tasks">
                 <div class="row" id="tasksHeader">
-                    <h1 id="taskTitleHeader"> Tasks for Today </h1>
+                    <h2 id="taskTitleHeader"> Tasks for Today </h2>
                 </div>
+
                 <div id="task-list">
                     <div class="row" id="addTaskRow">
                         <input type="text" id="newTaskInput" placeholder="Make new task ...">
@@ -320,15 +408,29 @@
 
 
                     <ul id="taskListProper">
-                        <li class="checked">Make sure to write out the protocol for tomorrow's PCR experiment.</li>
+                        <li>Make sure to write out the protocol for tomorrow's PCR experiment.</li>
                         <li>Re-run the gel electrophoresis experiment with 2 grams of agarose.</li>
                         <li>Ask Rob to share the collagen distillation lab folder with you.</li>
-
                     </ul>
 
-
                 </div>
+                <div id="taskFunctionButtons">
+                    <span id="deleteAllTasks" class="functionButton1"> Delete All Calendar Tasks </span>
+                    <span onclick="returnDefault()" class="functionButton2"> Return to Today </span>
+                </div>
+
             </div>
+
         </div>
     </div>
+
+    <script src="scripts/string-generator.js"></script>
+    <script src="scripts/eventsCapableObject.js"></script>
+    <script src="scripts/variable.js"></script>
+    <script src="scripts/step.js"></script>
+    <script src="scripts/note.js"></script>
+    <script src="scripts/folder.js"></script>
+    <script src="scripts/template.js"></script>
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/account.js"></script>
 </body>

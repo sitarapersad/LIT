@@ -10,21 +10,22 @@
 	margin-right: 5px;
 }
 
-.toolbarButton {
+.toolbarButton, .addToolbarButton {
 	margin: 0;
 	background: linear-gradient(to top, #CCC, #DDD);
 	border: solid 1px #888;
 	border-right: none;
+	height: 35px;
 }
 
-.toolbarButton:last-child {
+.toolbarButton:last-child, .addToolbarButton {
 	border-right: solid 1px #888;
 }
 
-.toolbarButton:active {
+.toolbarButton:active, .addToolbarButton:active {
 	background: #AAA;
 }
 
-.toolbarButton.effective {
+.toolbarButton.effective, .addToolbarButton.effective {
 	background: rgb(52, 148, 251);
 }
