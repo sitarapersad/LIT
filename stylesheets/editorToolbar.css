@@ -2,6 +2,8 @@
 	text-align: center;
 	font-size: 20px;
 	padding: 4px;
+	background: white;
+	border-bottom: thin solid #dddddd;
 }
 
 .toolbarGroup {
@@ -28,4 +30,19 @@
 
 .toolbarButton.effective, .addToolbarButton.effective {
 	background: rgb(52, 148, 251);
+}
+
+#filename {
+	text-align: left;
+	display: inline-block;
+	left: 0;
+	margin-right: 20px;
+}
+
+#savingIndicator {
+	display: inline-block;
+	margin-left: 20px;
+	font-size: 12px;
+	width: 100px;
+	text-align: left;
 }
