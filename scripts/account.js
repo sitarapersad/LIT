@@ -11,6 +11,7 @@ function showSignoutButton() {
 
 function documentClickHandler() {
 	hideSignoutButton();
+
 	document.removeEventListener("click", documentClickHandler);
 }
 
@@ -22,5 +23,6 @@ profileImage.addEventListener("click", function (e) {
 
 signOutButton.addEventListener("click", function () {
 	Storage.purge();
-	location.reload();
+	document.location.href = 'login.html';
+	// location.reload();
 });
