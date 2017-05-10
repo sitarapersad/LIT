@@ -58,10 +58,10 @@
 	<div class="container" id="mainContainer" contenteditable="true">
 	</div>
 
-	<div id="myModal" class="modal">
+	<div id="myModal-import" class="modal">
 
 	  <!-- Modal content -->
-	  <div class="modal-content" id="modal-content">
+	  <div class="modal-content" id="modal-content-import">
 		<span class="close">&times;</span>
 		 <h2> Choose templates to import into note: </h2>
 		 <form method="get">
@@ -76,7 +76,15 @@
 
 	</div>
 
-	<footer class="text-center">
+		<!-- The Modal -->
+	<div id="myModal-vars" class="modal">
+	  <!-- Modal content -->
+	  <div class="modal-content" id="modal-content-vars">
+
+	  </div>
+	</div>
+
+	<footer class="text-center" id="footer">
 		<div>Icons made by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>. Toolbar icons are from <a href="fontawesome.io">Font Awesome</a>.</div>
 	</footer>
 
@@ -85,4 +93,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="scripts/editor-import.js"></script>
 	<script src="scripts/editor.js"></script>
+	<script src="scripts/editor-variables.js"></script>
+	<script src="scripts/step.js"></script>
+	<script src="scripts/variable.js"></script>
 </body>

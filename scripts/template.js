@@ -35,6 +35,8 @@ var Template = function (initialData)
 	if (initialData.recycled) this.recycled = initialData.recycled;
 	this.recycled = false;
 
+	this.fileType = "template";
+
 	return this.ID;
 };
 

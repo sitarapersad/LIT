@@ -1,7 +1,76 @@
-ul {
-    list-style-type: none;
+table {
+    width: 100%;
+    text-align: center;
+    table-layout: fixed;
+    border: 1px solid goldenrod;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    font-size: 22px;
+    color: #666;
 }
 
+td:hover {
+    background: #ffdacc;
+    /*background: #ffdd63;*/
+    /*background: red;*/
+}
+
+.active {
+    background: lightsalmon;
+    color: black !important
+}
+
+.blank_date {
+    margin: 0;
+    font-size: 0;
+}
+
+.numbered_date {
+    color: #666;
+    font-size: 22px;
+    margin: 0px;
+}
+
+.blank_date:hover {
+    background: none;
+}
+
+#monthRow {
+    /*width: 100%;*/
+    padding: 40px 30px;
+    background: goldenrod;
+    color: white;
+    font-size: 32px;
+    letter-spacing: 3px;
+    text-align: center;
+    margin: 0px;
+}
+
+#leftArrow:hover,
+#rightArrow:hover {
+    background: #eed490;
+    color: #6f5411;
+}
+
+#calendar_row_names {
+    border: 1px solid black;
+    margin: 0;
+    padding: 10px 0;
+    background-color: #ffdd63;
+    color: black;
+    text-align: center;
+    font-size: 18px;
+}
+
+#day_names {
+    background: #ffdd63;
+}
+
+
+/*td {
+
+}*/
 
 #headerContainer {
     height: 120px;
@@ -13,30 +82,30 @@ ul {
     background-color: white;
 }
 
-#sideNaviation{
+#sideNaviation {
     padding-left: 0px;
     margin: 0px;
-
 }
-.nav-option{
+
+.nav-option {
     height: 50px;
     line-height: 50px;
     padding-left: 15%;
     font-weight: bold;
 }
 
-.nav-option:hover{
-    background-color: #e1e1e1;
+.nav-option:hover {
+    background-color: #ebcb7a;
     cursor: pointer;
 }
 
-.heading{
+.heading {
     padding-top: 20px;
     font-size: 24px;
 }
 
 div {
-    align-content: justify;
+    align-content: center;
     margin: auto;
 }
 
@@ -46,11 +115,13 @@ div {
 
 #giant-row {
     height: 400px;
+    padding-top: 10px;
 }
 
-#tasks-header {
+#tasksHeader {
     color: white;
     margin: 0px;
+    margin-top: -5px;
     background: goldenrod;
     width: 100%;
     text-align: center;
@@ -65,121 +136,97 @@ div {
     margin: 5px;
 }
 
-#calendar {
-    border: 1px solid goldenrod;
-    height: 100%;
-    padding: 0px;
-    margin: 5px;
+#addTaskRow {
+    margin: 0px;
+    align-items: stretch;
+    padding: 3px 1px;
 }
 
+#newTaskInput {
+    width: 80%;
+    font-size: 20px;
+}
 
-#mainContainer{
+.addNewTaskButton {
+    padding: 2.5px 5px;
+    background: #e4ba4e;
+    font-size: 20px;
+    width: 20%;
+    float: right;
+    border-bottom: 1px solid #e4ba4e;
+    text-align: center;
+    /*margin-right: 5px;*/
+}
+
+.addNewtaskButton:hover {
+    background: goldenrod;
+}
+
+#mainContainer {
     width: 95%;
     height: calc(100% - 176px);
     padding: 0px;
     padding-top: 10px;
     outline: none;
-
 }
 
-/* Month header */
-
-.month {
-    padding: 40px 30px;
-    width: 100%;
-    background: goldenrod;
-}
-
-
-/* Month list */
-
-.month ul {
-    margin: 0;
-    padding: 0;
-}
-
-.month ul li {
-    color: white;
-    font-size: 32px;
-    letter-spacing: 3px;
-    text-align: center;
-}
-
-
-/* Previous button inside month header */
-
-.month .prev {
-    float: left;
-    padding-top: 10px;
-}
-
-
-/* Next button */
-
-.month .next {
-    float: right;
-    padding-top: 10px;
-}
-
-
-/* Weekdays (Mon-Sun) */
-
-.weekdays {
-    margin: 0;
-    padding: 10px 0;
-    background-color: #ffdd63;
-    ;
-}
-
-.weekdays li {
-    display: inline-block;
-    width: 13.5%;
-    color: black;
-    text-align: center;
-    font-size: 18px;
-}
-
-
-/* Days (1-31) */
-
-.days {
-    padding: 10px 0;
+#taskListProper {
     margin: 0px;
-}
-
-.days li {
+    padding: 0px;
     list-style-type: none;
-    display: inline-block;
-    width: 13.5%;
-    text-align: center;
-    margin-bottom: 5px;
-    font-size: 22px;
-    color: #666;
 }
 
-
-/* Highlight the "current" day */
-
-.days li .active {
-    padding: 5px;
-    background: lightsalmon;
-    color: black !important
+#taskListProper li {
+    cursor: pointer;
+    position: relative;
+    padding: 12px 8px 12px 40px;
+    background: lightgoldenrodyellow;
+    font-size: 18px;
+    transition: 0.2s;
+    /* make the list items unselectable */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-
-.task-li {
-    list-style-type: square;
-    font-size: 16px;
-    margin: 10px;
+#taskListProper li:hover {
+    background: #ebcb7a;
 }
 
-.task-text {
-    font-size: 16px;
-    margin: 10px 10px;
-    font-family: 'PT Sans', sans-serif;
+#taskListProper li.checked {
+    background: #ad975f;
+    color: #fff;
+    text-decoration: line-through;
 }
 
-input[type="checkbox"]{
-  width: 16px; /*Desired width*/
-  height: 16px; /*Desired height*/
+#taskListProper li.checked::before {
+    content: '';
+    position: absolute;
+    border-color: #fff;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    top: 16px;
+    left: 16px;
+    transform: rotate(45deg);
+    height: 15px;
+    width: 7px;
+}
+
+.close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 14.25px 8px;
+}
+
+.close:hover {
+    background-color: gray;
+    color: white;
+}
+
+input[type="checkbox"] {
+    width: 16px;
+    /*Desired width*/
+    height: 16px;
 }

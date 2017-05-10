@@ -61,6 +61,8 @@ var Folder = function (initialData)
 Folder.prototype = Object.create(EventCapableObject.prototype);
 Folder.prototype.constructor = Folder;
 
+Object.defineProperty(Folder.prototype, "fileType", withValue("folder"));
+
 Folder.prototype.serialize = function () {
 	var serializedObject = {};
 	serializedObject.ID = this.ID;

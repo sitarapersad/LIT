@@ -34,7 +34,7 @@ var Note = function (initialData)
 
 	if (initialData.recycled) this.recycled = initialData.recycled;
 	this.recycled = false;
-
+	this.fileType = "file";
 	return this.ID;
 };
 
